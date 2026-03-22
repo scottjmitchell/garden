@@ -1345,6 +1345,15 @@ nav .nav-inner {
   gap: 5px;
   margin-top: 8px;
   margin-bottom: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.mat-status-picker.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .mat-status-pill {
@@ -3504,7 +3513,7 @@ function renderMaterials() {
         <div class="material-name">${m.name}</div>
         <button class="material-status ${statusDef.cls}" onclick="toggleMatStatusPicker('${key}', this)">${statusDef.label}</button>
       </div>
-      <div class="mat-status-picker" id="mat-status-picker-${key}" style="display:none;">
+      <div class="mat-status-picker" id="mat-status-picker-${key}">
         ${MAT_STATUSES.map(s => `
           <button class="mat-status-pill${s.key === activeStatus ? ' active' : ''}" data-status="${s.key}" onclick="setMaterialStatus('${key}', '${s.key}', this)">${s.label}</button>
         `).join('')}
@@ -4246,13 +4255,12 @@ function updateMaterialCardBtn(key) {
 }
 
 function toggleMatStatusPicker(key, btn) {
-  // Close any other open pickers first
   document.querySelectorAll('.mat-status-picker').forEach(p => {
-    if (p.id !== `mat-status-picker-${key}`) p.style.display = 'none';
+    if (p.id !== `mat-status-picker-${key}`) p.classList.remove('visible');
   });
   const picker = document.getElementById(`mat-status-picker-${key}`);
   if (!picker) return;
-  picker.style.display = picker.style.display === 'none' ? 'flex' : 'none';
+  picker.classList.toggle('visible');
 }
 
 function setMaterialStatus(key, statusKey, pill) {
@@ -4270,13 +4278,13 @@ function setMaterialStatus(key, statusKey, pill) {
   // Update active pill
   picker.querySelectorAll('.mat-status-pill').forEach(p => p.classList.toggle('active', p.dataset.status === statusKey));
 
-  picker.style.display = 'none';
+  picker.classList.remove('visible');
 }
 
 // Close pickers when clicking outside
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.material-status') && !e.target.closest('.mat-status-picker')) {
-    document.querySelectorAll('.mat-status-picker').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.mat-status-picker').forEach(p => p.classList.remove('visible'));
   }
 });
 
