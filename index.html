@@ -3848,8 +3848,20 @@ function escapeMaterialKey(name) {
   return name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').toLowerCase();
 }
 
+function migrateMaterialOptions(options) {
+  return options.map(opt => {
+    if ('selected' in opt && !('optionStatus' in opt)) {
+      return { ...opt, optionStatus: opt.selected ? 'favourite' : null };
+    }
+    return opt;
+  });
+}
+
 function getMaterialOptions(key) {
-  try { return JSON.parse(localStorage.getItem(`garden-material-opts-${key}`)) || []; }
+  try {
+    const raw = JSON.parse(localStorage.getItem(`garden-material-opts-${key}`)) || [];
+    return migrateMaterialOptions(raw);
+  }
   catch { return []; }
 }
 
