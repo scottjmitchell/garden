@@ -4095,6 +4095,7 @@ function updateDrawerOption(idx, field, value) {
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeTaskDrawer();
+  if (e.key === 'Escape' && matModalKey) closeMaterialOptions();
 });
 
 /* ============================================================
@@ -4123,6 +4124,24 @@ function getMaterialOptions(key) {
 
 function saveMaterialOptions(key, options) {
   localStorage.setItem(`garden-material-opts-${key}`, JSON.stringify(options));
+}
+
+let matModalKey = null;
+let matModalSaveTimers = {};
+
+function openMaterialOptions(key, name) {
+  matModalKey = key;
+  document.getElementById('mat-modal-eyebrow').textContent = name + ' — Options';
+  document.getElementById('mat-modal-add-btn').onclick = () => addModalOption(key);
+  renderModalOptions(key);
+  document.getElementById('mat-options-backdrop').classList.add('open');
+  document.getElementById('mat-options-modal').classList.add('open');
+}
+
+function closeMaterialOptions() {
+  matModalKey = null;
+  document.getElementById('mat-options-backdrop').classList.remove('open');
+  document.getElementById('mat-options-modal').classList.remove('open');
 }
 
 function toggleMaterialOptions(key, btn) {
