@@ -1049,6 +1049,131 @@ nav .nav-inner {
   gap: 6px;
 }
 
+/* Material card CRUD controls */
+.mat-card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.material-card:hover .mat-card-actions { opacity: 1; }
+.mat-card-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1;
+  transition: color var(--transition), background var(--transition);
+}
+.mat-card-btn:hover { color: var(--text); background: rgba(168,155,120,0.08); }
+.mat-card-btn.delete:hover { color: #c07050; background: rgba(158,78,36,0.1); }
+.mat-card-btn.save:hover { color: #7ab87a; background: rgba(61,82,57,0.15); }
+
+/* Material edit form */
+.mat-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mat-edit-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.mat-edit-label {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  min-width: 44px;
+}
+.mat-edit-input {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 300;
+  background: rgba(168,155,120,0.06);
+  border: 1px solid rgba(168,155,120,0.2);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 5px 8px;
+  min-width: 0;
+  flex: 1;
+}
+.mat-edit-input:focus {
+  outline: none;
+  border-color: rgba(200,146,42,0.35);
+}
+.mat-edit-textarea {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 300;
+  background: rgba(168,155,120,0.06);
+  border: 1px solid rgba(168,155,120,0.2);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 6px 8px;
+  min-width: 0;
+  flex: 1;
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.6;
+}
+.mat-edit-textarea:focus {
+  outline: none;
+  border-color: rgba(200,146,42,0.35);
+}
+.mat-edit-colour {
+  width: 32px;
+  height: 28px;
+  border: 1px solid rgba(168,155,120,0.2);
+  border-radius: var(--radius);
+  background: none;
+  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
+}
+.mat-edit-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+/* Add material button */
+.mat-add-row {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 2px;
+  grid-column: 1 / -1;
+}
+.mat-add-btn {
+  background: none;
+  border: 1px dashed rgba(168,155,120,0.25);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 20px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.mat-add-btn:hover { border-color: var(--amber); color: var(--amber); }
+
 /* ============================================================
    MATERIAL OPTIONS MODAL
 ============================================================ */
@@ -3232,6 +3357,7 @@ const DB_STATE = {
   taskDetails: {},
   budgetActuals: {},
   budgetItems: {},
+  phases: {},
   materials: {},
   photos: {},
   loaded: false,
@@ -3245,7 +3371,7 @@ function fbKey(s) {
 /* ============================================================
    DATA
 ============================================================ */
-const PHASES = [
+const DEFAULT_PHASES = [
   {
     id: 'phase0',
     num: '0',
@@ -3342,6 +3468,9 @@ const PHASES = [
   }
 ];
 
+// Legacy reference — kept for any residual references; real data comes from DB_STATE.phases
+const PHASES = DEFAULT_PHASES;
+
 const MATERIALS = [
   {
     name: 'Paving Slabs',
@@ -3435,6 +3564,79 @@ const MATERIALS = [
   }
 ];
 
+const DEFAULT_MATERIALS = [
+  {
+    name: 'Paving Slabs',
+    spec: 'Indian sandstone Raj Green (riven, calibrated 18–22mm) is the best value — cheaper than concrete and better looking. Primary Range (Paving Superstore) is the budget pick at £21.86/m²; Select Range ~£22/m² with chiselled edge. Concrete alt: Bradstone Textured 450×450 (Builder Depot £35/m²) — but £10–15/m² more than the sandstone. ~40 sqm + 10% wastage. Key checks: calibrated, min 22mm, R11 slip rating, single batch.',
+    cost: '£21.86–£24.56/m² (Raj Green sandstone) · £35–40/m² (Bradstone concrete) · ~£960–1,080 delivered for ~44 sqm inc wastage',
+    status: 'researching',
+    accent: '#8B9A8E'
+  },
+  {
+    name: 'Pergola (4×3m)',
+    spec: 'Budget revised to £600. Timber kit now preferred — stain dark to match design intent. Motorised louvred aluminium remains a future upgrade option.',
+    cost: '£480–£600 (timber) · £1,400+ (aluminium louvred)',
+    status: 'researching',
+    accent: '#C8922A',
+  },
+  {
+    name: 'MOT Type 1 Hardcore',
+    spec: '~8 tonnes for 50 sqm patio at 150mm depth. Source from local builders merchant.',
+    cost: '~£400–£600 delivered',
+    status: 'to-order',
+    accent: '#6B5C47'
+  },
+  {
+    name: 'Raised Planters (×4) — DIY Timber',
+    spec: 'DIY build from pressure-treated (tanalised) timber. Target size 1500×600×400mm. Materials per planter: 150×38mm treated boards (sides + ends), 75×75mm corner posts, exterior screws/brackets, butyl or pond liner (stapled inside to prevent rot), drainage holes in base. Stain dark to match pergola. Much cheaper than pre-made steel. Build before filling with topsoil/compost.',
+    cost: '~£30–60/planter in timber + fixings = £120–240 total (×4)',
+    status: 'to-order',
+    accent: '#8B4513'
+  },
+  {
+    name: 'EverEdge Lawn Edging',
+    spec: '3mm galvanised steel, 150mm deep, ~30 linear metres. Install at same time as paving, 5–10mm below finished turf level.',
+    cost: '~£300–£400',
+    status: 'to-order',
+    accent: '#5C7A5C'
+  },
+  {
+    name: 'Armoured SWA Cable',
+    spec: '2.5mm² 3-core SWA, 15–20m run. 20mm MDPE conduit, cable clips, weatherproof IP65 socket. Bury at 450mm depth minimum.',
+    cost: '~£150–£250',
+    status: 'to-order',
+    accent: '#7A6B3A'
+  },
+  {
+    name: 'Star Jasmine + Clematis montana',
+    spec: "NWW facing (afternoon/evening sun) — star jasmine strongly recommended. Trachelospermum jasminoides × 1–2 (pergola, fragrant evergreen), Clematis montana 'Alba' × 1 (fast coverage). Optional: Hydrangea petiolaris on back fence.",
+    cost: '~£50–£120',
+    status: 'researching',
+    accent: '#4A5C47'
+  },
+  {
+    name: 'Outdoor Corner Sofa',
+    spec: 'PE rattan/aluminium frame, charcoal, Olefin fabric cushions with fitted weatherproof cover. Suitable for year-round outdoor storage.',
+    cost: '£1,200–£2,500',
+    status: 'researching',
+    accent: '#8B9A8E'
+  },
+  {
+    name: "Children's Swing Set",
+    spec: 'Blue steel, EN71 compliant, hot-dip galvanised. Add rubber safety tiles beneath.',
+    cost: '£200–£500',
+    status: 'researching',
+    accent: '#4A6B8B'
+  },
+  {
+    name: 'New Shed',
+    spec: 'Approx 2×2m or 2×3m — size to confirm. Position in back-right corner (Zone 4). Gravel/shingle ground cover surrounding area.',
+    cost: '£500–£1,000',
+    status: 'researching',
+    accent: '#6B5C3A'
+  }
+];
+
 const TIPS = [
   {
     category: 'Groundworks',
@@ -3516,17 +3718,35 @@ function saveState(state) {
 /* ============================================================
    PHASES RENDER
 ============================================================ */
+
+// Returns phases from DB_STATE sorted by order field
+function getPhasesArray() {
+  return Object.entries(DB_STATE.phases)
+    .map(([id, p]) => ({ id, ...p }))
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
+// Returns tasks for a phase sorted by order field
+function getTasksArray(phaseData) {
+  if (!phaseData.tasks) return [];
+  return Object.entries(phaseData.tasks)
+    .map(([id, t]) => ({ id, ...t }))
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
 function renderPhases() {
   const state = loadState();
   const container = document.getElementById('phases-container');
   container.innerHTML = '';
 
   let totalDone = 0, totalTasks = 0;
+  const phases = getPhasesArray();
 
-  PHASES.forEach((phase, i) => {
-    const tasks = phase.tasks.map(t => ({
+  phases.forEach((phase, i) => {
+    const rawTasks = getTasksArray(phase);
+    const tasks = rawTasks.map(t => ({
       ...t,
-      done: state[t.id] !== undefined ? state[t.id] : t.done
+      done: state[t.id] !== undefined ? state[t.id] : (t.done || false)
     }));
 
     const done = tasks.filter(t => t.done).length;
@@ -3538,7 +3758,8 @@ function renderPhases() {
 
     const card = document.createElement('div');
     card.className = `phase-card${phase.status === 'current' ? ' current' : ''}${pct === 100 ? ' complete' : ''}`;
-    card.id = `phase-card-${i}`;
+    card.id = `phase-card-${phase.id}`;
+    card.dataset.phaseId = phase.id;
 
     const badgeClass = phase.status === 'current' ? 'badge-current' :
                        (pct === 100 ? 'badge-complete' : 'badge-upcoming');
@@ -3547,14 +3768,19 @@ function renderPhases() {
 
     const savedNote = DB_STATE.notes[phase.id] || '';
     const hasNote = savedNote.trim().length > 0;
+    const phaseNum = phase.num !== undefined ? phase.num : i;
 
     card.innerHTML = `
-      <div class="phase-header" onclick="togglePhase(${i})" aria-expanded="false" role="button" tabindex="0">
-        <div class="phase-number-bg">${phase.num}</div>
-        <div class="phase-num">${phase.num}</div>
+      <div class="phase-actions">
+        <button class="phase-action-btn" onclick="editPhase('${phase.id}'); event.stopPropagation()" title="Edit phase">&#10000;</button>
+        <button class="phase-action-btn delete" onclick="deletePhase('${phase.id}'); event.stopPropagation()" title="Delete phase">&times;</button>
+      </div>
+      <div class="phase-header" onclick="togglePhase('${phase.id}')" aria-expanded="false" role="button" tabindex="0">
+        <div class="phase-number-bg">${phaseNum}</div>
+        <div class="phase-num">${phaseNum}</div>
         <div class="phase-info">
-          <div class="phase-title">Phase ${phase.num} — ${phase.title}${hasNote ? '<span class="phase-note-dot"></span>' : ''}</div>
-          <div class="phase-date">${phase.date}</div>
+          <div class="phase-title">Phase ${phaseNum} — ${phase.title}${hasNote ? '<span class="phase-note-dot"></span>' : ''}</div>
+          <div class="phase-date">${phase.date || ''}</div>
         </div>
         <span class="phase-badge ${badgeClass}">${badgeLabel}</span>
         <div class="phase-progress-mini">
@@ -3568,28 +3794,16 @@ function renderPhases() {
         </svg>
       </div>
       <div class="phase-tasks">
-        <ul class="task-list">
-          ${tasks.map(t => `
-            <li class="task-item${t.done ? ' done' : ''}" data-id="${t.id}" role="checkbox" aria-checked="${t.done}">
-              <div class="task-checkbox" onclick="toggleTask('${t.id}', ${i})">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-              </div>
-              <span class="task-text" onclick="toggleTask('${t.id}', ${i})">${t.text}</span>
-              <button class="task-detail-btn${hasTaskDetail(t.id) ? ' has-data' : ''}"
-                onclick="openTaskDetail('${t.id}', ${i}); event.stopPropagation()"
-                title="Notes &amp; options" aria-label="Open task notes">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                  <line x1="16" y1="17" x2="8" y2="17"/>
-                </svg>
-              </button>
-            </li>
-          `).join('')}
+        <ul class="task-list" id="task-list-${phase.id}">
+          ${tasks.map(t => buildTaskItemHTML(t, phase.id)).join('')}
         </ul>
+        <div class="phase-add-task-row">
+          <input type="text" class="phase-add-task-input" placeholder="Add task…"
+            id="add-task-input-${phase.id}"
+            onkeydown="if(event.key==='Enter'){addTask('${phase.id}');event.preventDefault()}"
+          />
+          <button class="phase-add-task-btn" onclick="addTask('${phase.id}')">+</button>
+        </div>
         <div class="phase-notes-area">
           <div class="phase-notes-label">Notes</div>
           <textarea class="phase-notes-input"
@@ -3602,19 +3816,29 @@ function renderPhases() {
 
     container.appendChild(card);
 
-    // Restore expanded state: use Set, or auto-expand current phase on first load
-    const shouldExpand = expandedPhases.has(i) || (phase.status === 'current' && expandedPhases.size === 0);
+    // Restore expanded state using phaseId; auto-expand current phase on first load
+    const shouldExpand = expandedPhases.has(phase.id) || (phase.status === 'current' && expandedPhases.size === 0);
     if (shouldExpand) {
       card.classList.add('expanded');
       card.querySelector('.phase-header').setAttribute('aria-expanded', 'true');
-      if (!expandedPhases.has(i)) expandedPhases.add(i);
+      if (!expandedPhases.has(phase.id)) expandedPhases.add(phase.id);
     }
 
     // Keyboard support
     card.querySelector('.phase-header').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePhase(i); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePhase(phase.id); }
     });
   });
+
+  // Add Phase button
+  const addPhaseRow = document.createElement('div');
+  addPhaseRow.className = 'phase-add-row';
+  const addPhaseBtn = document.createElement('button');
+  addPhaseBtn.className = 'phase-add-btn';
+  addPhaseBtn.textContent = '+ Add Phase';
+  addPhaseBtn.addEventListener('click', addPhase);
+  addPhaseRow.appendChild(addPhaseBtn);
+  container.appendChild(addPhaseRow);
 
   // Update overall progress
   const overallPct = totalTasks > 0 ? Math.round((totalDone / totalTasks) * 100) : 0;
@@ -3622,22 +3846,50 @@ function renderPhases() {
   document.getElementById('progress-fill').style.width = overallPct + '%';
 }
 
-function togglePhase(i) {
-  const card = document.getElementById(`phase-card-${i}`);
+function buildTaskItemHTML(t, phaseId) {
+  return `
+    <li class="task-item${t.done ? ' done' : ''}" data-id="${t.id}" role="checkbox" aria-checked="${t.done}">
+      <div class="task-checkbox" onclick="toggleTask('${t.id}', '${phaseId}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <span class="task-text" onclick="toggleTask('${t.id}', '${phaseId}')">${t.text}</span>
+      <div class="task-actions">
+        <button class="task-action-btn" onclick="editTask('${t.id}', '${phaseId}'); event.stopPropagation()" title="Edit task">&#10000;</button>
+        <button class="task-action-btn delete" onclick="deleteTask('${t.id}', '${phaseId}'); event.stopPropagation()" title="Delete task">&times;</button>
+      </div>
+      <button class="task-detail-btn${hasTaskDetail(t.id) ? ' has-data' : ''}"
+        onclick="openTaskDetail('${t.id}', '${phaseId}'); event.stopPropagation()"
+        title="Notes &amp; options" aria-label="Open task notes">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </button>
+    </li>
+  `;
+}
+
+function togglePhase(phaseId) {
+  const card = document.getElementById(`phase-card-${phaseId}`);
+  if (!card) return;
   card.classList.toggle('expanded');
   const isExpanded = card.classList.contains('expanded');
-  if (isExpanded) { expandedPhases.add(i); } else { expandedPhases.delete(i); }
+  if (isExpanded) { expandedPhases.add(phaseId); } else { expandedPhases.delete(phaseId); }
   card.querySelector('.phase-header').setAttribute('aria-expanded', String(isExpanded));
 }
 
-function toggleTask(taskId, phaseIdx) {
+function toggleTask(taskId, phaseId) {
   const sy = window.scrollY;
   const state = loadState();
-  const phase = PHASES[phaseIdx];
-  const task = phase.tasks.find(t => t.id === taskId);
-  if (!task) return;
+  const phaseData = DB_STATE.phases[phaseId];
+  if (!phaseData || !phaseData.tasks || !phaseData.tasks[taskId]) return;
 
-  const currentDone = state[taskId] !== undefined ? state[taskId] : task.done;
+  const task = phaseData.tasks[taskId];
+  const currentDone = state[taskId] !== undefined ? state[taskId] : (task.done || false);
   const newDone = !currentDone;
   state[taskId] = newDone;
   saveState(state);
@@ -3650,10 +3902,11 @@ function toggleTask(taskId, phaseIdx) {
   }
 
   // Recompute this phase's progress
-  const tasks = phase.tasks.map(t => ({ ...t, done: state[t.id] !== undefined ? state[t.id] : t.done }));
+  const rawTasks = getTasksArray(phaseData);
+  const tasks = rawTasks.map(t => ({ ...t, done: state[t.id] !== undefined ? state[t.id] : (t.done || false) }));
   const done = tasks.filter(t => t.done).length;
-  const pct = Math.round((done / tasks.length) * 100);
-  const card = document.getElementById(`phase-card-${phaseIdx}`);
+  const pct = tasks.length > 0 ? Math.round((done / tasks.length) * 100) : 0;
+  const card = document.getElementById(`phase-card-${phaseId}`);
   if (card) {
     card.querySelector('.phase-pct').textContent = pct + '%';
     card.querySelector('.phase-fill-mini').style.width = pct + '%';
@@ -3662,10 +3915,10 @@ function toggleTask(taskId, phaseIdx) {
 
   // Recompute overall progress
   let totalDone = 0, totalTasks = 0;
-  PHASES.forEach(p => {
-    p.tasks.forEach(t => {
+  getPhasesArray().forEach(p => {
+    getTasksArray(p).forEach(t => {
       totalTasks++;
-      if (state[t.id] !== undefined ? state[t.id] : t.done) totalDone++;
+      if (state[t.id] !== undefined ? state[t.id] : (t.done || false)) totalDone++;
     });
   });
   const overallPct = totalTasks > 0 ? Math.round((totalDone / totalTasks) * 100) : 0;
@@ -3698,6 +3951,255 @@ function savePhaseNote(textarea) {
 }
 
 /* ============================================================
+   PHASE CRUD
+============================================================ */
+
+function addPhase() {
+  const phases = getPhasesArray();
+  const maxOrder = phases.length > 0 ? Math.max(...phases.map(p => p.order ?? 0)) : -1;
+  const maxNum = phases.length > 0 ? Math.max(...phases.map(p => parseInt(p.num) || 0)) : -1;
+  const newPhase = {
+    num: String(maxNum + 1),
+    title: 'New Phase',
+    date: '',
+    status: 'upcoming',
+    order: maxOrder + 1,
+    tasks: {}
+  };
+  const ref = db.ref('garden/phases').push(newPhase);
+  const newId = ref.key;
+  DB_STATE.phases[newId] = newPhase;
+  renderPhases();
+  expandedPhases.add(newId);
+  editPhase(newId);
+}
+
+function editPhase(phaseId) {
+  const phaseData = DB_STATE.phases[phaseId];
+  if (!phaseData) return;
+  const card = document.getElementById(`phase-card-${phaseId}`);
+  if (!card) return;
+
+  let editForm = card.querySelector('.phase-edit-form');
+  if (editForm) return; // already open
+
+  const header = card.querySelector('.phase-header');
+  header.style.pointerEvents = 'none';
+
+  const phaseNum = phaseData.num !== undefined ? phaseData.num : '';
+  const statusOptions = ['current', 'upcoming', 'complete'];
+
+  editForm = document.createElement('div');
+  editForm.className = 'phase-edit-form';
+  editForm.innerHTML = `
+    <div class="phase-edit-row">
+      <label class="phase-edit-label">Phase #</label>
+      <input class="phase-edit-input phase-edit-num" type="text" value="${phaseNum}" placeholder="0" style="width:48px"/>
+    </div>
+    <div class="phase-edit-row">
+      <label class="phase-edit-label">Title</label>
+      <input class="phase-edit-input phase-edit-title" type="text" value="${phaseData.title || ''}" placeholder="Phase title"/>
+    </div>
+    <div class="phase-edit-row">
+      <label class="phase-edit-label">Date</label>
+      <input class="phase-edit-input phase-edit-date" type="text" value="${phaseData.date || ''}" placeholder="e.g. May 2026"/>
+    </div>
+    <div class="phase-edit-row">
+      <label class="phase-edit-label">Status</label>
+      <select class="phase-edit-select phase-edit-status">
+        ${statusOptions.map(s => `<option value="${s}"${phaseData.status === s ? ' selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="phase-edit-actions">
+      <button class="phase-edit-save-btn" onclick="savePhaseEdit('${phaseId}')">Save</button>
+      <button class="phase-edit-cancel-btn" onclick="cancelPhaseEdit('${phaseId}')">Cancel</button>
+    </div>
+  `;
+
+  const tasksEl = card.querySelector('.phase-tasks');
+  card.insertBefore(editForm, tasksEl);
+  editForm.querySelector('.phase-edit-title').focus();
+}
+
+function savePhaseEdit(phaseId) {
+  const card = document.getElementById(`phase-card-${phaseId}`);
+  if (!card) return;
+  const editForm = card.querySelector('.phase-edit-form');
+  if (!editForm) return;
+
+  const num = editForm.querySelector('.phase-edit-num').value.trim();
+  const title = editForm.querySelector('.phase-edit-title').value.trim() || 'Untitled Phase';
+  const date = editForm.querySelector('.phase-edit-date').value.trim();
+  const status = editForm.querySelector('.phase-edit-status').value;
+
+  const updates = { num, title, date, status };
+  Object.assign(DB_STATE.phases[phaseId], updates);
+  db.ref('garden/phases/' + phaseId).update(updates);
+  renderPhases();
+}
+
+function cancelPhaseEdit(phaseId) {
+  const card = document.getElementById(`phase-card-${phaseId}`);
+  if (!card) return;
+  const editForm = card.querySelector('.phase-edit-form');
+  if (editForm) editForm.remove();
+  const header = card.querySelector('.phase-header');
+  if (header) header.style.pointerEvents = '';
+}
+
+function deletePhase(phaseId) {
+  const phaseData = DB_STATE.phases[phaseId];
+  const title = phaseData ? phaseData.title : 'this phase';
+  if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+  delete DB_STATE.phases[phaseId];
+  db.ref('garden/phases/' + phaseId).remove();
+  expandedPhases.delete(phaseId);
+  renderPhases();
+  renderNextActions();
+}
+
+/* ============================================================
+   TASK CRUD
+============================================================ */
+
+function addTask(phaseId) {
+  const input = document.getElementById(`add-task-input-${phaseId}`);
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+
+  const phaseData = DB_STATE.phases[phaseId];
+  if (!phaseData) return;
+
+  const existingTasks = phaseData.tasks || {};
+  const maxOrder = Object.values(existingTasks).length > 0
+    ? Math.max(...Object.values(existingTasks).map(t => t.order ?? 0))
+    : -1;
+
+  const newTask = { text, done: false, order: maxOrder + 1 };
+  const ref = db.ref('garden/phases/' + phaseId + '/tasks').push(newTask);
+  const newTaskId = ref.key;
+
+  if (!DB_STATE.phases[phaseId].tasks) DB_STATE.phases[phaseId].tasks = {};
+  DB_STATE.phases[phaseId].tasks[newTaskId] = newTask;
+
+  // Surgical DOM insert
+  const list = document.getElementById(`task-list-${phaseId}`);
+  if (list) {
+    const tmp = document.createElement('ul');
+    tmp.innerHTML = buildTaskItemHTML({ id: newTaskId, ...newTask }, phaseId);
+    list.appendChild(tmp.firstElementChild);
+  }
+
+  input.value = '';
+  updatePhaseProgress(phaseId);
+  renderNextActions();
+}
+
+function editTask(taskId, phaseId) {
+  const item = document.querySelector(`.task-item[data-id="${taskId}"]`);
+  if (!item) return;
+
+  const phaseData = DB_STATE.phases[phaseId];
+  if (!phaseData || !phaseData.tasks || !phaseData.tasks[taskId]) return;
+  const currentText = phaseData.tasks[taskId].text || '';
+
+  const textSpan = item.querySelector('.task-text');
+  if (!textSpan || item.classList.contains('editing')) return;
+  item.classList.add('editing');
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'task-edit-input';
+  input.value = currentText;
+  textSpan.replaceWith(input);
+  input.focus();
+  input.select();
+
+  const commit = () => {
+    const newText = input.value.trim();
+    if (newText && newText !== currentText) {
+      DB_STATE.phases[phaseId].tasks[taskId].text = newText;
+      db.ref('garden/phases/' + phaseId + '/tasks/' + taskId + '/text').set(newText);
+    }
+    item.classList.remove('editing');
+    const taskData = DB_STATE.phases[phaseId].tasks[taskId];
+    const stateNow = loadState();
+    const done = stateNow[taskId] !== undefined ? stateNow[taskId] : (taskData.done || false);
+    const tmp = document.createElement('ul');
+    tmp.innerHTML = buildTaskItemHTML({ id: taskId, ...taskData, done }, phaseId);
+    item.replaceWith(tmp.firstElementChild);
+  };
+
+  const cancel = () => {
+    item.classList.remove('editing');
+    const taskData = DB_STATE.phases[phaseId].tasks[taskId];
+    const stateNow = loadState();
+    const done = stateNow[taskId] !== undefined ? stateNow[taskId] : (taskData.done || false);
+    const tmp = document.createElement('ul');
+    tmp.innerHTML = buildTaskItemHTML({ id: taskId, ...taskData, done }, phaseId);
+    item.replaceWith(tmp.firstElementChild);
+  };
+
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); input.removeEventListener('blur', commit); commit(); }
+    if (e.key === 'Escape') { e.preventDefault(); input.removeEventListener('blur', commit); cancel(); }
+  });
+}
+
+function deleteTask(taskId, phaseId) {
+  const phaseData = DB_STATE.phases[phaseId];
+  if (!phaseData || !phaseData.tasks || !phaseData.tasks[taskId]) return;
+  const taskText = phaseData.tasks[taskId].text || 'this task';
+  if (!confirm(`Delete "${taskText}"?`)) return;
+
+  delete DB_STATE.phases[phaseId].tasks[taskId];
+  db.ref('garden/phases/' + phaseId + '/tasks/' + taskId).remove();
+
+  // Remove from done/undone state
+  const state = loadState();
+  if (state[taskId] !== undefined) {
+    delete state[taskId];
+    saveState(state);
+  }
+
+  const item = document.querySelector(`.task-item[data-id="${taskId}"]`);
+  if (item) item.remove();
+
+  updatePhaseProgress(phaseId);
+  renderNextActions();
+}
+
+function updatePhaseProgress(phaseId) {
+  const phaseData = DB_STATE.phases[phaseId];
+  if (!phaseData) return;
+  const state = loadState();
+  const tasks = getTasksArray(phaseData).map(t => ({
+    ...t,
+    done: state[t.id] !== undefined ? state[t.id] : (t.done || false)
+  }));
+  const done = tasks.filter(t => t.done).length;
+  const pct = tasks.length > 0 ? Math.round((done / tasks.length) * 100) : 0;
+  const card = document.getElementById(`phase-card-${phaseId}`);
+  if (card) {
+    card.querySelector('.phase-pct').textContent = pct + '%';
+    card.querySelector('.phase-fill-mini').style.width = pct + '%';
+    card.classList.toggle('complete', pct === 100);
+  }
+  let totalDone = 0, totalTasks = 0;
+  getPhasesArray().forEach(p => {
+    getTasksArray(p).forEach(t => {
+      totalTasks++;
+      if (state[t.id] !== undefined ? state[t.id] : (t.done || false)) totalDone++;
+    });
+  });
+  const overallPct = totalTasks > 0 ? Math.round((totalDone / totalTasks) * 100) : 0;
+  document.getElementById('progress-pct').textContent = overallPct + '%';
+  document.getElementById('progress-fill').style.width = overallPct + '%';
+}
+
+/* ============================================================
    MATERIALS RENDER
 ============================================================ */
 function renderMaterials() {
@@ -3705,19 +4207,25 @@ function renderMaterials() {
   container.innerHTML = '';
 
   const MAT_STATUSES = [
-    { key: 'researching', label: 'Researching',              cls: 'status-researching'  },
-    { key: 'to-order',    label: 'To Order',                 cls: 'status-to-order'    },
-    { key: 'ordered',     label: 'Ordered',                  cls: 'status-ordered'      },
-    { key: 'to-do',       label: 'To Do',                    cls: 'status-to-do'        },
+    { key: 'researching', label: 'Researching', cls: 'status-researching' },
+    { key: 'to-order',    label: 'To Order',    cls: 'status-to-order'   },
+    { key: 'ordered',     label: 'Ordered',     cls: 'status-ordered'    },
+    { key: 'to-do',       label: 'To Do',       cls: 'status-to-do'      },
   ];
 
-  MATERIALS.forEach(m => {
-    const key = escapeMaterialKey(m.name);
-    const savedStatus = DB_STATE.materialStatus[key];
-    const activeStatus = savedStatus || m.status;
+  // Sort materials by order field
+  const sorted = Object.entries(DB_STATE.materials)
+    .map(([id, m]) => ({ id, ...m }))
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  sorted.forEach(m => {
+    // Use escapeMaterialKey(name) for backward-compatible materialStatus keys
+    const statusKey = escapeMaterialKey(m.name);
+    const savedStatus = DB_STATE.materialStatus[statusKey];
+    const activeStatus = savedStatus || m.status || 'researching';
     const statusDef = MAT_STATUSES.find(s => s.key === activeStatus) || MAT_STATUSES[0];
 
-    const matOpts = getMaterialOptions(key);
+    const matOpts = getMaterialOptions(statusKey);
     const matHasFav = matOpts.some(o => o.optionStatus === 'favourite');
     const matCount = matOpts.length;
     const optBtnClass = matHasFav ? 'mat-options-btn has-favourite' : 'mat-options-btn';
@@ -3727,39 +4235,128 @@ function renderMaterials() {
 
     const card = document.createElement('div');
     card.className = 'material-card';
-    card.style.setProperty('--accent-color', m.accent);
+    card.dataset.matId = m.id;
+    card.style.setProperty('--accent-color', m.accent || '#8B9A8E');
     card.innerHTML = `
-      <div class="material-header">
-        <div class="material-name">${m.name}</div>
-        <button class="material-status ${statusDef.cls}" onclick="toggleMatStatusPicker('${key}', this)">${statusDef.label}</button>
+      <div class="mat-card-actions">
+        <button class="mat-card-btn" title="Edit material" onclick="startEditMaterial('${m.id}')">✎</button>
+        <button class="mat-card-btn delete" title="Delete material" onclick="deleteMaterial('${m.id}')">×</button>
       </div>
-      <div class="mat-status-picker" id="mat-status-picker-${key}">
+      <div class="material-header">
+        <div class="material-name">${escapeHtml(m.name)}</div>
+        <button class="material-status ${statusDef.cls}" onclick="toggleMatStatusPicker('${statusKey}', this)">${statusDef.label}</button>
+      </div>
+      <div class="mat-status-picker" id="mat-status-picker-${statusKey}">
         ${MAT_STATUSES.map(s => `
-          <button class="mat-status-pill${s.key === activeStatus ? ' active' : ''}" data-status="${s.key}" onclick="setMaterialStatus('${key}', '${s.key}', this)">${s.label}</button>
+          <button class="mat-status-pill${s.key === activeStatus ? ' active' : ''}" data-status="${s.key}" onclick="setMaterialStatus('${statusKey}', '${s.key}', this)">${s.label}</button>
         `).join('')}
       </div>
-      <div class="material-spec">${m.spec}</div>
-      <div class="material-cost">${m.cost}</div>
-      <div class="material-suppliers">
-        ${m.suppliers.map(s => {
-          const hasPath = /\.(co\.uk|com|org|net)\//i.test(s);
-          const isDomain = /\.(co\.uk|com|org|net)$/i.test(s);
-          if (hasPath) {
-            const domain = s.split('/')[0];
-            return `<a href="https://${s}" target="_blank" rel="noopener" class="supplier-tag supplier-link">${domain}</a>`;
-          }
-          return isDomain
-            ? `<a href="https://${s}" target="_blank" rel="noopener" class="supplier-tag supplier-link">${s}</a>`
-            : `<span class="supplier-tag">${s}</span>`;
-        }).join('')}
-      </div>
-      <button id="mat-opts-btn-${key}" class="${optBtnClass}"
-        onclick="openMaterialOptions('${key}')">
+      <div class="material-spec">${escapeHtml(m.spec || '')}</div>
+      <div class="material-cost">${escapeHtml(m.cost || '')}</div>
+      <div class="material-suppliers"></div>
+      <button id="mat-opts-btn-${statusKey}" class="${optBtnClass}"
+        onclick="openMaterialOptions('${statusKey}')">
         ${optBtnInner}
       </button>
     `;
     container.appendChild(card);
   });
+
+  // Add "+ Add Material" button
+  const addRow = document.createElement('div');
+  addRow.className = 'mat-add-row';
+  addRow.innerHTML = `<button class="mat-add-btn" onclick="addMaterial()">+ Add Material</button>`;
+  container.appendChild(addRow);
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function startEditMaterial(id) {
+  const m = DB_STATE.materials[id];
+  if (!m) return;
+  const card = document.querySelector(`.material-card[data-mat-id="${id}"]`);
+  if (!card) return;
+
+  // Save original content so we can cancel
+  card._origInner = card.innerHTML;
+
+  card.innerHTML = `
+    <div class="mat-edit-form">
+      <div class="mat-edit-row">
+        <span class="mat-edit-label">Name</span>
+        <input class="mat-edit-input" id="mat-edit-name-${id}" type="text" value="${escapeHtml(m.name || '')}" placeholder="Material name">
+        <input class="mat-edit-colour" id="mat-edit-accent-${id}" type="color" value="${m.accent || '#8B9A8E'}" title="Accent colour">
+      </div>
+      <div class="mat-edit-row" style="align-items:flex-start;">
+        <span class="mat-edit-label" style="padding-top:6px;">Spec</span>
+        <textarea class="mat-edit-textarea" id="mat-edit-spec-${id}" placeholder="Specification…">${escapeHtml(m.spec || '')}</textarea>
+      </div>
+      <div class="mat-edit-row">
+        <span class="mat-edit-label">Cost</span>
+        <input class="mat-edit-input" id="mat-edit-cost-${id}" type="text" value="${escapeHtml(m.cost || '')}" placeholder="e.g. £400–£600">
+      </div>
+      <div class="mat-edit-actions">
+        <button class="mat-card-btn" title="Cancel" onclick="cancelEditMaterial('${id}')">✕</button>
+        <button class="mat-card-btn save" title="Save" onclick="saveEditMaterial('${id}')">✓</button>
+      </div>
+    </div>
+  `;
+  document.getElementById(`mat-edit-name-${id}`).focus();
+}
+
+function cancelEditMaterial(id) {
+  const card = document.querySelector(`.material-card[data-mat-id="${id}"]`);
+  if (!card || !card._origInner) return;
+  card.innerHTML = card._origInner;
+  card._origInner = null;
+}
+
+function saveEditMaterial(id) {
+  const nameEl   = document.getElementById(`mat-edit-name-${id}`);
+  const specEl   = document.getElementById(`mat-edit-spec-${id}`);
+  const costEl   = document.getElementById(`mat-edit-cost-${id}`);
+  const accentEl = document.getElementById(`mat-edit-accent-${id}`);
+  if (!nameEl) return;
+
+  const name   = nameEl.value.trim();
+  const spec   = specEl ? specEl.value.trim() : '';
+  const cost   = costEl ? costEl.value.trim() : '';
+  const accent = accentEl ? accentEl.value : '#8B9A8E';
+
+  if (!name) { nameEl.focus(); return; }
+
+  const existing = DB_STATE.materials[id] || {};
+  const updated = { ...existing, name, spec, cost, accent };
+  DB_STATE.materials[id] = updated;
+  db.ref('garden/materials/' + id).set(updated);
+  renderMaterials();
+}
+
+function deleteMaterial(id) {
+  const m = DB_STATE.materials[id];
+  if (!m) return;
+  if (!confirm(`Delete "${m.name}"?`)) return;
+  delete DB_STATE.materials[id];
+  db.ref('garden/materials/' + id).remove();
+  renderMaterials();
+}
+
+function addMaterial() {
+  const order = Object.values(DB_STATE.materials).length;
+  const newMat = { name: 'New Material', spec: '', cost: '', accent: '#8B9A8E', status: 'researching', order };
+  const ref = db.ref('garden/materials').push(newMat);
+  const id = ref.key;
+  DB_STATE.materials[id] = { ...newMat, id };
+  renderMaterials();
+  // Put new card immediately into edit mode
+  startEditMaterial(id);
 }
 
 /* ============================================================
@@ -3935,8 +4532,12 @@ function renderNextActions() {
   const el = document.getElementById('next-actions-panel');
   if (!el) return;
   const state = loadState();
-  const currentPhase = PHASES.find(p => p.status === 'current') || PHASES[0];
-  const tasks = currentPhase.tasks.map(t => ({ ...t, done: state[t.id] !== undefined ? state[t.id] : t.done }));
+  const phases = getPhasesArray();
+  if (phases.length === 0) { el.innerHTML = ''; return; }
+
+  const currentPhase = phases.find(p => p.status === 'current') || phases[0];
+  const rawTasks = getTasksArray(currentPhase);
+  const tasks = rawTasks.map(t => ({ ...t, done: state[t.id] !== undefined ? state[t.id] : (t.done || false) }));
   const remaining = tasks.filter(t => !t.done);
 
   if (remaining.length === 0) {
@@ -4330,15 +4931,19 @@ function hasTaskDetail(taskId) {
   return !!(d.notes.trim() || d.status || (d.options && d.options.length > 0));
 }
 
-function openTaskDetail(taskId, phaseIdx) {
+function openTaskDetail(taskId, phaseId) {
   drawerTaskId = taskId;
-  drawerPhaseIdx = phaseIdx;
+  drawerPhaseIdx = phaseId;
 
-  const phase = PHASES[phaseIdx];
-  const task = phase.tasks.find(t => t.id === taskId);
+  const phaseData = DB_STATE.phases[phaseId];
+  const task = phaseData && phaseData.tasks && phaseData.tasks[taskId]
+    ? phaseData.tasks[taskId]
+    : { text: taskId };
   const data = getTaskDetail(taskId);
 
-  document.getElementById('drawer-phase-label').textContent = `Phase ${phase.num} — ${phase.title}`;
+  document.getElementById('drawer-phase-label').textContent = phaseData
+    ? `Phase ${phaseData.num} — ${phaseData.title}`
+    : '';
   document.getElementById('drawer-task-title').textContent = task.text;
   document.getElementById('drawer-notes').value = data.notes || '';
 
@@ -4507,9 +5112,10 @@ let matModalKey = null;
 let matModalSaveTimers = {};
 
 function openMaterialOptions(key) {
-  const m = MATERIALS.find(m => escapeMaterialKey(m.name) === key);
+  // Look up name from dynamic DB_STATE.materials
+  const mEntry = Object.values(DB_STATE.materials).find(m => escapeMaterialKey(m.name) === key);
   matModalKey = key;
-  document.getElementById('mat-modal-eyebrow').textContent = (m ? m.name : key) + ' — Options';
+  document.getElementById('mat-modal-eyebrow').textContent = (mEntry ? mEntry.name : key) + ' — Options';
   document.getElementById('mat-modal-add-btn').onclick = () => addModalOption(key);
   renderModalOptions(key);
   document.getElementById('mat-options-backdrop').classList.add('open');
@@ -4830,6 +5436,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     DB_STATE.budgetItems = data.budgetItems;
   }
 
+  // Seed materials from defaults if Firebase has none
+  if (!data.materials) {
+    const matSeed = {};
+    DEFAULT_MATERIALS.forEach((item, i) => {
+      const id = 'mat_' + String(i).padStart(3, '0');
+      matSeed[id] = { name: item.name, spec: item.spec, cost: item.cost, status: item.status, accent: item.accent, order: i };
+    });
+    db.ref('garden/materials').set(matSeed);
+    DB_STATE.materials = matSeed;
+  } else {
+    DB_STATE.materials = data.materials;
+  }
+
+  // Seed phases from defaults if Firebase has none
+  if (!data.phases || Object.keys(data.phases).length === 0) {
+    const phaseSeed = {};
+    DEFAULT_PHASES.forEach((phase, i) => {
+      const tasksSeed = {};
+      phase.tasks.forEach((t, j) => {
+        tasksSeed[t.id] = { text: t.text, done: t.done, order: j };
+      });
+      phaseSeed[phase.id] = {
+        num: phase.num, title: phase.title, date: phase.date,
+        status: phase.status, order: i, tasks: tasksSeed
+      };
+    });
+    db.ref('garden/phases').set(phaseSeed);
+    DB_STATE.phases = phaseSeed;
+  } else {
+    DB_STATE.phases = data.phases;
+  }
+
   DB_STATE.loaded = true;
 
   renderPhases();
@@ -4862,6 +5500,13 @@ function setupRealtimeSync() {
     return el && el.contains(document.activeElement);
   };
 
+  db.ref('garden/phases').on('value', snap => {
+    const val = snap.val() || {};
+    if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.phases)) return;
+    DB_STATE.phases = val;
+    if (!hasFocus('phases-container')) { renderPhases(); renderNextActions(); }
+  });
+
   db.ref('garden/tasks').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.tasks)) return;
@@ -4884,6 +5529,13 @@ function setupRealtimeSync() {
     if (!drawer || !drawer.classList.contains('open')) {
       if (!hasFocus('phases-container')) renderPhases();
     }
+  });
+
+  db.ref('garden/materials').on('value', snap => {
+    const val = snap.val() || {};
+    if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.materials)) return;
+    DB_STATE.materials = val;
+    if (!hasFocus('materials-container')) renderMaterials();
   });
 
   db.ref('garden/materialStatus').on('value', snap => {
