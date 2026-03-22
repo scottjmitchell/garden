@@ -2322,6 +2322,21 @@ footer::before {
   .task-drawer { width: 100vw; border-left: none; }
   .task-detail-btn { opacity: 1; }
 }
+
+/* ============================================================
+   REDUCED MOTION
+============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .status-badge .pulse::after { animation: none; }
+  .fade-in, .fade-in-stagger {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .phase-tasks { transition: none; }
+  #mat-options-modal, #mat-options-backdrop { transition: none; }
+  .mat-status-picker { transition: none; }
+}
 </style>
 </head>
 <body>
