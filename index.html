@@ -225,7 +225,26 @@ nav .nav-inner {
 }
 
 @media (max-width: 768px) {
-  .nav-links { display: none; }
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 52px;
+    left: 0;
+    right: 0;
+    background: rgba(17, 20, 16, 0.97);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease, padding 0.25s ease;
+  }
+  .nav-links.open {
+    max-height: 300px;
+    padding: 12px 24px;
+  }
+  .nav-links a { padding: 10px 0; }
   .hamburger { display: flex; }
 }
 
@@ -3924,20 +3943,7 @@ function updateLastUpdated() {
    NAV MENU (MOBILE)
 ============================================================ */
 function toggleMenu(btn) {
-  const links = document.querySelector('.nav-links');
-  const isOpen = links.style.display === 'flex';
-  links.style.display = isOpen ? 'none' : 'flex';
-  links.style.position = 'fixed';
-  links.style.top = '56px';
-  links.style.left = '0';
-  links.style.right = '0';
-  links.style.flexDirection = 'column';
-  links.style.background = 'rgba(28,31,26,0.98)';
-  links.style.padding = '20px 24px';
-  links.style.gap = '20px';
-  links.style.borderBottom = '1px solid rgba(139,154,142,0.2)';
-  links.style.backdropFilter = 'blur(12px)';
-  links.style.zIndex = '999';
+  document.querySelector('.nav-links').classList.toggle('open');
 }
 
 /* ============================================================
@@ -4322,8 +4328,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Close mobile menu on link click
   document.querySelectorAll('.nav-links a').forEach(a => {
     a.addEventListener('click', () => {
-      const links = document.querySelector('.nav-links');
-      if (window.innerWidth <= 768) links.style.display = 'none';
+      document.querySelector('.nav-links').classList.remove('open');
     });
   });
 });
