@@ -4613,6 +4613,26 @@ function loadPhotos() {
   });
 }
 
+function compressImage(file, maxPx = 1920, quality = 0.82) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > maxPx || height > maxPx) {
+        if (width >= height) { height = Math.round(height * maxPx / width); width = maxPx; }
+        else { width = Math.round(width * maxPx / height); height = maxPx; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      canvas.toBlob(resolve, 'image/jpeg', quality);
+    };
+    img.src = url;
+  });
+}
+
 async function handlePhotoUpload(slotId, input) {
   const file = input.files[0];
   if (!file) return;
@@ -4625,9 +4645,9 @@ async function handlePhotoUpload(slotId, input) {
   setPhotoCard(slotId, localUrl);
 
   try {
-    const ext = file.name.split('.').pop().toLowerCase() || 'jpg';
-    const ref = storage.ref('photos/' + slotId + '.' + ext);
-    await ref.put(file);
+    const blob = await compressImage(file);
+    const ref = storage.ref('photos/' + slotId + '.jpg');
+    await ref.put(blob, { contentType: 'image/jpeg' });
     const downloadUrl = await ref.getDownloadURL();
     DB_STATE.photos[slotId] = downloadUrl;
     db.ref('garden/photos/' + slotId).set(downloadUrl);
