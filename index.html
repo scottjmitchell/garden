@@ -699,13 +699,17 @@ nav .nav-inner {
 }
 
 .phase-tasks {
-  display: none;
   padding: 0 28px 24px;
   border-top: 1px solid var(--border);
+  overflow: hidden;
+  max-height: 0;
+  border-top-width: 0;
+  transition: max-height 0.3s ease, border-top-width 0.3s ease;
 }
 
 .phase-card.expanded .phase-tasks {
-  display: block;
+  max-height: 2000px;
+  border-top-width: 1px;
 }
 
 .task-list {
