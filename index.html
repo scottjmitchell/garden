@@ -3600,7 +3600,7 @@ function renderMaterials() {
         }).join('')}
       </div>
       <button id="mat-opts-btn-${key}" class="${optBtnClass}"
-        onclick="openMaterialOptions('${key}', ${JSON.stringify(m.name)})">
+        onclick="openMaterialOptions('${key}')">
         ${optBtnInner}
       </button>
     `;
@@ -4190,9 +4190,10 @@ function saveMaterialOptions(key, options) {
 let matModalKey = null;
 let matModalSaveTimers = {};
 
-function openMaterialOptions(key, name) {
+function openMaterialOptions(key) {
+  const m = MATERIALS.find(m => escapeMaterialKey(m.name) === key);
   matModalKey = key;
-  document.getElementById('mat-modal-eyebrow').textContent = name + ' — Options';
+  document.getElementById('mat-modal-eyebrow').textContent = (m ? m.name : key) + ' — Options';
   document.getElementById('mat-modal-add-btn').onclick = () => addModalOption(key);
   renderModalOptions(key);
   document.getElementById('mat-options-backdrop').classList.add('open');
