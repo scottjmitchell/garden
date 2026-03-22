@@ -4615,7 +4615,7 @@ function loadPhotos() {
 }
 
 function compressImage(file, maxPx = 1920, quality = 0.82) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
@@ -4630,8 +4630,7 @@ function compressImage(file, maxPx = 1920, quality = 0.82) {
       canvas.getContext('2d').drawImage(img, 0, 0, width, height);
       canvas.toBlob(resolve, 'image/jpeg', quality);
     };
-    // Fallback: browser can't decode format (e.g. HEIC on Chrome) — upload original
-    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('undecodable')); };
     img.src = url;
   });
 }
@@ -4656,7 +4655,15 @@ async function handlePhotoUpload(slotId, input) {
     db.ref('garden/photos/' + slotId).set(downloadUrl);
     setPhotoCard(slotId, downloadUrl);
   } catch(e) {
-    console.error('Photo upload failed:', e);
+    if (e.message === 'undecodable') {
+      alert('This browser can\'t process HEIC photos. Please use Safari on iPhone or Mac, or convert the photo to JPEG first.');
+      // Revert the card preview
+      const prevUrl = DB_STATE.photos[slotId];
+      if (prevUrl) setPhotoCard(slotId, prevUrl);
+      else { card.classList.remove('has-photo'); card.querySelector('img')?.remove(); }
+    } else {
+      console.error('Photo upload failed:', e);
+    }
   } finally {
     card.classList.remove('uploading');
     input.value = '';
