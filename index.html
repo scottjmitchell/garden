@@ -3484,6 +3484,15 @@ function renderMaterials() {
     const activeStatus = savedStatus || m.status;
     const statusDef = MAT_STATUSES.find(s => s.key === activeStatus) || MAT_STATUSES[0];
 
+    const matKey = escapeMaterialKey(m.name);
+    const matOpts = getMaterialOptions(matKey);
+    const matHasFav = matOpts.some(o => o.optionStatus === 'favourite');
+    const matCount = matOpts.length;
+    const optBtnClass = matHasFav ? 'mat-options-btn has-favourite' : 'mat-options-btn';
+    const optBtnInner = matHasFav
+      ? `<span class="mat-options-dot"></span> Options (${matCount})`
+      : matCount > 0 ? `Options (${matCount})` : `Options`;
+
     const card = document.createElement('div');
     card.className = 'material-card';
     card.style.setProperty('--accent-color', m.accent);
@@ -3512,21 +3521,10 @@ function renderMaterials() {
             : `<span class="supplier-tag">${s}</span>`;
         }).join('')}
       </div>
-      <button class="mat-options-toggle" onclick="toggleMaterialOptions('${escapeMaterialKey(m.name)}', this)">
-        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
-          <line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/>
-        </svg>
-        Options
+      <button id="mat-opts-btn-${matKey}" class="${optBtnClass}"
+        onclick="openMaterialOptions('${matKey}', ${JSON.stringify(m.name)})">
+        ${optBtnInner}
       </button>
-      <div class="mat-options-panel" id="mat-opts-${escapeMaterialKey(m.name)}" style="display:none;">
-        <div class="mat-options-list" id="mat-opts-list-${escapeMaterialKey(m.name)}"></div>
-        <button class="btn-add-option" style="margin-top:8px;" onclick="addMaterialOption('${escapeMaterialKey(m.name)}')">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
-            <line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/>
-          </svg>
-          Add option
-        </button>
-      </div>
     `;
     container.appendChild(card);
   });
@@ -4226,92 +4224,22 @@ function updateModalOption(key, idx, field, value) {
   }, 500);
 }
 
-function toggleMaterialOptions(key, btn) {
-  const panel = document.getElementById(`mat-opts-${key}`);
-  if (!panel) return;
-  const open = panel.style.display !== 'none';
-  panel.style.display = open ? 'none' : 'block';
-  btn.classList.toggle('open', !open);
-  if (!open) renderMaterialOptions(key);
-}
-
-let matSaveTimers = {};
-
-function renderMaterialOptions(key) {
-  const list = document.getElementById(`mat-opts-list-${key}`);
-  if (!list) return;
+function updateMaterialCardBtn(key) {
+  const btn = document.getElementById(`mat-opts-btn-${key}`);
+  if (!btn) return;
   const options = getMaterialOptions(key);
-  if (!options.length) { list.innerHTML = ''; return; }
-  list.innerHTML = options.map((opt, idx) => `
-    <div class="option-card${opt.selected ? ' selected' : ''}" data-opt-idx="${idx}">
-      <div class="option-card-top">
-        <input class="opt-input opt-label" type="text" placeholder="Option name…"
-          value="${escHtml(opt.label || '')}"
-          oninput="updateMaterialOption('${key}', ${idx}, 'label', this.value)">
-        <div class="option-card-actions">
-          <button class="option-select-btn${opt.selected ? ' selected' : ''}"
-            onclick="toggleMaterialOptionSelected('${key}', ${idx})"
-            title="${opt.selected ? 'Unselect' : 'Mark as chosen'}">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </button>
-          <button class="option-delete-btn" onclick="deleteMaterialOption('${key}', ${idx})" title="Remove">
-            <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
-              <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <div class="opt-row-meta">
-        <input class="opt-input opt-price" type="text" placeholder="Price…"
-          value="${escHtml(opt.price || '')}"
-          oninput="updateMaterialOption('${key}', ${idx}, 'price', this.value)">
-        <input class="opt-input opt-url" type="url" placeholder="Link (https://…)"
-          value="${escHtml(opt.url || '')}"
-          oninput="updateMaterialOption('${key}', ${idx}, 'url', this.value)">
-      </div>
-      ${opt.url ? `<a href="${escHtml(opt.url)}" target="_blank" rel="noopener" class="opt-url-preview">${escHtml(opt.url.replace(/^https?:\/\//, '').split('/')[0])}</a>` : ''}
-      <input class="opt-input opt-notes" type="text" placeholder="Notes…"
-        value="${escHtml(opt.notes || '')}"
-        oninput="updateMaterialOption('${key}', ${idx}, 'notes', this.value)">
-    </div>
-  `).join('');
-}
-
-function addMaterialOption(key) {
-  const options = getMaterialOptions(key);
-  options.unshift({ label: '', url: '', price: '', notes: '', selected: false });
-  saveMaterialOptions(key, options);
-  renderMaterialOptions(key);
-  const first = document.querySelector(`#mat-opts-list-${key} .opt-label`);
-  if (first) first.focus();
-}
-
-function deleteMaterialOption(key, idx) {
-  const options = getMaterialOptions(key);
-  options.splice(idx, 1);
-  saveMaterialOptions(key, options);
-  renderMaterialOptions(key);
-}
-
-function toggleMaterialOptionSelected(key, idx) {
-  const options = getMaterialOptions(key);
-  options[idx].selected = !options[idx].selected;
-  saveMaterialOptions(key, options);
-  renderMaterialOptions(key);
-}
-
-function updateMaterialOption(key, idx, field, value) {
-  clearTimeout(matSaveTimers[key]);
-  matSaveTimers[key] = setTimeout(() => {
-    const options = getMaterialOptions(key);
-    if (options[idx]) {
-      options[idx][field] = value;
-      saveMaterialOptions(key, options);
-      if (field === 'url') renderMaterialOptions(key);
-    }
-  }, 500);
+  const hasFavourite = options.some(o => o.optionStatus === 'favourite');
+  const count = options.length;
+  if (hasFavourite) {
+    btn.className = 'mat-options-btn has-favourite';
+    btn.innerHTML = `<span class="mat-options-dot"></span> Options (${count})`;
+  } else if (count > 0) {
+    btn.className = 'mat-options-btn';
+    btn.innerHTML = `Options (${count})`;
+  } else {
+    btn.className = 'mat-options-btn';
+    btn.innerHTML = `Options`;
+  }
 }
 
 function toggleMatStatusPicker(key, btn) {
