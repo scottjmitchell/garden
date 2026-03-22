@@ -1722,7 +1722,7 @@ nav .nav-inner {
 
 .budget-row {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr 90px 90px 130px 56px;
   gap: 16px;
   align-items: center;
   padding: 13px 24px;
@@ -1871,7 +1871,7 @@ footer::before {
   .container { padding: 0 16px; }
   .phase-header { padding: 18px 16px; gap: 12px; }
   .phase-tasks { padding: 0 16px 18px; }
-  .budget-row:not(.editing) { grid-template-columns: 1fr auto auto !important; }
+  .budget-row:not(.editing) { grid-template-columns: 1fr 90px 130px !important; }
   .budget-low, .budget-row-actions { display: none; }
   .phases-grid { padding-left: 44px; }
   .phases-grid::before { left: 14px; }
@@ -2475,6 +2475,72 @@ footer::before {
   .phase-tasks { transition: none; }
   #mat-options-modal, #mat-options-backdrop { transition: none; }
   .mat-status-picker { transition: none; }
+  #lightbox-backdrop { transition: none !important; }
+  #lightbox-img { transition: none !important; }
+}
+
+/* ============================================================
+   LIGHTBOX
+============================================================ */
+#lightbox-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(15, 15, 13, 0.88);
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition);
+  cursor: zoom-out;
+}
+#lightbox-backdrop.is-open {
+  display: flex;
+  opacity: 1;
+}
+/* Two-step: display flex first, then trigger opacity on next frame */
+#lightbox-backdrop.is-visible {
+  opacity: 1;
+}
+#lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+  transform: scale(0.94);
+  transition: transform var(--transition), opacity var(--transition);
+  opacity: 0;
+  cursor: default;
+}
+#lightbox-backdrop.is-visible #lightbox-img {
+  transform: scale(1);
+  opacity: 1;
+}
+#lightbox-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: none;
+  border: 1.5px solid rgba(200,146,42,0.5);
+  color: var(--amber);
+  font-size: 22px;
+  line-height: 1;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition), border-color var(--transition);
+  z-index: 9001;
+}
+#lightbox-close:hover,
+#lightbox-close:focus-visible {
+  background: rgba(200,146,42,0.15);
+  border-color: var(--amber);
+  outline: none;
 }
 </style>
 </head>
@@ -3046,7 +3112,7 @@ footer::before {
       </div>
 
       <div class="budget-table" style="grid-column: 1 / -1;">
-        <div class="budget-row header" style="grid-template-columns: 1fr auto auto auto auto;">
+        <div class="budget-row header">
           <span>Item</span>
           <span style="text-align:right">Low Est.</span>
           <span style="text-align:right">High Est.</span>
@@ -3166,6 +3232,7 @@ const DB_STATE = {
   taskDetails: {},
   budgetActuals: {},
   budgetItems: {},
+  materials: {},
   photos: {},
   loaded: false,
 };
@@ -3927,7 +3994,7 @@ function buildBudgetRow(item) {
   const row = document.createElement('div');
   row.className = 'budget-row';
   row.dataset.id = item.id;
-  row.style.gridTemplateColumns = '1fr auto auto auto auto';
+  // grid-template-columns inherited from .budget-row CSS class
 
   const name = document.createElement('span');
   name.className = 'budget-item-name';
@@ -4018,7 +4085,7 @@ function buildTotalRow(items) {
 
   const row = document.createElement('div');
   row.className = 'budget-row';
-  row.style.cssText = 'grid-template-columns: 1fr auto auto auto auto; border-top: 1px solid rgba(200,146,42,0.3); background: rgba(200,146,42,0.04);';
+  row.style.cssText = 'border-top: 1px solid rgba(200,146,42,0.3); background: rgba(200,146,42,0.04);';
 
   const name = document.createElement('span');
   name.className = 'budget-item-name';
@@ -4671,6 +4738,70 @@ async function handlePhotoUpload(slotId, input) {
 }
 
 /* ============================================================
+   LIGHTBOX
+============================================================ */
+(function () {
+  const backdrop = document.getElementById('lightbox-backdrop');
+  const img      = document.getElementById('lightbox-img');
+  const closeBtn = document.getElementById('lightbox-close');
+  let lastFocus  = null;
+
+  function openLightbox(src, alt) {
+    lastFocus = document.activeElement;
+    img.src = src;
+    img.alt = alt || '';
+    backdrop.style.display = 'flex';
+    // Force reflow so transition fires
+    backdrop.getBoundingClientRect();
+    backdrop.classList.add('is-open', 'is-visible');
+    closeBtn.focus();
+    document.addEventListener('keydown', onKeyDown);
+  }
+
+  function closeLightbox() {
+    backdrop.classList.remove('is-visible');
+    function onEnd() {
+      backdrop.style.display = 'none';
+      backdrop.classList.remove('is-open');
+      img.src = '';
+      backdrop.removeEventListener('transitionend', onEnd);
+    }
+    backdrop.addEventListener('transitionend', onEnd);
+    document.removeEventListener('keydown', onKeyDown);
+    if (lastFocus) { lastFocus.focus(); lastFocus = null; }
+  }
+
+  function onKeyDown(e) {
+    if (e.key === 'Escape') closeLightbox();
+    // Trap Tab inside the lightbox
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      closeBtn.focus();
+    }
+  }
+
+  backdrop.addEventListener('click', (e) => {
+    if (e.target !== img) closeLightbox();
+  });
+  closeBtn.addEventListener('click', closeLightbox);
+
+  window.initLightbox = function () {
+    document.querySelectorAll('img').forEach((el) => {
+      if (el === img) return;                    // skip the lightbox img itself
+      if (el.closest('svg')) return;             // skip SVG-embedded images
+      if (el.id === 'lightbox-img') return;
+      if (el._lightboxBound) return;             // skip already-wired images
+      el._lightboxBound = true;
+      el.style.cursor = 'zoom-in';
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openLightbox(el.src, el.alt);
+      });
+    });
+  };
+})();
+
+/* ============================================================
    INIT
 ============================================================ */
 document.addEventListener('DOMContentLoaded', async () => {
@@ -4712,6 +4843,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderNextActions();
   updateLastUpdated();
   loadPhotos();
+  initLightbox();
 
   // Real-time sync — picks up changes made by the other person
   setupRealtimeSync();
@@ -4803,6 +4935,7 @@ function setupRealtimeSync() {
     if (JSON.stringify(val) === JSON.stringify(DB_STATE.photos)) return;
     DB_STATE.photos = val;
     loadPhotos();
+    initLightbox();
   });
 }
 
@@ -4835,6 +4968,12 @@ window.addEventListener('scroll', () => {
     </button>
     <span class="mat-modal-autosave">Saves automatically</span>
   </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox-backdrop" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button id="lightbox-close" aria-label="Close image viewer">×</button>
+  <img id="lightbox-img" src="" alt="">
 </div>
 </body>
 </html>
