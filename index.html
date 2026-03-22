@@ -4144,6 +4144,88 @@ function closeMaterialOptions() {
   document.getElementById('mat-options-modal').classList.remove('open');
 }
 
+function renderModalOptions(key) {
+  const body = document.getElementById('mat-modal-body');
+  if (!body) return;
+  const options = getMaterialOptions(key);
+  if (!options.length) {
+    body.innerHTML = '<p style="font-family:var(--font-sans);font-size:12px;color:var(--text-dim);text-align:center;padding:32px 0;">No options yet — add one below.</p>';
+    return;
+  }
+  body.innerHTML = options.map((opt, idx) => {
+    const st = opt.optionStatus || null;
+    return `
+      <div class="mat-opt-card${st ? ' status-' + st : ''}" data-opt-idx="${idx}">
+        <div class="mat-opt-row-top">
+          <input class="mat-opt-name" type="text" placeholder="Option name…"
+            value="${escHtml(opt.label || '')}"
+            oninput="updateModalOption('${key}', ${idx}, 'label', this.value)">
+          <div class="mat-opt-chips">
+            <button class="mat-opt-chip${st === 'considering' ? ' chip-considering' : ''}"
+              onclick="toggleModalOptionStatus('${key}', ${idx}, 'considering')">Considering</button>
+            <button class="mat-opt-chip${st === 'favourite' ? ' chip-favourite' : ''}"
+              onclick="toggleModalOptionStatus('${key}', ${idx}, 'favourite')">Favourite</button>
+            <button class="mat-opt-chip${st === 'rejected' ? ' chip-rejected' : ''}"
+              onclick="toggleModalOptionStatus('${key}', ${idx}, 'rejected')">Rejected</button>
+          </div>
+          <button class="mat-opt-delete" onclick="deleteModalOption('${key}', ${idx})" title="Remove">
+            <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
+              <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+            </svg>
+          </button>
+        </div>
+        <div class="mat-opt-row-fields">
+          <input class="mat-opt-field" type="text" placeholder="URL…"
+            value="${escHtml(opt.url || '')}"
+            oninput="updateModalOption('${key}', ${idx}, 'url', this.value)">
+          <input class="mat-opt-field" type="text" placeholder="Price…"
+            value="${escHtml(opt.price || '')}"
+            oninput="updateModalOption('${key}', ${idx}, 'price', this.value)">
+        </div>
+        <textarea class="mat-opt-notes" placeholder="Notes…"
+          oninput="updateModalOption('${key}', ${idx}, 'notes', this.value)">${escHtml(opt.notes || '')}</textarea>
+      </div>`;
+  }).join('');
+}
+
+function addModalOption(key) {
+  const options = getMaterialOptions(key);
+  options.unshift({ label: '', url: '', price: '', notes: '', optionStatus: null });
+  saveMaterialOptions(key, options);
+  renderModalOptions(key);
+  updateMaterialCardBtn(key);
+  const first = document.querySelector('#mat-modal-body .mat-opt-name');
+  if (first) first.focus();
+}
+
+function deleteModalOption(key, idx) {
+  const options = getMaterialOptions(key);
+  options.splice(idx, 1);
+  saveMaterialOptions(key, options);
+  renderModalOptions(key);
+  updateMaterialCardBtn(key);
+}
+
+function toggleModalOptionStatus(key, idx, status) {
+  const options = getMaterialOptions(key);
+  if (!options[idx]) return;
+  options[idx].optionStatus = options[idx].optionStatus === status ? null : status;
+  saveMaterialOptions(key, options);
+  renderModalOptions(key);
+  updateMaterialCardBtn(key);
+}
+
+function updateModalOption(key, idx, field, value) {
+  clearTimeout(matModalSaveTimers[key + idx]);
+  matModalSaveTimers[key + idx] = setTimeout(() => {
+    const options = getMaterialOptions(key);
+    if (options[idx]) {
+      options[idx][field] = value;
+      saveMaterialOptions(key, options);
+    }
+  }, 500);
+}
+
 function toggleMaterialOptions(key, btn) {
   const panel = document.getElementById(`mat-opts-${key}`);
   if (!panel) return;
