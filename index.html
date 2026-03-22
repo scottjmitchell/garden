@@ -4629,6 +4629,8 @@ function compressImage(file, maxPx = 1920, quality = 0.82) {
       canvas.getContext('2d').drawImage(img, 0, 0, width, height);
       canvas.toBlob(resolve, 'image/jpeg', quality);
     };
+    // Fallback: browser can't decode format (e.g. HEIC on Chrome) — upload original
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
     img.src = url;
   });
 }
