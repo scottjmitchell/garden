@@ -4021,5 +4021,31 @@ window.addEventListener('scroll', () => {
   document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 40);
 });
 </script>
+
+<!-- Material Options Modal -->
+<div id="mat-options-backdrop" onclick="closeMaterialOptions()"></div>
+<div id="mat-options-modal" role="dialog" aria-modal="true" aria-labelledby="mat-modal-title">
+  <div class="mat-modal-header">
+    <div>
+      <div class="mat-modal-eyebrow" id="mat-modal-eyebrow"></div>
+      <div class="mat-modal-title" id="mat-modal-title">Compare choices</div>
+    </div>
+    <button class="mat-modal-close" onclick="closeMaterialOptions()" title="Close" aria-label="Close options">
+      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+      </svg>
+    </button>
+  </div>
+  <div class="mat-modal-body" id="mat-modal-body"></div>
+  <div class="mat-modal-footer">
+    <button class="mat-modal-add-btn" id="mat-modal-add-btn">
+      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/>
+      </svg>
+      Add option
+    </button>
+    <span class="mat-modal-autosave">Saves automatically</span>
+  </div>
+</div>
 </body>
 </html>
