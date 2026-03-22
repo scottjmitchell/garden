@@ -3484,8 +3484,7 @@ function renderMaterials() {
     const activeStatus = savedStatus || m.status;
     const statusDef = MAT_STATUSES.find(s => s.key === activeStatus) || MAT_STATUSES[0];
 
-    const matKey = escapeMaterialKey(m.name);
-    const matOpts = getMaterialOptions(matKey);
+    const matOpts = getMaterialOptions(key);
     const matHasFav = matOpts.some(o => o.optionStatus === 'favourite');
     const matCount = matOpts.length;
     const optBtnClass = matHasFav ? 'mat-options-btn has-favourite' : 'mat-options-btn';
@@ -3521,8 +3520,8 @@ function renderMaterials() {
             : `<span class="supplier-tag">${s}</span>`;
         }).join('')}
       </div>
-      <button id="mat-opts-btn-${matKey}" class="${optBtnClass}"
-        onclick="openMaterialOptions('${matKey}', ${JSON.stringify(m.name)})">
+      <button id="mat-opts-btn-${key}" class="${optBtnClass}"
+        onclick="openMaterialOptions('${key}', ${JSON.stringify(m.name)})">
         ${optBtnInner}
       </button>
     `;
@@ -4092,8 +4091,8 @@ function updateDrawerOption(idx, field, value) {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeTaskDrawer();
   if (e.key === 'Escape' && matModalKey) closeMaterialOptions();
+  else if (e.key === 'Escape') closeTaskDrawer();
 });
 
 /* ============================================================
@@ -4214,8 +4213,8 @@ function toggleModalOptionStatus(key, idx, status) {
 }
 
 function updateModalOption(key, idx, field, value) {
-  clearTimeout(matModalSaveTimers[key + idx]);
-  matModalSaveTimers[key + idx] = setTimeout(() => {
+  clearTimeout(matModalSaveTimers[key + '-' + idx]);
+  matModalSaveTimers[key + '-' + idx] = setTimeout(() => {
     const options = getMaterialOptions(key);
     if (options[idx]) {
       options[idx][field] = value;
