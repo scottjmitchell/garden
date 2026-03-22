@@ -3051,7 +3051,43 @@ footer::before {
   </div>
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+
 <script>
+/* ============================================================
+   FIREBASE INIT
+============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyC6LRlcfKhDDsXiehPpxqAwjbP3gIpCPJY",
+  authDomain: "mitchell-garden.firebaseapp.com",
+  projectId: "mitchell-garden",
+  storageBucket: "mitchell-garden.firebasestorage.app",
+  messagingSenderId: "1042860428480",
+  appId: "1:1042860428480:web:f5ca49918a11aa447db125",
+  databaseURL: "https://mitchell-garden-default-rtdb.europe-west1.firebasedatabase.app"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// In-memory mirror of Firebase state — all reads use this, all writes go here + Firebase
+const DB_STATE = {
+  tasks: {},
+  tasksUpdated: null,
+  notes: {},
+  materialStatus: {},
+  materialOpts: {},
+  taskDetails: {},
+  budgetActuals: {},
+  loaded: false,
+};
+
+// Sanitise strings for use as Firebase keys (no . # $ [ ] or whitespace)
+function fbKey(s) {
+  return s.replace(/[.#$[\]\s]+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+}
+
 /* ============================================================
    DATA
 ============================================================ */
@@ -3308,20 +3344,19 @@ const ZONE_INFO = {
 };
 
 /* ============================================================
-   LOCALSTORAGE
+   STATE
 ============================================================ */
-const STORAGE_KEY = 'garden-tasks';
 const expandedPhases = new Set();
 
 function loadState() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  } catch(e) { return {}; }
+  return DB_STATE.tasks;
 }
 
 function saveState(state) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  localStorage.setItem('garden-tasks-updated', new Date().toISOString());
+  DB_STATE.tasks = state;
+  DB_STATE.tasksUpdated = new Date().toISOString();
+  db.ref('garden/tasks').set(state);
+  db.ref('garden/tasksUpdated').set(DB_STATE.tasksUpdated);
 }
 
 /* ============================================================
@@ -3356,7 +3391,7 @@ function renderPhases() {
     const badgeLabel = phase.status === 'current' ? 'Current' :
                        (pct === 100 ? 'Complete' : 'Upcoming');
 
-    const savedNote = localStorage.getItem(`garden-note-${phase.id}`) || '';
+    const savedNote = DB_STATE.notes[phase.id] || '';
     const hasNote = savedNote.trim().length > 0;
 
     card.innerHTML = `
@@ -3491,11 +3526,8 @@ function toggleTask(taskId, phaseIdx) {
 function savePhaseNote(textarea) {
   const phaseId = textarea.dataset.phaseId;
   const val = textarea.value;
-  if (val.trim()) {
-    localStorage.setItem(`garden-note-${phaseId}`, val);
-  } else {
-    localStorage.removeItem(`garden-note-${phaseId}`);
-  }
+  DB_STATE.notes[phaseId] = val.trim() ? val : '';
+  db.ref('garden/notes/' + phaseId).set(val.trim() ? val : null);
   // Update note dot on header
   const card = textarea.closest('.phase-card');
   if (card) {
@@ -3527,7 +3559,7 @@ function renderMaterials() {
 
   MATERIALS.forEach(m => {
     const key = escapeMaterialKey(m.name);
-    const savedStatus = localStorage.getItem(`garden-material-status-${key}`);
+    const savedStatus = DB_STATE.materialStatus[key];
     const activeStatus = savedStatus || m.status;
     const statusDef = MAT_STATUSES.find(s => s.key === activeStatus) || MAT_STATUSES[0];
 
@@ -3826,8 +3858,9 @@ function initBudgetActuals() {
     variance.style.display = 'none';
 
     const mid = midMap[name];
-    const savedVal = localStorage.getItem(`garden-budget-${name}`) || '';
+    const savedVal = DB_STATE.budgetActuals[fbKey(name)] || '';
     if (savedVal) { input.value = savedVal; }
+    input._updateVariance = updateVariance;
 
     function updateVariance() {
       if (!input.value.trim() || !mid) { variance.style.display = 'none'; return; }
@@ -3843,7 +3876,9 @@ function initBudgetActuals() {
     if (savedVal) updateVariance();
 
     input.addEventListener('input', () => {
-      localStorage.setItem(`garden-budget-${name}`, input.value);
+      const k = fbKey(name);
+      DB_STATE.budgetActuals[k] = input.value;
+      db.ref('garden/budgetActuals/' + k).set(input.value || null);
       updateVariance();
       updateActualTotal();
     });
@@ -3929,7 +3964,7 @@ function initScrollAnimations() {
    LAST UPDATED
 ============================================================ */
 function updateLastUpdated() {
-  const ts = localStorage.getItem('garden-tasks-updated');
+  const ts = DB_STATE.tasksUpdated;
   const el = document.getElementById('last-updated');
   if (ts) {
     const d = new Date(ts);
@@ -3960,14 +3995,12 @@ function escHtml(s) {
 }
 
 function getTaskDetail(taskId) {
-  try {
-    return JSON.parse(localStorage.getItem(`garden-task-detail-${taskId}`) || 'null')
-      || { status: null, notes: '', options: [] };
-  } catch(e) { return { status: null, notes: '', options: [] }; }
+  return DB_STATE.taskDetails[taskId] || { status: null, notes: '', options: [] };
 }
 
 function persistTaskDetail(taskId, data) {
-  localStorage.setItem(`garden-task-detail-${taskId}`, JSON.stringify(data));
+  DB_STATE.taskDetails[taskId] = data;
+  db.ref('garden/taskDetails/' + taskId).set(data);
   // Update the indicator button on the task item
   const btn = document.querySelector(`.task-item[data-id="${taskId}"] .task-detail-btn`);
   if (btn) {
@@ -4146,15 +4179,12 @@ function migrateMaterialOptions(options) {
 }
 
 function getMaterialOptions(key) {
-  try {
-    const raw = JSON.parse(localStorage.getItem(`garden-material-opts-${key}`)) || [];
-    return migrateMaterialOptions(raw);
-  }
-  catch { return []; }
+  return migrateMaterialOptions(DB_STATE.materialOpts[key] || []);
 }
 
 function saveMaterialOptions(key, options) {
-  localStorage.setItem(`garden-material-opts-${key}`, JSON.stringify(options));
+  DB_STATE.materialOpts[key] = options;
+  db.ref('garden/materialOpts/' + key).set(options.length ? options : null);
 }
 
 let matModalKey = null;
@@ -4288,7 +4318,8 @@ function setMaterialStatus(key, statusKey, pill) {
   const MAT_STATUS_LABELS = { 'researching': 'Researching', 'to-order': 'To Order', 'ordered': 'Ordered', 'to-do': 'To Do' };
   const MAT_STATUS_CLS    = { 'researching': 'status-researching', 'to-order': 'status-to-order', 'ordered': 'status-ordered', 'to-do': 'status-to-do' };
 
-  localStorage.setItem(`garden-material-status-${key}`, statusKey);
+  DB_STATE.materialStatus[key] = statusKey;
+  db.ref('garden/materialStatus/' + key).set(statusKey);
 
   // Update badge
   const picker = pill.closest('.mat-status-picker');
@@ -4312,7 +4343,19 @@ document.addEventListener('click', (e) => {
 /* ============================================================
    INIT
 ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Load all state from Firebase before first render
+  const snap = await db.ref('garden').once('value');
+  const data = snap.val() || {};
+  DB_STATE.tasks          = data.tasks          || {};
+  DB_STATE.tasksUpdated   = data.tasksUpdated   || null;
+  DB_STATE.notes          = data.notes          || {};
+  DB_STATE.materialStatus = data.materialStatus || {};
+  DB_STATE.materialOpts   = data.materialOpts   || {};
+  DB_STATE.taskDetails    = data.taskDetails    || {};
+  DB_STATE.budgetActuals  = data.budgetActuals  || {};
+  DB_STATE.loaded = true;
+
   renderPhases();
   renderMaterials();
   renderTips();
@@ -4325,6 +4368,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderNextActions();
   updateLastUpdated();
 
+  // Real-time sync — picks up changes made by the other person
+  setupRealtimeSync();
+
   // Close mobile menu on link click
   document.querySelectorAll('.nav-links a').forEach(a => {
     a.addEventListener('click', () => {
@@ -4332,6 +4378,73 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+function setupRealtimeSync() {
+  const hasFocus = (id) => {
+    const el = document.getElementById(id);
+    return el && el.contains(document.activeElement);
+  };
+
+  db.ref('garden/tasks').on('value', snap => {
+    const val = snap.val() || {};
+    if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.tasks)) return;
+    DB_STATE.tasks = val;
+    if (!hasFocus('phases-container')) renderPhases();
+  });
+
+  db.ref('garden/notes').on('value', snap => {
+    const val = snap.val() || {};
+    if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.notes)) return;
+    DB_STATE.notes = val;
+    if (!hasFocus('phases-container')) renderPhases();
+  });
+
+  db.ref('garden/taskDetails').on('value', snap => {
+    const val = snap.val() || {};
+    if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.taskDetails)) return;
+    DB_STATE.taskDetails = val;
+    const drawer = document.getElementById('task-drawer');
+    if (!drawer || !drawer.classList.contains('open')) {
+      if (!hasFocus('phases-container')) renderPhases();
+    }
+  });
+
+  db.ref('garden/materialStatus').on('value', snap => {
+    const val = snap.val() || {};
+    if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.materialStatus)) return;
+    DB_STATE.materialStatus = val;
+    if (!hasFocus('materials-container')) renderMaterials();
+  });
+
+  db.ref('garden/materialOpts').on('value', snap => {
+    const val = snap.val() || {};
+    if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.materialOpts)) return;
+    DB_STATE.materialOpts = val;
+    if (matModalKey) renderModalOptions(matModalKey);
+  });
+
+  db.ref('garden/budgetActuals').on('value', snap => {
+    const val = snap.val() || {};
+    if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.budgetActuals)) return;
+    DB_STATE.budgetActuals = val;
+    document.querySelectorAll('.budget-actual-input').forEach(input => {
+      if (input === document.activeElement) return;
+      const newVal = val[fbKey(input.dataset.item)] || '';
+      if (input.value !== newVal) {
+        input.value = newVal;
+        if (input._updateVariance) input._updateVariance();
+      }
+    });
+    updateActualTotal();
+  });
+
+  db.ref('garden/tasksUpdated').on('value', snap => {
+    const val = snap.val() || null;
+    if (val === DB_STATE.tasksUpdated) return;
+    DB_STATE.tasksUpdated = val;
+    updateLastUpdated();
+  });
+}
 
 window.addEventListener('scroll', () => {
   document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 40);
