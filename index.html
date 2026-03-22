@@ -1996,8 +1996,9 @@ footer::before {
   .container { padding: 0 16px; }
   .phase-header { padding: 18px 16px; gap: 12px; }
   .phase-tasks { padding: 0 16px 18px; }
-  .budget-row:not(.editing) { grid-template-columns: 1fr 90px 130px !important; }
-  .budget-low, .budget-row-actions { display: none; }
+  .budget-row:not(.editing) { grid-template-columns: 1fr 90px 52px !important; }
+  .budget-low { display: none; }
+  .budget-row-actions { opacity: 1; min-width: 0; }
   .phases-grid { padding-left: 44px; }
   .phases-grid::before { left: 14px; }
   .phase-num { left: -38px; width: 26px; height: 26px; font-size: 13px; }
@@ -2865,6 +2866,68 @@ footer::before {
   background: rgba(200,146,42,0.15);
   border-color: var(--amber);
   outline: none;
+}
+
+/* ============================================================
+   TOUCH DEVICES — reveal hover-only controls
+============================================================ */
+@media (hover: none) {
+  /* Material card CRUD actions */
+  .mat-card-actions { opacity: 1; }
+  /* Phase CRUD actions */
+  .phase-actions { opacity: 1; }
+  /* Task action buttons */
+  .task-actions { opacity: 1; }
+  /* Task detail/drawer button */
+  .task-detail-btn { opacity: 1; }
+  /* Budget row CRUD actions */
+  .budget-row-actions { opacity: 1; }
+  /* Journal photo upload button */
+  .journal-upload-btn { opacity: 1; }
+}
+
+/* ============================================================
+   MOBILE — 480px and below
+   (supplement existing rules above)
+============================================================ */
+@media (max-width: 480px) {
+  /* --- Budget table editing row --- */
+  .budget-row.editing {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+  }
+  .budget-row.editing .budget-edit-name { width: 100%; }
+  .budget-row.editing .budget-edit-num  { width: 100%; text-align: left; }
+
+  /* Actual-spend input inside normal rows — shrink to fit */
+  .budget-actual-input { width: 72px; }
+
+  /* --- Material card actions — keep clear of card title --- */
+  .mat-card-actions {
+    position: static;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+  /* Ensure mat-card-btn tap targets are comfortable */
+  .mat-card-btn { width: 36px; height: 36px; font-size: 16px; }
+
+  /* --- Phase edit form — stack label+input vertically --- */
+  .phase-edit-form { padding: 12px 16px 14px; }
+  .phase-edit-row  { flex-wrap: wrap; }
+  .phase-edit-label { width: 100%; margin-bottom: 2px; }
+  .phase-edit-input, .phase-edit-select { width: 100%; }
+
+  /* --- Touch target sizes for small icon buttons --- */
+  .budget-action-btn  { width: 36px; height: 36px; }
+  .phase-action-btn   { width: 36px; height: 36px; }
+  .task-action-btn    { width: 36px; height: 36px; }
+  .task-detail-btn    { width: 36px; height: 36px; }
+
+  /* --- Hero meta row — allow wrapping on very small screens --- */
+  .hero-meta-item { padding: 4px 12px; }
+
+  /* --- Budget total card padding on small screens --- */
+  .budget-total-card { padding: 24px 20px; gap: 20px; }
 }
 </style>
 </head>
