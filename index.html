@@ -1549,6 +1549,47 @@ nav .nav-inner {
   font-weight: 300;
 }
 
+.journal-upload-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background: rgba(17,20,16,0.72);
+  border: 1px solid rgba(168,155,120,0.18);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition), background var(--transition);
+  color: var(--text-muted);
+  z-index: 2;
+}
+.journal-card:hover .journal-upload-btn { opacity: 1; }
+.journal-upload-btn:hover { background: rgba(200,146,42,0.25); color: var(--amber); }
+.journal-card.uploading .journal-upload-btn { opacity: 1; pointer-events: none; }
+.journal-card.uploading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(17,20,16,0.45);
+  z-index: 1;
+}
+.journal-upload-spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  display: none;
+}
+.journal-card.uploading .journal-upload-spinner { display: flex; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.journal-upload-spinner svg { animation: spin 0.9s linear infinite; color: var(--amber); }
+
 .journal-note {
   margin-top: 24px;
   padding: 16px 22px;
@@ -2836,47 +2877,72 @@ footer::before {
       <p class="section-subtitle">Visual progress through each phase of the build.</p>
     </div>
     <div class="journal-grid fade-in-stagger">
-      <div class="journal-card">
+      <div class="journal-card" id="journal-card-before" data-slot="before">
         <svg class="journal-placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
           <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
           <path d="m21 15-5-5L5 21"/>
         </svg>
         <span class="journal-placeholder-text">Before — March 2026</span>
         <div class="journal-label">Before — Current State</div>
+        <label class="journal-upload-btn" title="Upload photo">
+          <input type="file" accept="image/*" style="display:none" onchange="handlePhotoUpload('before', this)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </label>
+        <div class="journal-upload-spinner"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
       </div>
-      <div class="journal-card">
+      <div class="journal-card" id="journal-card-groundworks" data-slot="groundworks">
         <svg class="journal-placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
           <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
           <path d="m21 15-5-5L5 21"/>
         </svg>
         <span class="journal-placeholder-text">Groundworks — April 2026</span>
         <div class="journal-label">Groundworks</div>
+        <label class="journal-upload-btn" title="Upload photo">
+          <input type="file" accept="image/*" style="display:none" onchange="handlePhotoUpload('groundworks', this)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </label>
+        <div class="journal-upload-spinner"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
       </div>
-      <div class="journal-card">
+      <div class="journal-card" id="journal-card-hard-landscaping" data-slot="hard-landscaping">
         <svg class="journal-placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
           <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
           <path d="m21 15-5-5L5 21"/>
         </svg>
         <span class="journal-placeholder-text">Hard Landscaping — May 2026</span>
         <div class="journal-label">Hard Landscaping</div>
+        <label class="journal-upload-btn" title="Upload photo">
+          <input type="file" accept="image/*" style="display:none" onchange="handlePhotoUpload('hard-landscaping', this)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </label>
+        <div class="journal-upload-spinner"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
       </div>
-      <div class="journal-card">
+      <div class="journal-card" id="journal-card-structures" data-slot="structures">
         <svg class="journal-placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
           <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
           <path d="m21 15-5-5L5 21"/>
         </svg>
         <span class="journal-placeholder-text">Structures — June 2026</span>
         <div class="journal-label">Structures</div>
+        <label class="journal-upload-btn" title="Upload photo">
+          <input type="file" accept="image/*" style="display:none" onchange="handlePhotoUpload('structures', this)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </label>
+        <div class="journal-upload-spinner"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
       </div>
-      <div class="journal-card">
+      <div class="journal-card" id="journal-card-finished" data-slot="finished">
         <svg class="journal-placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
           <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
         </svg>
         <span class="journal-placeholder-text">Finished — Summer 2026</span>
         <div class="journal-label">Finished Garden</div>
+        <label class="journal-upload-btn" title="Upload photo">
+          <input type="file" accept="image/*" style="display:none" onchange="handlePhotoUpload('finished', this)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </label>
+        <div class="journal-upload-spinner"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
       </div>
     </div>
-    <p class="journal-note">Drop photos into the /photos/ folder alongside this file to document your progress.</p>
+    <p class="journal-note">Hover any card and tap the camera icon to upload a photo. Syncs to all devices instantly.</p>
   </div>
 </section>
 
@@ -3054,6 +3120,7 @@ footer::before {
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
 <script>
 /* ============================================================
@@ -3070,6 +3137,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+const storage = firebase.storage();
 
 // In-memory mirror of Firebase state — all reads use this, all writes go here + Firebase
 const DB_STATE = {
@@ -3080,6 +3148,7 @@ const DB_STATE = {
   materialOpts: {},
   taskDetails: {},
   budgetActuals: {},
+  photos: {},
   loaded: false,
 };
 
@@ -4342,6 +4411,57 @@ document.addEventListener('click', (e) => {
 });
 
 /* ============================================================
+   PHOTO JOURNAL
+============================================================ */
+function setPhotoCard(slotId, url) {
+  const card = document.getElementById('journal-card-' + slotId);
+  if (!card) return;
+  card.classList.add('has-photo');
+  let img = card.querySelector('img');
+  if (!img) {
+    card.querySelector('.journal-placeholder-icon')?.remove();
+    card.querySelector('.journal-placeholder-text')?.remove();
+    img = document.createElement('img');
+    img.alt = card.querySelector('.journal-label')?.textContent || '';
+    card.insertBefore(img, card.querySelector('.journal-label'));
+  }
+  img.src = url;
+}
+
+function loadPhotos() {
+  Object.entries(DB_STATE.photos).forEach(([slotId, url]) => {
+    if (url) setPhotoCard(slotId, url);
+  });
+}
+
+async function handlePhotoUpload(slotId, input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const card = document.getElementById('journal-card-' + slotId);
+  card.classList.add('uploading');
+
+  // Show preview immediately from local file
+  const localUrl = URL.createObjectURL(file);
+  setPhotoCard(slotId, localUrl);
+
+  try {
+    const ext = file.name.split('.').pop().toLowerCase() || 'jpg';
+    const ref = storage.ref('photos/' + slotId + '.' + ext);
+    await ref.put(file);
+    const downloadUrl = await ref.getDownloadURL();
+    DB_STATE.photos[slotId] = downloadUrl;
+    db.ref('garden/photos/' + slotId).set(downloadUrl);
+    setPhotoCard(slotId, downloadUrl);
+  } catch(e) {
+    console.error('Photo upload failed:', e);
+  } finally {
+    card.classList.remove('uploading');
+    input.value = '';
+  }
+}
+
+/* ============================================================
    INIT
 ============================================================ */
 document.addEventListener('DOMContentLoaded', async () => {
@@ -4355,6 +4475,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   DB_STATE.materialOpts   = data.materialOpts   || {};
   DB_STATE.taskDetails    = data.taskDetails    || {};
   DB_STATE.budgetActuals  = data.budgetActuals  || {};
+  DB_STATE.photos         = data.photos         || {};
   DB_STATE.loaded = true;
 
   renderPhases();
@@ -4368,6 +4489,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initBudgetActuals();
   renderNextActions();
   updateLastUpdated();
+  loadPhotos();
 
   // Real-time sync — picks up changes made by the other person
   setupRealtimeSync();
@@ -4444,6 +4566,13 @@ function setupRealtimeSync() {
     if (val === DB_STATE.tasksUpdated) return;
     DB_STATE.tasksUpdated = val;
     updateLastUpdated();
+  });
+
+  db.ref('garden/photos').on('value', snap => {
+    const val = snap.val() || {};
+    if (JSON.stringify(val) === JSON.stringify(DB_STATE.photos)) return;
+    DB_STATE.photos = val;
+    loadPhotos();
   });
 }
 
