@@ -2346,6 +2346,18 @@ footer::before {
 .variance-under { background: rgba(61,82,57,0.2); color: #7ab87a; border: 1px solid rgba(94,117,88,0.35); }
 .variance-amber { background: var(--amber-glow); color: var(--amber-light); border: 1px solid rgba(200,146,42,0.3); }
 .variance-over  { background: rgba(158,78,36,0.15); color: #c07050; border: 1px solid rgba(158,78,36,0.3); }
+.budget-variance-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px 14px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+.budget-variance-footer .budget-variance { font-size: 12px; }
 .budget-actual-cell { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
 
 /* Budget row CRUD controls */
@@ -5035,6 +5047,13 @@ function renderBudgetTable() {
   items.forEach(item => body.appendChild(buildBudgetRow(item)));
   body.appendChild(buildTotalRow(items));
 
+  const varianceFooter = document.createElement('div');
+  varianceFooter.id = 'budget-total-variance';
+  varianceFooter.className = 'budget-variance-footer';
+  varianceFooter.style.display = 'none';
+  varianceFooter.innerHTML = '<span>Overall</span><span class="budget-variance bvf-badge"></span>';
+  body.appendChild(varianceFooter);
+
   const addRow = document.createElement('div');
   addRow.className = 'budget-add-row';
   const addBtn = document.createElement('button');
@@ -5274,6 +5293,34 @@ function updateActualTotal() {
   });
   const el = document.getElementById('actual-total');
   if (el) el.textContent = count > 0 ? `£${Math.round(total).toLocaleString('en-GB')}` : '—';
+
+  const varianceEl = document.getElementById('budget-total-variance');
+  if (!varianceEl) return;
+  if (count === 0) { varianceEl.style.display = 'none'; return; }
+
+  // Only sum midpoints for items that have an actual entered
+  let totalMid = 0;
+  document.querySelectorAll('.budget-actual-input').forEach(input => {
+    if (!input.value.trim()) return;
+    const num = parseFloat(input.value.replace(/[^0-9.]/g, ''));
+    if (isNaN(num)) return;
+    const item = DB_STATE.budgetItems[input.dataset.itemId];
+    if (item) totalMid += Math.round(((item.low || 0) + (item.high || 0)) / 2);
+  });
+  const diff = Math.round(totalMid - total); // positive = under budget
+  const badge = varianceEl.querySelector('.bvf-badge');
+  varianceEl.style.display = 'flex';
+  if (diff === 0) {
+    badge.className = 'budget-variance bvf-badge';
+    badge.textContent = 'On target';
+  } else if (diff > 0) {
+    badge.className = 'budget-variance variance-under bvf-badge';
+    badge.textContent = `£${Math.abs(diff).toLocaleString('en-GB')} under budget`;
+  } else {
+    const pctOver = Math.abs(diff) / totalMid * 100;
+    badge.className = `budget-variance ${pctOver <= 20 ? 'variance-amber' : 'variance-over'} bvf-badge`;
+    badge.textContent = `£${Math.abs(diff).toLocaleString('en-GB')} over budget`;
+  }
 }
 
 /* ============================================================
