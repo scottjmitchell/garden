@@ -242,6 +242,40 @@ test('entering a budget actual shows variance', async ({ page }) => {
   await expect(page.locator('.budget-variance').first()).toBeVisible();
 });
 
+// ─── Budget variance labels (issue #14) ──────────────────────────────────────
+
+test('budget variance shows On target when actual equals midpoint', async ({ page }) => {
+  const firstRow = page.locator('#budget-items-body .budget-row').first();
+  // Read low and high from the DOM to compute midpoint
+  const low  = await firstRow.locator('.budget-low').evaluate(el => parseFloat(el.textContent!.replace(/[^0-9.]/g, '')));
+  const high = await firstRow.locator('.budget-high').evaluate(el => parseFloat(el.textContent!.replace(/[^0-9.]/g, '')));
+  const mid  = Math.round((low + high) / 2);
+  const input = firstRow.locator('.budget-actual-input');
+  await input.fill(String(mid));
+  await input.dispatchEvent('input');
+  await expect(firstRow.locator('.budget-variance')).toHaveText('On target');
+});
+
+test('budget variance does not show 0% under', async ({ page }) => {
+  const firstRow = page.locator('#budget-items-body .budget-row').first();
+  const low  = await firstRow.locator('.budget-low').evaluate(el => parseFloat(el.textContent!.replace(/[^0-9.]/g, '')));
+  const high = await firstRow.locator('.budget-high').evaluate(el => parseFloat(el.textContent!.replace(/[^0-9.]/g, '')));
+  const mid  = Math.round((low + high) / 2);
+  const input = firstRow.locator('.budget-actual-input');
+  await input.fill(String(mid));
+  await input.dispatchEvent('input');
+  const text = await firstRow.locator('.budget-variance').textContent();
+  expect(text).not.toBe('0% under');
+});
+
+test('budget variance under label shows for values below midpoint', async ({ page }) => {
+  const input = page.locator('.budget-actual-input').first();
+  await input.fill('1');
+  await input.dispatchEvent('input');
+  const text = await page.locator('.budget-variance').first().textContent();
+  expect(text).toContain('under');
+});
+
 // ─── Garden plan ─────────────────────────────────────────────────────────────
 
 test('garden plan section renders', async ({ page }) => {

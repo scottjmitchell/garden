@@ -2388,9 +2388,10 @@ footer::before {
   white-space: nowrap;
   letter-spacing: 0.04em;
 }
-.variance-under { background: rgba(61,82,57,0.2); color: #7ab87a; border: 1px solid rgba(94,117,88,0.35); }
-.variance-amber { background: var(--amber-glow); color: var(--amber-light); border: 1px solid rgba(200,146,42,0.3); }
-.variance-over  { background: rgba(158,78,36,0.15); color: #c07050; border: 1px solid rgba(158,78,36,0.3); }
+.variance-under     { color: #7ab87a; }
+.variance-amber     { color: var(--amber-light); }
+.variance-over      { color: #c07050; }
+.variance-on-target { color: var(--text-dim); }
 .budget-variance-footer {
   display: flex;
   justify-content: flex-end;
@@ -5193,7 +5194,8 @@ function buildActualCell(item) {
     if (isNaN(num)) { variance.style.display = 'none'; return; }
     const pct = Math.round(((num - mid) / mid) * 100);
     variance.style.display = '';
-    if (pct <= 0) { variance.className = 'budget-variance variance-under'; variance.textContent = `${Math.abs(pct)}% under`; }
+    if (pct === 0) { variance.className = 'budget-variance variance-on-target'; variance.textContent = 'On target'; }
+    else if (pct < 0) { variance.className = 'budget-variance variance-under'; variance.textContent = `${Math.abs(pct)}% under`; }
     else if (pct <= 20) { variance.className = 'budget-variance variance-amber'; variance.textContent = `+${pct}%`; }
     else { variance.className = 'budget-variance variance-over'; variance.textContent = `+${pct}% over`; }
   }
