@@ -37,7 +37,7 @@ Add clipboard paste support to the image zones in the materials options modal, w
 ### Disarming
 
 - Clicking outside any image zone (within the modal)
-- Pressing Escape
+- Pressing Escape — handled in the existing `document.addEventListener('keydown', ...)` block (line ~5343 in index.html) by calling `setArmedZone(null)` when `e.key === 'Escape'` and modal is open
 - Successful paste (auto-disarms after image lands)
 - Modal close
 
@@ -73,7 +73,7 @@ document.addEventListener('paste', handleModalPaste);
 1. If `matModalKey` is null (modal closed): return
 2. Extract image from `e.clipboardData.items` (type starting with `image/`)
 3. If no image found: return (ignore)
-4. Determine target: `matPasteTargetIdx ?? firstCardWithoutImage()`
+4. Determine target: `matPasteTargetIdx ?? firstCardWithoutImage()` where `firstCardWithoutImage()` inspects `getMaterialOptions(matModalKey)` and returns the index of the first option where `!opt.imageUrl` — uses the authoritative in-memory state, not the DOM
 5. Call `uploadOptionImage(key, targetIdx, file)` (existing function)
 6. Disarm: `setArmedZone(null)`
 
@@ -87,12 +87,12 @@ document.addEventListener('paste', handleModalPaste);
 
 Add `dragover`, `dragleave`, `drop` handlers to each `.mat-opt-img-area`:
 - `dragover`: add `drag-over` class, `preventDefault()`
-- `dragleave`: remove `drag-over` class
+- `dragleave`: only remove `drag-over` if `!zone.contains(e.relatedTarget)` — prevents flicker when cursor moves over child elements inside the zone
 - `drop`: extract `dataTransfer.files[0]`, call `uploadOptionImage`, remove `drag-over`
 
 ### Document click listener (disarm on outside click)
 
-In the existing `document.addEventListener('click', ...)` block: if click is not inside `.mat-opt-img-area`, call `setArmedZone(null)`.
+In the existing `document.addEventListener('click', ...)` block: if click target is not inside `.mat-opt-img-area` (i.e. `!e.target.closest('.mat-opt-img-area')`), call `setArmedZone(null)`. Clicks on the "or pick a file" link live inside `.mat-opt-img-area` and therefore do NOT disarm.
 
 ---
 
@@ -119,7 +119,8 @@ Since the card is re-rendered on status/field changes, the armed state is manage
 
 New tests:
 - **Armed state visible after click** — click image zone, verify `.mat-opt-img-area.armed` exists
-- **Armed state clears after click outside** — click zone, click elsewhere, verify no `.armed` class
-- **Drag-and-drop highlight** — `dragover` event on zone adds `.drag-over` class
+- **Armed state clears after click outside** — click zone, click modal body elsewhere, verify no `.armed` class
+- **Drag-and-drop highlight** — dispatch `dragover` event on zone, verify `.drag-over` class added; dispatch `dragleave` with `relatedTarget` outside zone, verify class removed
+- **Drag-and-drop no flicker** — dispatch `dragleave` with `relatedTarget` inside zone, verify `.drag-over` class remains
 
-Paste tests are not automatable via Playwright (clipboard API requires browser permissions) — manual verification only.
+Paste tests (clipboard image content) are not automatable via Playwright without browser permission grants — manual verification only.
