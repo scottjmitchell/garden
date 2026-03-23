@@ -5555,7 +5555,7 @@ function escapeMaterialKey(name) {
 
 function migrateMaterialOptions(options) {
   return options.map(opt => {
-    let status = opt.optionStatus;
+    let status = opt.optionStatus ?? null;
     // Legacy: selected boolean → favourite
     if ('selected' in opt && !('optionStatus' in opt)) {
       status = opt.selected ? 'shortlisted' : null;
@@ -5599,10 +5599,8 @@ function armImageZone(key, idx) {
 }
 
 function handleModalPaste(e) {
-  console.log('[paste] fired, matModalKey:', matModalKey);
   if (!matModalKey) return; // modal not open
   const items = e.clipboardData && e.clipboardData.items;
-  console.log('[paste] items:', items && items.length, Array.from(items || []).map(i => i.type));
   if (!items) return;
   let imageFile = null;
   for (let i = 0; i < items.length; i++) {
@@ -5611,7 +5609,6 @@ function handleModalPaste(e) {
       break;
     }
   }
-  console.log('[paste] imageFile:', imageFile);
   if (!imageFile) return; // non-image paste — ignore silently
   // Determine target: armed zone first, else first card without an image
   let targetIdx = matPasteTargetIdx;
@@ -5619,7 +5616,6 @@ function handleModalPaste(e) {
     const opts = getMaterialOptions(matModalKey);
     targetIdx = opts.findIndex(opt => !opt.imageUrl);
   }
-  console.log('[paste] targetIdx:', targetIdx);
   if (targetIdx === -1 || targetIdx === null) return; // all cards have images and nothing armed
   uploadOptionImage(matModalKey, targetIdx, imageFile);
   setArmedZone(null); // auto-disarm after paste
