@@ -5579,7 +5579,8 @@ let matModalKey = null;
 let matPasteTargetIdx = null;
 
 function setArmedZone(idx) {
-  // Remove armed class from previously armed zone
+  if (idx === matPasteTargetIdx) return; // already in correct state — avoid unnecessary DOM thrash
+  // Remove armed class from previously armed zone (must read matModalKey before clearing it)
   if (matPasteTargetIdx !== null && matModalKey) {
     const prev = document.getElementById(`mat-opt-img-area-${matModalKey}-${matPasteTargetIdx}`);
     if (prev) prev.classList.remove('armed');
@@ -5591,6 +5592,8 @@ function setArmedZone(idx) {
   }
 }
 
+// key is the material key for the current modal — unused here since setArmedZone reads matModalKey,
+// but kept in the signature to match the inline onclick template: armImageZone('${key}', ${idx})
 function armImageZone(key, idx) {
   setArmedZone(idx);
 }
