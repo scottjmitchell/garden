@@ -1352,6 +1352,44 @@ nav .nav-inner {
   border-color: rgba(200, 146, 42, 0.5);
   background: rgba(200, 146, 42, 0.06);
 }
+.mat-opt-img-armed-content {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  pointer-events: none;
+}
+.mat-opt-img-area.armed .mat-opt-img-armed-content {
+  display: flex;
+  pointer-events: auto;
+}
+/* Hide default placeholder when armed */
+.mat-opt-img-area.armed .mat-opt-img-placeholder-icon,
+.mat-opt-img-area.armed .mat-opt-img-placeholder-text {
+  display: none;
+}
+.mat-opt-img-armed-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: #8fad88;
+  letter-spacing: 0.04em;
+}
+.mat-opt-img-file-link {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  color: #5e7558;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  letter-spacing: 0.04em;
+}
+.mat-opt-img-file-link:hover { color: #8fad88; }
 .mat-opt-img-area.has-image { border-style: solid; border-color: var(--border); }
 .mat-opt-img-area.uploading { opacity: 0.6; pointer-events: none; }
 .mat-opt-img-area img {
@@ -5602,10 +5640,26 @@ function renderModalOptions(key) {
     return `
       <div class="mat-opt-card${st ? ' status-' + st : ''}" data-opt-idx="${idx}">
         <div class="mat-opt-img-area${opt.imageUrl ? ' has-image' : ''}"
-          onclick="document.getElementById('mat-opt-img-input-${key}-${idx}').click()">
+          id="mat-opt-img-area-${key}-${idx}"
+          onclick="armImageZone('${key}', ${idx})"
+          ondragover="event.preventDefault(); this.classList.add('drag-over')"
+          ondragleave="if(!this.contains(event.relatedTarget)) this.classList.remove('drag-over')"
+          ondrop="event.preventDefault(); this.classList.remove('drag-over'); if(event.dataTransfer.files[0]) uploadOptionImage('${key}', ${idx}, event.dataTransfer.files[0])">
           ${imgHtml}
           <input class="mat-opt-img-input" id="mat-opt-img-input-${key}-${idx}" type="file" accept="image/*"
             onchange="uploadOptionImage('${key}', ${idx}, this.files[0])">
+          <div class="mat-opt-img-armed-content">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+              <rect x="9" y="3" width="6" height="4" rx="1"/>
+              <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
+            </svg>
+            <span class="mat-opt-img-armed-label">Cmd+V to paste</span>
+            <button class="mat-opt-img-file-link"
+              onclick="event.stopPropagation(); document.getElementById('mat-opt-img-input-${key}-${idx}').click()">
+              or pick a file
+            </button>
+          </div>
         </div>
         <div class="mat-opt-row-top">
           <input class="mat-opt-name" type="text" placeholder="Option name…"
