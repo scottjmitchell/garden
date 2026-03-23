@@ -5535,8 +5535,15 @@ function updateDrawerOption(idx, field, value) {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && matModalKey) closeMaterialOptions();
-  else if (e.key === 'Escape') closeTaskDrawer();
+  if (e.key === 'Escape' && matModalKey) {
+    if (matPasteTargetIdx !== null) {
+      setArmedZone(null); // first Escape disarms; second Escape closes modal
+    } else {
+      closeMaterialOptions();
+    }
+  } else if (e.key === 'Escape') {
+    closeTaskDrawer();
+  }
 });
 
 /* ============================================================
@@ -5569,6 +5576,25 @@ function saveMaterialOptions(key, options) {
 }
 
 let matModalKey = null;
+let matPasteTargetIdx = null;
+
+function setArmedZone(idx) {
+  // Remove armed class from previously armed zone
+  if (matPasteTargetIdx !== null && matModalKey) {
+    const prev = document.getElementById(`mat-opt-img-area-${matModalKey}-${matPasteTargetIdx}`);
+    if (prev) prev.classList.remove('armed');
+  }
+  matPasteTargetIdx = idx;
+  if (idx !== null && matModalKey) {
+    const zone = document.getElementById(`mat-opt-img-area-${matModalKey}-${idx}`);
+    if (zone) zone.classList.add('armed');
+  }
+}
+
+function armImageZone(key, idx) {
+  setArmedZone(idx);
+}
+
 let matModalSaveTimers = {};
 
 function openMaterialOptions(key) {
@@ -5583,6 +5609,7 @@ function openMaterialOptions(key) {
 }
 
 function closeMaterialOptions() {
+  setArmedZone(null);
   matModalKey = null;
   document.getElementById('mat-options-backdrop').classList.remove('open');
   const modal = document.getElementById('mat-options-modal');
@@ -5824,6 +5851,9 @@ function setMaterialStatus(key, statusKey, pill) {
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.material-status') && !e.target.closest('.mat-status-picker')) {
     document.querySelectorAll('.mat-status-picker').forEach(p => p.classList.remove('visible'));
+  }
+  if (matModalKey && !e.target.closest('.mat-opt-img-area')) {
+    setArmedZone(null);
   }
 });
 
