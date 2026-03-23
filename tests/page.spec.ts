@@ -271,6 +271,29 @@ test('nav logo scrolls to top on click', async ({ page }) => {
   expect(scrollY).toBe(0);
 });
 
+// ─── Hero layout ─────────────────────────────────────────────────────────────
+
+test('hero text is centred', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  const textAlign = await page.locator('.hero-title').evaluate(el => getComputedStyle(el).textAlign);
+  expect(textAlign).toBe('center');
+});
+
+test('hero photo strip sits below the text zone', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  const textBottom = await page.locator('.hero-text').evaluate(el => el.getBoundingClientRect().bottom);
+  const photoTop   = await page.locator('.hero-photo-strip').evaluate(el => el.getBoundingClientRect().top);
+  expect(photoTop).toBeGreaterThanOrEqual(textBottom - 1);
+});
+
+test('hero photo strip is full width of the hero section', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  const heroWidth  = await page.locator('#hero').evaluate(el => el.getBoundingClientRect().width);
+  const stripWidth = await page.locator('.hero-photo-strip').evaluate(el => el.getBoundingClientRect().width);
+  // Strip should be at least 80% of the hero section width (full-bleed)
+  expect(stripWidth).toBeGreaterThan(heroWidth * 0.8);
+});
+
 // ─── Budget total variance ────────────────────────────────────────────────────
 
 test('budget total variance is hidden when no actuals entered', async ({ page }) => {
