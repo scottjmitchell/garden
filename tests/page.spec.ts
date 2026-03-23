@@ -99,6 +99,44 @@ test('material status picker opens on status button click', async ({ page }) => 
   await expect(page.locator('.mat-status-picker.visible')).toBeVisible();
 });
 
+// ─── Materials options modal enhancements (issue #10) ────────────────────────
+
+async function openModalAndAddOption(page: any) {
+  await page.locator('#materials-container .material-card').first()
+    .locator('button.mat-options-btn').click();
+  await expect(page.locator('#mat-options-modal')).toHaveClass(/open/);
+  await page.locator('#mat-modal-add-btn').click();
+  await expect(page.locator('#mat-modal-body .mat-opt-card').first()).toBeVisible();
+}
+
+test('option cards show image upload area', async ({ page }) => {
+  await openModalAndAddOption(page);
+  await expect(page.locator('#mat-modal-body .mat-opt-img-area').first()).toBeVisible();
+});
+
+test('status chips show shortlisted, ordered, and rejected', async ({ page }) => {
+  await openModalAndAddOption(page);
+  const chips = page.locator('#mat-modal-body .mat-opt-chips').first();
+  await expect(chips.locator('button:has-text("Shortlisted")')).toBeVisible();
+  await expect(chips.locator('button:has-text("Ordered")')).toBeVisible();
+  await expect(chips.locator('button:has-text("Rejected")')).toBeVisible();
+});
+
+test('compare mode toggle expands modal and switches layout', async ({ page }) => {
+  await page.locator('#materials-container .material-card').first()
+    .locator('button.mat-options-btn').click();
+  await expect(page.locator('#mat-options-modal')).toHaveClass(/open/);
+  await page.locator('#mat-modal-compare-btn').click();
+  await expect(page.locator('#mat-options-modal')).toHaveClass(/compare-mode/);
+  await page.locator('#mat-modal-compare-btn').click();
+  await expect(page.locator('#mat-options-modal')).not.toHaveClass(/compare-mode/);
+});
+
+test('cost bar element is present in option cards', async ({ page }) => {
+  await openModalAndAddOption(page);
+  await expect(page.locator('#mat-modal-body .mat-opt-cost-bar').first()).toBeAttached();
+});
+
 // ─── Photo journal ───────────────────────────────────────────────────────────
 
 test('journal shows 5 photo cards', async ({ page }) => {

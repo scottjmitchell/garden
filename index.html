@@ -1312,11 +1312,78 @@ nav .nav-inner {
   transition: border-color 0.18s;
   flex-shrink: 0;
 }
-.mat-opt-card.status-favourite {
+.mat-opt-card.status-shortlisted {
+  border-color: rgba(94, 117, 88, 0.35);
+  background: rgba(61, 82, 57, 0.06);
+}
+.mat-opt-card.status-ordered {
   border-color: rgba(200, 146, 42, 0.3);
   background: rgba(200, 146, 42, 0.035);
 }
 .mat-opt-card.status-rejected { opacity: 0.55; }
+
+/* Image upload area */
+.mat-opt-img-area {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  cursor: pointer;
+  background: rgba(168, 155, 120, 0.04);
+  border: 1px dashed var(--border-strong);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: border-color 0.18s, background 0.18s;
+}
+.mat-opt-img-area:hover { border-color: rgba(200, 146, 42, 0.35); background: rgba(200, 146, 42, 0.02); }
+.mat-opt-img-area.has-image { border-style: solid; border-color: var(--border); }
+.mat-opt-img-area.uploading { opacity: 0.6; pointer-events: none; }
+.mat-opt-img-area img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mat-opt-img-placeholder-icon {
+  color: var(--text-dim);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.mat-opt-img-placeholder-text {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.mat-opt-img-input { display: none; }
+
+/* Image overlay (re-upload hint on hover) */
+.mat-opt-img-area.has-image::after {
+  content: 'Replace';
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 14, 10, 0.55);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+.mat-opt-img-area.has-image:hover::after { opacity: 1; }
 
 .mat-opt-row-top {
   display: flex;
@@ -1350,6 +1417,7 @@ nav .nav-inner {
   display: flex;
   gap: 4px;
   flex-shrink: 0;
+  flex-wrap: wrap;
 }
 .mat-opt-chip {
   font-family: var(--font-sans);
@@ -1367,8 +1435,8 @@ nav .nav-inner {
   white-space: nowrap;
 }
 .mat-opt-chip:hover { border-color: var(--border-strong); color: var(--text-muted); }
-.mat-opt-chip.chip-considering { border-color: rgba(94,117,88,0.5); color: var(--moss-light); background: rgba(61,82,57,0.15); }
-.mat-opt-chip.chip-favourite   { border-color: rgba(200,146,42,0.45); color: var(--amber-light); background: var(--amber-glow); }
+.mat-opt-chip.chip-shortlisted { border-color: rgba(94,117,88,0.5); color: var(--moss-light); background: rgba(61,82,57,0.15); }
+.mat-opt-chip.chip-ordered     { border-color: rgba(200,146,42,0.45); color: var(--amber-light); background: var(--amber-glow); }
 .mat-opt-chip.chip-rejected    { border-color: rgba(158,78,36,0.4); color: #b07060; background: rgba(158,78,36,0.1); }
 
 .mat-opt-delete {
@@ -1390,7 +1458,13 @@ nav .nav-inner {
 
 .mat-opt-row-fields {
   display: grid;
-  grid-template-columns: 1fr 90px;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.mat-opt-row-fields-3 {
+  display: grid;
+  grid-template-columns: 1fr 90px 90px;
   gap: 8px;
   margin-bottom: 8px;
 }
@@ -1406,9 +1480,28 @@ nav .nav-inner {
   outline: none;
   transition: border-color 0.15s;
   width: 100%;
+  box-sizing: border-box;
 }
 .mat-opt-field:focus { border-color: rgba(200, 146, 42, 0.35); color: var(--text); }
 .mat-opt-field::placeholder { color: var(--text-dim); }
+
+/* Cost comparison bar */
+.mat-opt-price-wrap { position: relative; }
+.mat-opt-cost-bar {
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(200, 146, 42, 0.35);
+  margin-top: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.mat-opt-cost-bar-track {
+  height: 2px;
+  border-radius: 1px;
+  background: var(--border);
+  margin-top: 4px;
+  overflow: hidden;
+}
 
 .mat-opt-notes {
   background: transparent;
@@ -1430,6 +1523,58 @@ nav .nav-inner {
 }
 .mat-opt-notes:focus { border-color: rgba(200, 146, 42, 0.35); color: var(--text); }
 .mat-opt-notes::placeholder { color: var(--text-dim); }
+
+/* Compare mode */
+#mat-options-modal.compare-mode {
+  max-width: 920px;
+  width: calc(100% - 32px);
+}
+#mat-options-modal.compare-mode .mat-modal-body {
+  flex-direction: row;
+  align-items: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 12px;
+  padding: 20px;
+}
+#mat-options-modal.compare-mode .mat-opt-card {
+  min-width: 240px;
+  max-width: 280px;
+  flex-shrink: 0;
+}
+#mat-options-modal.compare-mode .mat-opt-img-area {
+  height: 180px;
+}
+
+/* Compare toggle button */
+.mat-modal-compare-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  margin-right: 6px;
+  transition: border-color 0.15s, color 0.15s;
+  padding: 0;
+  font-size: 14px;
+}
+.mat-modal-compare-btn:hover { border-color: var(--border-strong); color: var(--text); }
+.mat-modal-compare-btn.active { border-color: rgba(200,146,42,0.4); color: var(--amber-light); }
+
+@media (max-width: 600px) {
+  #mat-options-modal.compare-mode { max-width: calc(100% - 24px); width: calc(100% - 24px); }
+  #mat-options-modal.compare-mode .mat-modal-body { flex-direction: column; overflow-x: hidden; overflow-y: auto; }
+  #mat-options-modal.compare-mode .mat-opt-card { min-width: unset; max-width: unset; }
+  .mat-opt-row-fields-3 { grid-template-columns: 1fr 1fr; }
+  .mat-opt-row-fields-3 .mat-opt-field:last-child { grid-column: 1 / -1; }
+}
 
 /* Options button on material card */
 .mat-options-btn {
@@ -4488,7 +4633,7 @@ function renderMaterials() {
     const statusDef = MAT_STATUSES.find(s => s.key === activeStatus) || MAT_STATUSES[0];
 
     const matOpts = getMaterialOptions(statusKey);
-    const matHasFav = matOpts.some(o => o.optionStatus === 'favourite');
+    const matHasFav = matOpts.some(o => o.optionStatus === 'shortlisted' || o.optionStatus === 'ordered');
     const matCount = matOpts.length;
     const optBtnClass = matHasFav ? 'mat-options-btn has-favourite' : 'mat-options-btn';
     const optBtnInner = matHasFav
@@ -5354,10 +5499,14 @@ function escapeMaterialKey(name) {
 
 function migrateMaterialOptions(options) {
   return options.map(opt => {
+    let status = opt.optionStatus;
+    // Legacy: selected boolean → favourite
     if ('selected' in opt && !('optionStatus' in opt)) {
-      return { ...opt, optionStatus: opt.selected ? 'favourite' : null };
+      status = opt.selected ? 'shortlisted' : null;
     }
-    return opt;
+    // Rename old status values
+    if (status === 'considering' || status === 'favourite') status = 'shortlisted';
+    return { ...opt, optionStatus: status };
   });
 }
 
@@ -5387,7 +5536,39 @@ function openMaterialOptions(key) {
 function closeMaterialOptions() {
   matModalKey = null;
   document.getElementById('mat-options-backdrop').classList.remove('open');
-  document.getElementById('mat-options-modal').classList.remove('open');
+  const modal = document.getElementById('mat-options-modal');
+  modal.classList.remove('open');
+  modal.classList.remove('compare-mode');
+  const btn = document.getElementById('mat-modal-compare-btn');
+  if (btn) btn.classList.remove('active');
+}
+
+function parsePriceValue(str) {
+  if (!str) return null;
+  // Strip currency symbols and commas
+  const clean = str.replace(/[£$€,]/g, '');
+  // Range like "310–490" or "310-490" → midpoint
+  const range = clean.match(/(\d+(?:\.\d+)?)\s*[–\-]\s*(\d+(?:\.\d+)?)/);
+  if (range) return (parseFloat(range[1]) + parseFloat(range[2])) / 2;
+  // Single number (possibly followed by text)
+  const single = clean.match(/(\d+(?:\.\d+)?)/);
+  if (single) return parseFloat(single[1]);
+  return null;
+}
+
+function renderCostBars(key) {
+  const options = getMaterialOptions(key);
+  const prices = options.map(o => parsePriceValue(o.price));
+  const validPrices = prices.filter(p => p !== null);
+  if (validPrices.length < 2) return;
+  const max = Math.max(...validPrices);
+  if (max <= 0) return;
+  options.forEach((_, idx) => {
+    const bar = document.querySelector(`#mat-modal-body [data-opt-idx="${idx}"] .mat-opt-cost-bar`);
+    if (!bar) return;
+    const val = prices[idx];
+    bar.style.width = val !== null ? Math.round((val / max) * 100) + '%' : '0%';
+  });
 }
 
 function renderModalOptions(key) {
@@ -5400,17 +5581,30 @@ function renderModalOptions(key) {
   }
   body.innerHTML = options.map((opt, idx) => {
     const st = opt.optionStatus || null;
+    const imgHtml = opt.imageUrl
+      ? `<img src="${escHtml(opt.imageUrl)}" alt="">`
+      : `<svg class="mat-opt-img-placeholder-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+           <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+           <polyline points="21,15 16,10 5,21"/>
+         </svg>
+         <span class="mat-opt-img-placeholder-text">Add photo</span>`;
     return `
       <div class="mat-opt-card${st ? ' status-' + st : ''}" data-opt-idx="${idx}">
+        <div class="mat-opt-img-area${opt.imageUrl ? ' has-image' : ''}"
+          onclick="document.getElementById('mat-opt-img-input-${key}-${idx}').click()">
+          ${imgHtml}
+          <input class="mat-opt-img-input" id="mat-opt-img-input-${key}-${idx}" type="file" accept="image/*"
+            onchange="uploadOptionImage('${key}', ${idx}, this.files[0])">
+        </div>
         <div class="mat-opt-row-top">
           <input class="mat-opt-name" type="text" placeholder="Option name…"
             value="${escHtml(opt.label || '')}"
             oninput="updateModalOption('${key}', ${idx}, 'label', this.value)">
           <div class="mat-opt-chips">
-            <button class="mat-opt-chip${st === 'considering' ? ' chip-considering' : ''}"
-              onclick="toggleModalOptionStatus('${key}', ${idx}, 'considering')">Considering</button>
-            <button class="mat-opt-chip${st === 'favourite' ? ' chip-favourite' : ''}"
-              onclick="toggleModalOptionStatus('${key}', ${idx}, 'favourite')">Favourite</button>
+            <button class="mat-opt-chip${st === 'shortlisted' ? ' chip-shortlisted' : ''}"
+              onclick="toggleModalOptionStatus('${key}', ${idx}, 'shortlisted')">Shortlisted</button>
+            <button class="mat-opt-chip${st === 'ordered' ? ' chip-ordered' : ''}"
+              onclick="toggleModalOptionStatus('${key}', ${idx}, 'ordered')">Ordered</button>
             <button class="mat-opt-chip${st === 'rejected' ? ' chip-rejected' : ''}"
               onclick="toggleModalOptionStatus('${key}', ${idx}, 'rejected')">Rejected</button>
           </div>
@@ -5421,22 +5615,34 @@ function renderModalOptions(key) {
           </button>
         </div>
         <div class="mat-opt-row-fields">
-          <input class="mat-opt-field" type="text" placeholder="URL…"
+          <input class="mat-opt-field" type="text" placeholder="Supplier…"
+            value="${escHtml(opt.supplier || '')}"
+            oninput="updateModalOption('${key}', ${idx}, 'supplier', this.value)">
+          <input class="mat-opt-field" type="text" placeholder="Lead time…"
+            value="${escHtml(opt.leadTime || '')}"
+            oninput="updateModalOption('${key}', ${idx}, 'leadTime', this.value)">
+        </div>
+        <div class="mat-opt-row-fields-3">
+          <input class="mat-opt-field" type="url" placeholder="URL…"
             value="${escHtml(opt.url || '')}"
             oninput="updateModalOption('${key}', ${idx}, 'url', this.value)">
-          <input class="mat-opt-field" type="text" placeholder="Price…"
-            value="${escHtml(opt.price || '')}"
-            oninput="updateModalOption('${key}', ${idx}, 'price', this.value)">
+          <div class="mat-opt-price-wrap">
+            <input class="mat-opt-field" type="text" placeholder="Price…"
+              value="${escHtml(opt.price || '')}"
+              oninput="updateModalOption('${key}', ${idx}, 'price', this.value); renderCostBars('${key}')">
+            <div class="mat-opt-cost-bar-track"><div class="mat-opt-cost-bar"></div></div>
+          </div>
         </div>
         <textarea class="mat-opt-notes" placeholder="Notes…"
           oninput="updateModalOption('${key}', ${idx}, 'notes', this.value)">${escHtml(opt.notes || '')}</textarea>
       </div>`;
   }).join('');
+  renderCostBars(key);
 }
 
 function addModalOption(key) {
   const options = getMaterialOptions(key);
-  options.unshift({ label: '', url: '', price: '', notes: '', optionStatus: null });
+  options.unshift({ label: '', supplier: '', leadTime: '', url: '', price: '', notes: '', optionStatus: null, imageUrl: '' });
   saveMaterialOptions(key, options);
   renderModalOptions(key);
   updateMaterialCardBtn(key);
@@ -5472,13 +5678,44 @@ function updateModalOption(key, idx, field, value) {
   }, 500);
 }
 
+async function uploadOptionImage(key, idx, file) {
+  if (!file) return;
+  const area = document.querySelector(`#mat-modal-body [data-opt-idx="${idx}"] .mat-opt-img-area`);
+  if (area) area.classList.add('uploading');
+  try {
+    const blob = await compressImage(file);
+    const ref = storage.ref(`optionImages/${key}/${idx}.jpg`);
+    await ref.put(blob, { contentType: 'image/jpeg' });
+    const url = await ref.getDownloadURL();
+    const options = getMaterialOptions(key);
+    if (options[idx]) {
+      options[idx].imageUrl = url;
+      saveMaterialOptions(key, options);
+      renderModalOptions(key);
+    }
+  } catch (e) {
+    if (area) area.classList.remove('uploading');
+    if (e && e.message === 'undecodable') {
+      alert("This browser can't process HEIC photos. Try a JPEG or PNG.");
+    }
+  }
+}
+
+function toggleCompareMode() {
+  const modal = document.getElementById('mat-options-modal');
+  const btn = document.getElementById('mat-modal-compare-btn');
+  if (!modal) return;
+  modal.classList.toggle('compare-mode');
+  if (btn) btn.classList.toggle('active', modal.classList.contains('compare-mode'));
+}
+
 function updateMaterialCardBtn(key) {
   const btn = document.getElementById(`mat-opts-btn-${key}`);
   if (!btn) return;
   const options = getMaterialOptions(key);
-  const hasFavourite = options.some(o => o.optionStatus === 'favourite');
+  const hasHighlight = options.some(o => o.optionStatus === 'shortlisted' || o.optionStatus === 'ordered');
   const count = options.length;
-  if (hasFavourite) {
+  if (hasHighlight) {
     btn.className = 'mat-options-btn has-favourite';
     btn.innerHTML = `<span class="mat-options-dot"></span> Options (${count})`;
   } else if (count > 0) {
@@ -5868,11 +6105,19 @@ window.addEventListener('scroll', () => {
       <div class="mat-modal-eyebrow" id="mat-modal-eyebrow"></div>
       <div class="mat-modal-title" id="mat-modal-title">Compare choices</div>
     </div>
-    <button class="mat-modal-close" onclick="closeMaterialOptions()" title="Close" aria-label="Close options">
-      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
-        <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
-      </svg>
-    </button>
+    <div style="display:flex;align-items:center;gap:0;flex-shrink:0;margin-top:2px;">
+      <button class="mat-modal-compare-btn" id="mat-modal-compare-btn" onclick="toggleCompareMode()" title="Side-by-side compare" aria-label="Toggle compare mode">
+        <svg width="14" height="10" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.6">
+          <line x1="1" y1="6" x2="6" y2="6"/><polyline points="4,3 7,6 4,9"/>
+          <line x1="15" y1="6" x2="10" y2="6"/><polyline points="12,3 9,6 12,9"/>
+        </svg>
+      </button>
+      <button class="mat-modal-close" onclick="closeMaterialOptions()" title="Close" aria-label="Close options">
+        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
+          <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+        </svg>
+      </button>
+    </div>
   </div>
   <div class="mat-modal-body" id="mat-modal-body"></div>
   <div class="mat-modal-footer">
