@@ -5298,8 +5298,15 @@ function updateActualTotal() {
   if (!varianceEl) return;
   if (count === 0) { varianceEl.style.display = 'none'; return; }
 
-  const items = budgetItemsArray();
-  const totalMid = items.reduce((s, i) => s + Math.round(((i.low || 0) + (i.high || 0)) / 2), 0);
+  // Only sum midpoints for items that have an actual entered
+  let totalMid = 0;
+  document.querySelectorAll('.budget-actual-input').forEach(input => {
+    if (!input.value.trim()) return;
+    const num = parseFloat(input.value.replace(/[^0-9.]/g, ''));
+    if (isNaN(num)) return;
+    const item = DB_STATE.budgetItems[input.dataset.itemId];
+    if (item) totalMid += Math.round(((item.low || 0) + (item.high || 0)) / 2);
+  });
   const diff = Math.round(totalMid - total); // positive = under budget
   const badge = varianceEl.querySelector('.bvf-badge');
   varianceEl.style.display = 'flex';
