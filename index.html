@@ -1326,7 +1326,7 @@ nav .nav-inner {
 .mat-opt-img-area {
   position: relative;
   width: 100%;
-  height: 140px;
+  height: 200px;
   border-radius: 5px;
   overflow: hidden;
   margin-bottom: 12px;
@@ -5825,10 +5825,12 @@ async function uploadOptionImage(key, idx, file) {
 
 function toggleCompareMode() {
   const modal = document.getElementById('mat-options-modal');
+  const body = document.getElementById('mat-modal-body');
   const btn = document.getElementById('mat-modal-compare-btn');
   if (!modal) return;
   modal.classList.toggle('compare-mode');
   if (btn) btn.classList.toggle('active', modal.classList.contains('compare-mode'));
+  if (body) body.scrollTop = 0;
 }
 
 function updateMaterialCardBtn(key) {

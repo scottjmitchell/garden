@@ -186,6 +186,30 @@ test('dragleave with relatedTarget inside zone does not remove drag-over', async
   await expect(zone).toHaveClass(/drag-over/);
 });
 
+test('compare mode resets scroll position to top', async ({ page }) => {
+  await page.locator('#materials-container .material-card').first()
+    .locator('button.mat-options-btn').click();
+  await page.locator('#mat-modal-add-btn').click();
+  await page.locator('#mat-modal-add-btn').click();
+  // Scroll the body down in list mode
+  await page.locator('#mat-modal-body').evaluate(el => { el.scrollTop = 200; });
+  const scrollBefore = await page.locator('#mat-modal-body').evaluate(el => el.scrollTop);
+  expect(scrollBefore).toBeGreaterThan(0);
+  // Toggle compare mode
+  await page.locator('#mat-modal-compare-btn').click();
+  const scrollAfter = await page.locator('#mat-modal-body').evaluate(el => el.scrollTop);
+  expect(scrollAfter).toBe(0);
+});
+
+test('image zone height is at least 180px', async ({ page }) => {
+  await page.locator('#materials-container .material-card').first()
+    .locator('button.mat-options-btn').click();
+  await page.locator('#mat-modal-add-btn').click();
+  const zone = page.locator('#mat-modal-body .mat-opt-img-area').first();
+  const height = await zone.evaluate(el => el.getBoundingClientRect().height);
+  expect(height).toBeGreaterThanOrEqual(180);
+});
+
 // ─── Photo journal ───────────────────────────────────────────────────────────
 
 test('journal shows 5 photo cards', async ({ page }) => {
