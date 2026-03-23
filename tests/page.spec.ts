@@ -137,6 +137,55 @@ test('cost bar element is present in option cards', async ({ page }) => {
   await expect(page.locator('#mat-modal-body .mat-opt-cost-bar').first()).toBeAttached();
 });
 
+test('clicking image zone arms it for paste', async ({ page }) => {
+  await page.locator('#materials-container .material-card').first()
+    .locator('button.mat-options-btn').click();
+  await expect(page.locator('#mat-options-modal')).toHaveClass(/open/);
+  await page.locator('#mat-modal-add-btn').click();
+  const zone = page.locator('#mat-modal-body .mat-opt-img-area').first();
+  await zone.click();
+  await expect(zone).toHaveClass(/armed/);
+});
+
+test('armed state clears when clicking outside image zone', async ({ page }) => {
+  await page.locator('#materials-container .material-card').first()
+    .locator('button.mat-options-btn').click();
+  await page.locator('#mat-modal-add-btn').click();
+  const zone = page.locator('#mat-modal-body .mat-opt-img-area').first();
+  await zone.click();
+  await expect(zone).toHaveClass(/armed/);
+  // Click somewhere else in the modal body that isn't an image zone
+  await page.locator('#mat-modal-body .mat-opt-name').first().click();
+  await expect(zone).not.toHaveClass(/armed/);
+});
+
+test('drag over image zone adds drag-over highlight class', async ({ page }) => {
+  await page.locator('#materials-container .material-card').first()
+    .locator('button.mat-options-btn').click();
+  await page.locator('#mat-modal-add-btn').click();
+  const zone = page.locator('#mat-modal-body .mat-opt-img-area').first();
+  await zone.dispatchEvent('dragover', { dataTransfer: {} });
+  await expect(zone).toHaveClass(/drag-over/);
+});
+
+test('dragleave with relatedTarget inside zone does not remove drag-over', async ({ page }) => {
+  await page.locator('#materials-container .material-card').first()
+    .locator('button.mat-options-btn').click();
+  await page.locator('#mat-modal-add-btn').click();
+  const zone = page.locator('#mat-modal-body .mat-opt-img-area').first();
+  // Arm the drag-over state first
+  await zone.dispatchEvent('dragover', { dataTransfer: {} });
+  await expect(zone).toHaveClass(/drag-over/);
+  // Simulate dragleave where relatedTarget is a child element (placeholder icon) inside the zone
+  await zone.evaluate((el) => {
+    const child = el.querySelector('svg') || el.firstElementChild || el;
+    const event = new DragEvent('dragleave', { bubbles: true, relatedTarget: child });
+    el.dispatchEvent(event);
+  });
+  // drag-over should remain because relatedTarget is inside the zone
+  await expect(zone).toHaveClass(/drag-over/);
+});
+
 // ─── Photo journal ───────────────────────────────────────────────────────────
 
 test('journal shows 5 photo cards', async ({ page }) => {
