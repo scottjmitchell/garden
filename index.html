@@ -5598,6 +5598,29 @@ function armImageZone(key, idx) {
   setArmedZone(idx);
 }
 
+function handleModalPaste(e) {
+  if (!matModalKey) return; // modal not open
+  const items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  let imageFile = null;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      imageFile = items[i].getAsFile();
+      break;
+    }
+  }
+  if (!imageFile) return; // non-image paste — ignore silently
+  // Determine target: armed zone first, else first card without an image
+  let targetIdx = matPasteTargetIdx;
+  if (targetIdx === null) {
+    const opts = getMaterialOptions(matModalKey);
+    targetIdx = opts.findIndex(opt => !opt.imageUrl);
+  }
+  if (targetIdx === -1 || targetIdx === null) return; // all cards have images and nothing armed
+  uploadOptionImage(matModalKey, targetIdx, imageFile);
+  setArmedZone(null); // auto-disarm after paste
+}
+
 let matModalSaveTimers = {};
 
 function openMaterialOptions(key) {
@@ -5609,10 +5632,12 @@ function openMaterialOptions(key) {
   renderModalOptions(key);
   document.getElementById('mat-options-backdrop').classList.add('open');
   document.getElementById('mat-options-modal').classList.add('open');
+  document.addEventListener('paste', handleModalPaste);
 }
 
 function closeMaterialOptions() {
   setArmedZone(null);
+  document.removeEventListener('paste', handleModalPaste);
   matModalKey = null;
   document.getElementById('mat-options-backdrop').classList.remove('open');
   const modal = document.getElementById('mat-options-modal');
