@@ -247,3 +247,26 @@ test('entering a budget actual shows variance', async ({ page }) => {
 test('garden plan section renders', async ({ page }) => {
   await expect(page.locator('#map')).toBeVisible();
 });
+
+// ─── Nav logo link ────────────────────────────────────────────────────────────
+
+test('nav logo is a link to the top of the page', async ({ page }) => {
+  const logo = page.locator('.nav-logo');
+  await expect(logo).toHaveAttribute('href', '#');
+});
+
+test('nav logo has pointer cursor', async ({ page }) => {
+  const logo = page.locator('.nav-logo');
+  const cursor = await logo.evaluate(el => getComputedStyle(el).cursor);
+  expect(cursor).toBe('pointer');
+});
+
+test('nav logo scrolls to top on click', async ({ page }) => {
+  // Scroll down first
+  await page.evaluate(() => window.scrollTo(0, 800));
+  await page.waitForFunction(() => window.scrollY > 0);
+  await page.locator('.nav-logo').click();
+  await page.waitForFunction(() => window.scrollY === 0, { timeout: 3000 });
+  const scrollY = await page.evaluate(() => window.scrollY);
+  expect(scrollY).toBe(0);
+});
