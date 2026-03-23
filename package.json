@@ -6,7 +6,11 @@
   "directories": {
     "doc": "docs"
   },
-  "scripts": {},
+  "scripts": {
+    "serve": "npx serve . -l 4000 --no-clipboard",
+    "test": "npx playwright test",
+    "test:local": "BASE_URL=http://localhost:4000 npx playwright test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/scottjmitchell/garden.git"

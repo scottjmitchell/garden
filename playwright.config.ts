@@ -7,7 +7,7 @@ export default defineConfig({
   retries: 0,
   reporter: 'line',
   use: {
-    baseURL: 'https://garden.scottjmitchell.com',
+    baseURL: process.env.BASE_URL ?? 'https://garden.scottjmitchell.com',
     trace: 'on-first-retry',
   },
   projects: [
