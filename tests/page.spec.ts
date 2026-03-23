@@ -270,3 +270,44 @@ test('nav logo scrolls to top on click', async ({ page }) => {
   const scrollY = await page.evaluate(() => window.scrollY);
   expect(scrollY).toBe(0);
 });
+
+// ─── Budget total variance ────────────────────────────────────────────────────
+
+test('budget total variance is hidden when no actuals entered', async ({ page }) => {
+  // Clear any pre-filled actuals
+  for (const input of await page.locator('.budget-actual-input').all()) {
+    await input.fill('');
+    await input.blur();
+  }
+  await expect(page.locator('#budget-total-variance')).toBeHidden();
+});
+
+test('budget total variance shows under budget when actual is below midpoint', async ({ page }) => {
+  const firstInput = page.locator('.budget-actual-input').first();
+  await firstInput.fill('1');
+  await firstInput.blur();
+  await expect(page.locator('#budget-total-variance')).toBeVisible();
+  await expect(page.locator('#budget-total-variance')).toContainText('under budget');
+});
+
+test('budget total variance shows over budget when actual is above midpoint', async ({ page }) => {
+  const firstInput = page.locator('.budget-actual-input').first();
+  await firstInput.fill('999999');
+  await firstInput.blur();
+  await expect(page.locator('#budget-total-variance')).toBeVisible();
+  await expect(page.locator('#budget-total-variance')).toContainText('over budget');
+});
+
+test('budget total variance updates when a second actual is entered', async ({ page }) => {
+  const inputs = page.locator('.budget-actual-input');
+  await inputs.nth(0).fill('1');
+  await inputs.nth(0).blur();
+  const textBefore = await page.locator('#budget-total-variance').textContent();
+  await inputs.nth(1).fill('1');
+  await inputs.nth(1).blur();
+  const textAfter = await page.locator('#budget-total-variance').textContent();
+  // Both values are tiny so should still be "under budget", but the amount changes
+  expect(textBefore).toContain('under budget');
+  expect(textAfter).toContain('under budget');
+  expect(textBefore).not.toBe(textAfter);
+});
