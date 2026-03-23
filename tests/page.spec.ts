@@ -164,7 +164,7 @@ test('drag over image zone adds drag-over highlight class', async ({ page }) => 
     .locator('button.mat-options-btn').click();
   await page.locator('#mat-modal-add-btn').click();
   const zone = page.locator('#mat-modal-body .mat-opt-img-area').first();
-  await zone.dispatchEvent('dragover', { dataTransfer: {} });
+  await zone.dispatchEvent('dragover');
   await expect(zone).toHaveClass(/drag-over/);
 });
 
@@ -174,7 +174,7 @@ test('dragleave with relatedTarget inside zone does not remove drag-over', async
   await page.locator('#mat-modal-add-btn').click();
   const zone = page.locator('#mat-modal-body .mat-opt-img-area').first();
   // Arm the drag-over state first
-  await zone.dispatchEvent('dragover', { dataTransfer: {} });
+  await zone.dispatchEvent('dragover');
   await expect(zone).toHaveClass(/drag-over/);
   // Simulate dragleave where relatedTarget is a child element (placeholder icon) inside the zone
   await zone.evaluate((el) => {
