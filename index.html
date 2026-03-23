@@ -5609,10 +5609,8 @@ async function handlePhotoUpload(slotId, input) {
    LIGHTBOX
 ============================================================ */
 (function () {
-  const backdrop = document.getElementById('lightbox-backdrop');
-  const img      = document.getElementById('lightbox-img');
-  const closeBtn = document.getElementById('lightbox-close');
-  let lastFocus  = null;
+  let backdrop, img, closeBtn;
+  let lastFocus = null;
 
   function openLightbox(src, alt) {
     lastFocus = document.activeElement;
@@ -5648,12 +5646,16 @@ async function handlePhotoUpload(slotId, input) {
     }
   }
 
-  backdrop.addEventListener('click', (e) => {
-    if (e.target !== img) closeLightbox();
-  });
-  closeBtn.addEventListener('click', closeLightbox);
-
   window.initLightbox = function () {
+    if (!backdrop) {
+      backdrop = document.getElementById('lightbox-backdrop');
+      img      = document.getElementById('lightbox-img');
+      closeBtn = document.getElementById('lightbox-close');
+      backdrop.addEventListener('click', (e) => {
+        if (e.target !== img) closeLightbox();
+      });
+      closeBtn.addEventListener('click', closeLightbox);
+    }
     document.querySelectorAll('img').forEach((el) => {
       if (el === img) return;                    // skip the lightbox img itself
       if (el.closest('svg')) return;             // skip SVG-embedded images
