@@ -1341,6 +1341,17 @@ nav .nav-inner {
   transition: border-color 0.18s, background 0.18s;
 }
 .mat-opt-img-area:hover { border-color: rgba(200, 146, 42, 0.35); background: rgba(200, 146, 42, 0.02); }
+.mat-opt-img-area.armed {
+  border-style: solid;
+  border-color: rgba(94, 117, 88, 0.6);
+  background: rgba(61, 82, 57, 0.12);
+  box-shadow: 0 0 0 3px rgba(94, 117, 88, 0.12);
+}
+.mat-opt-img-area.drag-over {
+  border-style: solid;
+  border-color: rgba(200, 146, 42, 0.5);
+  background: rgba(200, 146, 42, 0.06);
+}
 .mat-opt-img-area.has-image { border-style: solid; border-color: var(--border); }
 .mat-opt-img-area.uploading { opacity: 0.6; pointer-events: none; }
 .mat-opt-img-area img {
