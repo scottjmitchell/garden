@@ -271,6 +271,50 @@ test('nav logo scrolls to top on click', async ({ page }) => {
   expect(scrollY).toBe(0);
 });
 
+// ─── Material option URL link (issue #11) ────────────────────────────────────
+
+test('url link is hidden when option has no url', async ({ page }) => {
+  await openModalAndAddOption(page);
+  await expect(page.locator('#mat-modal-body .mat-opt-url-link').first()).toBeHidden();
+});
+
+test('entering a url shows a link with the correct domain label', async ({ page }) => {
+  await openModalAndAddOption(page);
+  const urlInput = page.locator('#mat-modal-body .mat-opt-field[type="url"]').first();
+  await urlInput.fill('https://www.wickes.co.uk/some-product');
+  await urlInput.dispatchEvent('input');
+  const link = page.locator('#mat-modal-body .mat-opt-url-link').first();
+  await expect(link).toBeVisible();
+  await expect(link).toContainText('wickes.co.uk');
+});
+
+test('url link has target blank and rel noopener', async ({ page }) => {
+  await openModalAndAddOption(page);
+  const urlInput = page.locator('#mat-modal-body .mat-opt-field[type="url"]').first();
+  await urlInput.fill('https://www.wickes.co.uk/some-product');
+  await urlInput.dispatchEvent('input');
+  const link = page.locator('#mat-modal-body .mat-opt-url-link').first();
+  await expect(link).toHaveAttribute('target', '_blank');
+  await expect(link).toHaveAttribute('rel', 'noopener');
+});
+
+test('mat-print-options is hidden in screen mode', async ({ page }) => {
+  // Open modal, add option with a URL, close modal — then check print block is hidden
+  await openModalAndAddOption(page);
+  const urlInput = page.locator('#mat-modal-body .mat-opt-field[type="url"]').first();
+  await urlInput.fill('https://www.wickes.co.uk/some-product');
+  await urlInput.dispatchEvent('input');
+  await page.locator('#mat-options-modal .mat-modal-close').click();
+  // re-render fires on close — check the print block is in DOM but hidden
+  const printBlock = page.locator('.material-card .mat-print-options').first();
+  // either not present or hidden
+  const count = await printBlock.count();
+  if (count > 0) {
+    const display = await printBlock.evaluate(el => getComputedStyle(el).display);
+    expect(display).toBe('none');
+  }
+});
+
 // ─── Hero layout ─────────────────────────────────────────────────────────────
 
 test('hero text is centred', async ({ page }) => {

@@ -1568,6 +1568,23 @@ nav .nav-inner {
 .mat-opt-field:focus { border-color: rgba(200, 146, 42, 0.35); color: var(--text); }
 .mat-opt-field::placeholder { color: var(--text-dim); }
 
+.mat-opt-url-wrap { display: flex; align-items: center; gap: 6px; }
+.mat-opt-url-wrap .mat-opt-field { flex: 1; min-width: 0; }
+.mat-opt-url-link {
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--amber);
+  border: 1px solid rgba(200,146,42,0.25);
+  border-radius: var(--radius);
+  padding: 3px 8px;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background var(--transition);
+}
+.mat-opt-url-link:hover { background: rgba(200,146,42,0.08); }
+.mat-print-options { display: none; }
+
 /* Cost comparison bar */
 .mat-opt-price-wrap { position: relative; }
 .mat-opt-cost-bar {
@@ -2583,6 +2600,9 @@ footer::before {
   .btn-print { display: none !important; }
   .fade-in, .fade-in-stagger { opacity: 1 !important; transform: none !important; }
   .material-status { border: 1px solid #ccc !important; color: #333 !important; background: white !important; }
+  .mat-print-options { display: block !important; margin-top: 8px; border-top: 1px solid #ddd; padding-top: 6px; }
+  .mat-print-opt { display: flex; justify-content: space-between; font-size: 10px; color: #555; margin-bottom: 2px; }
+  .mat-print-opt a { color: #333; text-decoration: none; }
 }
 
 /* ─── Task Detail Drawer ───────────────────────────────────────── */
@@ -4756,6 +4776,16 @@ function renderMaterials() {
       </button>
     `;
     container.appendChild(card);
+
+    const printOpts = getMaterialOptions(statusKey).filter(o => o.url);
+    if (printOpts.length) {
+      const printDiv = document.createElement('div');
+      printDiv.className = 'mat-print-options';
+      printDiv.innerHTML = printOpts.map(o =>
+        `<div class="mat-print-opt"><span>${escapeHtml(o.label || o.supplier || 'Option')}</span><a href="${escapeHtml(o.url)}">${getDomain(o.url)}</a></div>`
+      ).join('');
+      card.appendChild(printDiv);
+    }
   });
 
   // Add "+ Add Material" button
@@ -5645,6 +5675,23 @@ function getMaterialOptions(key) {
   return migrateMaterialOptions(DB_STATE.materialOpts[key] || []);
 }
 
+function getDomain(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); }
+  catch { return url; }
+}
+function updateUrlLink(input) {
+  const link = input.nextElementSibling;
+  if (!link) return;
+  const url = input.value.trim();
+  if (url) {
+    link.href = url;
+    link.textContent = getDomain(url);
+    link.style.display = '';
+  } else {
+    link.style.display = 'none';
+  }
+}
+
 function saveMaterialOptions(key, options) {
   DB_STATE.materialOpts[key] = options;
   db.ref('garden/materialOpts/' + key).set(options.length ? options : null);
@@ -5818,9 +5865,13 @@ function renderModalOptions(key) {
             oninput="updateModalOption('${key}', ${idx}, 'leadTime', this.value)">
         </div>
         <div class="mat-opt-row-fields-3">
-          <input class="mat-opt-field" type="url" placeholder="URL…"
-            value="${escHtml(opt.url || '')}"
-            oninput="updateModalOption('${key}', ${idx}, 'url', this.value)">
+          <div class="mat-opt-url-wrap">
+            <input class="mat-opt-field" type="url" placeholder="URL…"
+              value="${escHtml(opt.url || '')}"
+              oninput="updateModalOption('${key}', ${idx}, 'url', this.value); updateUrlLink(this)">
+            <a class="mat-opt-url-link" href="${escHtml(opt.url || '#')}" target="_blank" rel="noopener"
+              style="${opt.url ? '' : 'display:none'}">${opt.url ? getDomain(opt.url) : ''}</a>
+          </div>
           <div class="mat-opt-price-wrap">
             <input class="mat-opt-field" type="text" placeholder="Price…"
               value="${escHtml(opt.price || '')}"
