@@ -3,9 +3,9 @@ import { test, expect } from '@playwright/test';
 const LOAD_TIMEOUT = 20000;
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
-  // Materials are rendered after Firebase resolves — use as load signal
-  await page.waitForSelector('#materials-container .material-card', { timeout: LOAD_TIMEOUT });
+  await page.goto('/?env=test');
+  // Budget table renders (with defaults) after Firebase resolves — use as load signal
+  await page.waitForSelector('#budget-items-body .budget-row', { timeout: LOAD_TIMEOUT });
 });
 
 // ─── Page load ───────────────────────────────────────────────────────────────
