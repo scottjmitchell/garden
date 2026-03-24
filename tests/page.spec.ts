@@ -16,14 +16,6 @@ test('nav renders all six links on desktop', async ({ page }) => {
   }
 })
 
-test('mobile nav: links hidden by default, shown after hamburger click', async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 812 })
-  await page.goto('/')
-  await expect(page.getByRole('link', { name: 'Plan' })).not.toBeVisible()
-  await page.getByRole('button', { name: /open menu/i }).click()
-  await expect(page.getByRole('link', { name: 'Plan' })).toBeVisible()
-})
-
 // ─── Routing ─────────────────────────────────────────────────────────────────
 
 const routes: { path: string; heading: string }[] = [
@@ -150,4 +142,32 @@ test('Modal: opens and closes', async ({ page }) => {
   await expect(page.getByRole('dialog')).toBeVisible()
   await page.getByRole('button', { name: /close/i }).click()
   await expect(page.getByRole('dialog')).not.toBeVisible()
+})
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+
+test('sidebar: shows all nav links expanded by default', async ({ page }) => {
+  await page.goto('/')
+  for (const label of ['Overview', 'Plan', 'Materials', 'Budget', 'Journal', 'Map']) {
+    await expect(page.getByRole('link', { name: label, exact: true }).first()).toBeVisible()
+  }
+})
+
+test('sidebar: collapses to icon-only on button click', async ({ page }) => {
+  await page.goto('/plan')
+  await page.getByRole('button', { name: /collapse/i }).click()
+  await expect(page.getByRole('navigation').getByText('Overview')).not.toBeVisible()
+})
+
+test('sidebar: expands again after second click', async ({ page }) => {
+  await page.goto('/plan')
+  await page.getByRole('button', { name: /collapse/i }).click()
+  await page.getByRole('button', { name: /expand/i }).click()
+  await expect(page.getByRole('navigation').getByText('Overview')).toBeVisible()
+})
+
+test('sidebar: active nav link is highlighted on plan page', async ({ page }) => {
+  await page.goto('/plan')
+  const planLink = page.getByRole('link', { name: 'Plan', exact: true })
+  await expect(planLink).toHaveClass(/text-amber/)
 })
