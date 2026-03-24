@@ -1,11 +1,11 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './tests',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: 0,
-  reporter: 'line',
+  reporter: 'html',
   use: {
     baseURL: process.env.BASE_URL ?? 'https://garden.scottjmitchell.com',
     trace: 'on-first-retry',
@@ -16,4 +16,4 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-});
+})
