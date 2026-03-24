@@ -2241,50 +2241,48 @@ footer::before {
   .container { padding: 0 16px; }
   .phase-header { padding: 18px 16px; gap: 12px; }
   .phase-tasks { padding: 0 16px 18px; }
-  /* Budget: hide the header row — labels don't apply to card layout */
+  /* Budget: hide header — column labels don't map to card layout */
   .budget-row.header { display: none; }
 
-  /* Budget: each data row becomes a stacked card */
+  /* 2-row compact card:
+     Row 1 → [name ............. actions]
+     Row 2 → [£low – £high ..... actual + variance] */
   .budget-row:not(.header):not(.editing) {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
-    gap: 0;
-    padding: 14px 16px;
+    align-items: center;
+    padding: 11px 16px;
     grid-template-columns: unset !important;
   }
 
-  /* Item name spans full width */
+  /* Row 1 — name */
   .budget-row:not(.header):not(.editing) .budget-item-name {
-    width: 100%;
-    margin-bottom: 6px;
+    order: 1; flex: 1; min-width: 0;
+    font-size: 13.5px; padding-right: 4px;
   }
 
-  /* Low + high sit side by side on one line */
+  /* Row 1 — actions pinned right, always visible */
+  .budget-row:not(.header):not(.editing) .budget-row-actions {
+    order: 2; flex-shrink: 0; opacity: 1; min-width: 0;
+  }
+
+  /* Row 2 — low/high range (left side) */
   .budget-row:not(.header):not(.editing) .budget-low,
   .budget-row:not(.header):not(.editing) .budget-high {
-    display: block;
-    width: 50%;
-    text-align: left;
-    margin-bottom: 10px;
-    font-size: 13px;
+    order: 3; flex-shrink: 0;
+    display: block; width: auto;
+    font-size: 12px; text-align: left; margin-top: 6px;
+  }
+  .budget-row:not(.header):not(.editing) .budget-low::after {
+    content: " – "; color: var(--text-dim);
   }
 
-  /* Actual input cell takes full width */
+  /* Row 2 — actual cell pushed to right */
   .budget-row:not(.header):not(.editing) .budget-actual-cell {
-    width: 100%;
-    margin-bottom: 8px;
+    order: 3; margin-left: auto; margin-top: 6px;
   }
+  .budget-actual-input { width: 120px !important; }
 
-  .budget-actual-input { width: 100% !important; box-sizing: border-box; }
-
-  /* Actions always visible, right-aligned, 44px touch targets */
-  .budget-row:not(.header):not(.editing) .budget-row-actions {
-    width: 100%;
-    opacity: 1;
-    min-width: 0;
-    justify-content: flex-end;
-  }
   .budget-action-btn { width: 44px; height: 44px; }
   .phases-grid { padding-left: 44px; }
   .phases-grid::before { left: 14px; }
