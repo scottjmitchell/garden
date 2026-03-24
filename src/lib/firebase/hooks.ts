@@ -81,7 +81,7 @@ export function usePhases() {
 
   useEffect(() => {
     return onValue(ref(db, `${DB_ROOT}/phases`), snap => {
-      if (snap.val()) setPhases(toPhases(snap.val()))
+      setPhases(snap.val() ? toPhases(snap.val()) : [])
       setLoading(false)
     })
   }, [])
@@ -164,7 +164,7 @@ export function useMaterials() {
 
   useEffect(() => {
     return onValue(ref(db, `${DB_ROOT}/materials`), snap => {
-      if (snap.val()) setMaterials(toMaterials(snap.val()))
+      setMaterials(snap.val() ? toMaterials(snap.val()) : [])
       setLoading(false)
     })
   }, [])
@@ -235,7 +235,7 @@ export function useBudget() {
 
   useEffect(() => {
     return onValue(ref(db, `${DB_ROOT}/budgetItems`), snap => {
-      if (snap.val()) setItems(toBudgetItems(snap.val()))
+      setItems(snap.val() ? toBudgetItems(snap.val()) : [])
       setLoading(false)
     })
   }, [])
