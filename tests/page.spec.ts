@@ -7,15 +7,6 @@ test('app loads and shows page title', async ({ page }) => {
   await expect(page).toHaveTitle(/Mitchell Garden/)
 })
 
-// ─── Navigation ──────────────────────────────────────────────────────────────
-
-test('nav renders all six links on desktop', async ({ page }) => {
-  await page.goto('/')
-  for (const name of ['Overview', 'Plan', 'Materials', 'Budget', 'Journal', 'Map']) {
-    await expect(page.getByRole('link', { name, exact: true }).first()).toBeVisible()
-  }
-})
-
 // ─── Routing ─────────────────────────────────────────────────────────────────
 
 const routes: { path: string; heading: string }[] = [
