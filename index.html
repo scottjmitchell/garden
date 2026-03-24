@@ -1985,7 +1985,8 @@ nav .nav-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  margin-bottom: 32px;
+  margin: 0 auto 32px;
+  max-width: 900px;
 }
 
 @media (max-width: 700px) {
@@ -2045,17 +2046,22 @@ nav .nav-inner {
   font-weight: 300;
 }
 
+#budget .section-subtitle { margin-bottom: 20px; }
+
 .budget-chart-mini {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-width: 200px;
+  justify-content: flex-end;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  min-width: 180px;
 }
 
 .budget-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .budget-bar-label {
@@ -2064,23 +2070,28 @@ nav .nav-inner {
   color: var(--text-dim);
   letter-spacing: 0.05em;
   white-space: nowrap;
-  width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 96px;
   flex-shrink: 0;
   text-align: right;
 }
 
-.budget-bar-fill {
+.budget-bar-track {
+  flex: 1;
   height: 4px;
-  background: var(--moss);
+  background: rgba(168,155,120,0.08);
   border-radius: 2px;
-  min-width: 4px;
-  transition: background var(--transition);
-  flex-shrink: 0;
 }
 
-.budget-bar:hover .budget-bar-fill {
-  background: var(--amber);
+.budget-bar-fill {
+  height: 100%;
+  background: var(--moss-light);
+  border-radius: 2px;
+  transition: background var(--transition), width var(--transition);
 }
+
+.budget-bar:hover .budget-bar-fill { background: var(--amber); }
 
 .budget-table {
   background: var(--bg-card);
@@ -2092,7 +2103,7 @@ nav .nav-inner {
 
 .budget-row {
   display: grid;
-  grid-template-columns: 1fr 90px 90px 130px 56px;
+  grid-template-columns: 1fr 180px 130px 56px;
   gap: 16px;
   align-items: center;
   padding: 13px 24px;
@@ -2122,12 +2133,21 @@ nav .nav-inner {
   font-weight: 300;
 }
 
+.budget-range { display: block; text-align: right; white-space: nowrap; }
+.budget-range-sep { font-family: var(--font-display); font-style: italic; color: var(--text-dim); font-size: 14px; }
+.budget-range-cell { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+.budget-total-actual { font-family: var(--font-display); font-style: italic; font-size: 18px; color: var(--text); text-align: right; }
+.budget-total-actual-mobile { display: none; }
+@media (max-width: 480px) {
+  .budget-total-actual-desktop { display: none !important; }
+  .budget-total-actual-mobile { display: block; }
+}
+
 .budget-low {
   font-family: var(--font-display);
   font-size: 14px;
   font-style: italic;
   color: var(--text-muted);
-  text-align: right;
 }
 
 .budget-high {
@@ -2135,8 +2155,39 @@ nav .nav-inner {
   font-size: 14px;
   font-style: italic;
   color: var(--amber-light);
-  text-align: right;
 }
+
+.budget-menu-btn { display: none; }
+.budget-row-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 20;
+  min-width: 110px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+}
+.budget-dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 11px 16px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition), color var(--transition);
+}
+.budget-dropdown-item:hover { background: rgba(168,155,120,0.06); color: var(--text); }
+.budget-dropdown-item.delete { color: #c07050; }
 
 .budget-cta {
   font-family: var(--font-display);
@@ -2241,9 +2292,56 @@ footer::before {
   .container { padding: 0 16px; }
   .phase-header { padding: 18px 16px; gap: 12px; }
   .phase-tasks { padding: 0 16px 18px; }
-  .budget-row:not(.editing) { grid-template-columns: 1fr 90px 52px !important; }
-  .budget-low { display: none; }
-  .budget-row-actions { opacity: 1; min-width: 0; }
+  /* Budget: hide header — column labels don't map to card layout */
+  .budget-row.header { display: none; }
+
+  /* Grid card — 3 columns, 2 rows:
+     Col 1 (1fr):  name, spans rows 1–2, vertically centred
+     Col 2 (auto): range (row 1) / actual-cell (row 2)
+     Col 3 (auto): hamburger/actions, spans rows 1–2, vertically centred */
+  .budget-row:not(.header):not(.editing) {
+    display: grid !important;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 6px;
+    row-gap: 3px;
+    padding: 10px 4px 10px 16px;
+  }
+
+  .budget-row:not(.header):not(.editing) .budget-item-name {
+    grid-column: 1; grid-row: 1 / 3; align-self: center; font-size: 13px;
+  }
+  .budget-row:not(.header):not(.editing) .budget-range {
+    grid-column: 2; grid-row: 1; white-space: nowrap; text-align: right;
+    font-size: 11px;
+  }
+  .budget-row:not(.header):not(.editing) .budget-actual-cell {
+    grid-column: 2; grid-row: 2; justify-content: flex-end;
+  }
+  .budget-actual-input { width: 75px !important; }
+
+  /* Actions column: spans both rows, centred */
+  .budget-row:not(.header):not(.editing) .budget-row-actions {
+    grid-column: 3; grid-row: 1 / 3; align-self: center; justify-self: center;
+    opacity: 1; min-width: 0; flex-direction: column; gap: 0;
+  }
+  /* Hide edit + delete by default — shown only when menu-open */
+  .budget-row:not(.header):not(.editing) .budget-action-btn:not(.budget-menu-btn) { display: none; }
+  /* Hamburger button — 3-line CSS icon */
+  .budget-menu-btn {
+    width: 44px; height: 44px; font-size: 0; position: relative; display: flex;
+  }
+  .budget-menu-btn::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px; height: 2px;
+    background: var(--text-muted);
+    box-shadow: 0 -5px 0 var(--text-muted), 0 5px 0 var(--text-muted);
+  }
+  /* menu-open: show dropdown */
+  .budget-row.menu-open .budget-row-dropdown { display: block; }
   .phases-grid { padding-left: 44px; }
   .phases-grid::before { left: 14px; }
   .phase-num { left: -38px; width: 26px; height: 26px; font-size: 13px; }
@@ -2396,15 +2494,16 @@ footer::before {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 10px;
   padding: 10px 24px 14px;
   font-family: var(--font-sans);
   font-size: 12px;
   color: var(--text-dim);
   letter-spacing: 0.04em;
+  border-top: 1px solid rgba(200,146,42,0.15);
 }
+.budget-variance-footer .bvf-badge { white-space: nowrap; }
 .budget-variance-footer .budget-variance { font-size: 12px; }
-.budget-actual-cell { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.budget-actual-cell { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; justify-content: center; }
 
 /* Budget row CRUD controls */
 .budget-row-actions {
@@ -3156,9 +3255,6 @@ footer::before {
   .budget-row.editing .budget-edit-name { width: 100%; }
   .budget-row.editing .budget-edit-num  { width: 100%; text-align: left; }
 
-  /* Actual-spend input inside normal rows — shrink to fit */
-  .budget-actual-input { width: 72px; }
-
   /* --- Material card actions — keep clear of card title --- */
   .mat-card-actions {
     position: static;
@@ -3175,7 +3271,7 @@ footer::before {
   .phase-edit-input, .phase-edit-select { width: 100%; }
 
   /* --- Touch target sizes for small icon buttons --- */
-  .budget-action-btn  { width: 36px; height: 36px; }
+  .budget-action-btn  { width: 44px; height: 44px; }
   .phase-action-btn   { width: 36px; height: 36px; }
   .task-action-btn    { width: 36px; height: 36px; }
   .task-detail-btn    { width: 36px; height: 36px; }
@@ -3184,7 +3280,10 @@ footer::before {
   .hero-meta-item { padding: 4px 12px; }
 
   /* --- Budget total card padding on small screens --- */
-  .budget-total-card { padding: 24px 20px; gap: 20px; }
+  .budget-total-card { padding: 24px 20px; gap: 20px; flex-direction: column; align-items: stretch; }
+  #budget-chart { width: 100%; min-width: 0; gap: 10px; }
+  #budget-chart .budget-bar-track { height: 6px; }
+  #budget-chart .budget-bar-label { width: 100px; font-size: 11px; }
 }
 </style>
 </head>
@@ -3750,14 +3849,13 @@ footer::before {
           <div class="budget-total-range">£12,700 — £20,200</div>
           <div class="budget-total-note">Materials supply only · Labour additional · Prices ex-VAT where applicable</div>
         </div>
-        <div class="budget-chart-mini" id="budget-chart"></div>
+        <div id="budget-chart" class="budget-chart-mini"></div>
       </div>
 
       <div class="budget-table" style="grid-column: 1 / -1;">
         <div class="budget-row header">
           <span>Item</span>
-          <span style="text-align:right">Low Est.</span>
-          <span style="text-align:right">High Est.</span>
+          <span style="text-align:right">Estimate Range</span>
           <span style="text-align:right">Actual</span>
           <span></span>
         </div>
@@ -3844,6 +3942,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const storage = firebase.storage();
+const _isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const _isTest = new URLSearchParams(window.location.search).get('env') === 'test';
+const DB_ROOT = !_isLocal ? 'garden' : _isTest ? 'garden-test' : 'garden-dev';
 
 // In-memory mirror of Firebase state — all reads use this, all writes go here + Firebase
 const DEFAULT_BUDGET_ITEMS = [
@@ -4228,8 +4329,8 @@ function loadState() {
 function saveState(state) {
   DB_STATE.tasks = state;
   DB_STATE.tasksUpdated = new Date().toISOString();
-  db.ref('garden/tasks').set(state);
-  db.ref('garden/tasksUpdated').set(DB_STATE.tasksUpdated);
+  db.ref(DB_ROOT + '/tasks').set(state);
+  db.ref(DB_ROOT + '/tasksUpdated').set(DB_STATE.tasksUpdated);
 }
 
 /* ============================================================
@@ -4451,7 +4552,7 @@ function savePhaseNote(textarea) {
   const phaseId = textarea.dataset.phaseId;
   const val = textarea.value;
   DB_STATE.notes[phaseId] = val.trim() ? val : '';
-  db.ref('garden/notes/' + phaseId).set(val.trim() ? val : null);
+  db.ref(DB_ROOT + '/notes/' + phaseId).set(val.trim() ? val : null);
   // Update note dot on header
   const card = textarea.closest('.phase-card');
   if (card) {
@@ -4483,7 +4584,7 @@ function addPhase() {
     order: maxOrder + 1,
     tasks: {}
   };
-  const ref = db.ref('garden/phases').push(newPhase);
+  const ref = db.ref(DB_ROOT + '/phases').push(newPhase);
   const newId = ref.key;
   DB_STATE.phases[newId] = newPhase;
   renderPhases();
@@ -4551,7 +4652,7 @@ function savePhaseEdit(phaseId) {
 
   const updates = { num, title, date, status };
   Object.assign(DB_STATE.phases[phaseId], updates);
-  db.ref('garden/phases/' + phaseId).update(updates);
+  db.ref(DB_ROOT + '/phases/' + phaseId).update(updates);
   renderPhases();
 }
 
@@ -4569,7 +4670,7 @@ function deletePhase(phaseId) {
   const title = phaseData ? phaseData.title : 'this phase';
   if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
   delete DB_STATE.phases[phaseId];
-  db.ref('garden/phases/' + phaseId).remove();
+  db.ref(DB_ROOT + '/phases/' + phaseId).remove();
   expandedPhases.delete(phaseId);
   renderPhases();
   renderNextActions();
@@ -4594,7 +4695,7 @@ function addTask(phaseId) {
     : -1;
 
   const newTask = { text, done: false, order: maxOrder + 1 };
-  const ref = db.ref('garden/phases/' + phaseId + '/tasks').push(newTask);
+  const ref = db.ref(DB_ROOT + '/phases/' + phaseId + '/tasks').push(newTask);
   const newTaskId = ref.key;
 
   if (!DB_STATE.phases[phaseId].tasks) DB_STATE.phases[phaseId].tasks = {};
@@ -4637,7 +4738,7 @@ function editTask(taskId, phaseId) {
     const newText = input.value.trim();
     if (newText && newText !== currentText) {
       DB_STATE.phases[phaseId].tasks[taskId].text = newText;
-      db.ref('garden/phases/' + phaseId + '/tasks/' + taskId + '/text').set(newText);
+      db.ref(DB_ROOT + '/phases/' + phaseId + '/tasks/' + taskId + '/text').set(newText);
     }
     item.classList.remove('editing');
     const taskData = DB_STATE.phases[phaseId].tasks[taskId];
@@ -4672,7 +4773,7 @@ function deleteTask(taskId, phaseId) {
   if (!confirm(`Delete "${taskText}"?`)) return;
 
   delete DB_STATE.phases[phaseId].tasks[taskId];
-  db.ref('garden/phases/' + phaseId + '/tasks/' + taskId).remove();
+  db.ref(DB_ROOT + '/phases/' + phaseId + '/tasks/' + taskId).remove();
 
   // Remove from done/undone state
   const state = loadState();
@@ -4862,7 +4963,7 @@ function saveEditMaterial(id) {
   const existing = DB_STATE.materials[id] || {};
   const updated = { ...existing, name, spec, cost, accent };
   DB_STATE.materials[id] = updated;
-  db.ref('garden/materials/' + id).set(updated);
+  db.ref(DB_ROOT + '/materials/' + id).set(updated);
   renderMaterials();
 }
 
@@ -4871,14 +4972,14 @@ function deleteMaterial(id) {
   if (!m) return;
   if (!confirm(`Delete "${m.name}"?`)) return;
   delete DB_STATE.materials[id];
-  db.ref('garden/materials/' + id).remove();
+  db.ref(DB_ROOT + '/materials/' + id).remove();
   renderMaterials();
 }
 
 function addMaterial() {
   const order = Object.values(DB_STATE.materials).length;
   const newMat = { name: 'New Material', spec: '', cost: '', accent: '#8B9A8E', status: 'researching', order };
-  const ref = db.ref('garden/materials').push(newMat);
+  const ref = db.ref(DB_ROOT + '/materials').push(newMat);
   const id = ref.key;
   DB_STATE.materials[id] = { ...newMat, id };
   renderMaterials();
@@ -5108,7 +5209,9 @@ function renderBudgetTable() {
   varianceFooter.id = 'budget-total-variance';
   varianceFooter.className = 'budget-variance-footer';
   varianceFooter.style.display = 'none';
-  varianceFooter.innerHTML = '<span>Overall</span><span class="budget-variance bvf-badge"></span>';
+  const vBadge = document.createElement('span');
+  vBadge.className = 'budget-variance bvf-badge';
+  varianceFooter.appendChild(vBadge);
   body.appendChild(varianceFooter);
 
   const addRow = document.createElement('div');
@@ -5143,8 +5246,52 @@ function buildBudgetRow(item) {
   high.className = 'budget-high';
   high.textContent = `£${(item.high || 0).toLocaleString('en-GB')}`;
 
+  const range = document.createElement('span');
+  range.className = 'budget-range';
+  const sep = document.createElement('span');
+  sep.className = 'budget-range-sep';
+  sep.textContent = ' – ';
+  range.appendChild(low);
+  range.appendChild(sep);
+  range.appendChild(high);
+
   const actions = document.createElement('div');
   actions.className = 'budget-row-actions';
+  actions.style.position = 'relative';
+
+  const menuBtn = document.createElement('button');
+  menuBtn.className = 'budget-action-btn budget-menu-btn';
+  menuBtn.title = 'Options';
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const wasOpen = row.classList.contains('menu-open');
+    document.querySelectorAll('.budget-row.menu-open').forEach(r => r.classList.remove('menu-open'));
+    if (!wasOpen) row.classList.add('menu-open');
+  });
+
+  const dropdown = document.createElement('div');
+  dropdown.className = 'budget-row-dropdown';
+
+  const editItem = document.createElement('button');
+  editItem.className = 'budget-dropdown-item';
+  editItem.textContent = 'Edit';
+  editItem.addEventListener('click', (e) => {
+    e.stopPropagation();
+    row.classList.remove('menu-open');
+    editBudgetRow(row, item);
+  });
+
+  const delItem = document.createElement('button');
+  delItem.className = 'budget-dropdown-item delete';
+  delItem.textContent = 'Delete';
+  delItem.addEventListener('click', (e) => {
+    e.stopPropagation();
+    row.classList.remove('menu-open');
+    deleteBudgetItem(item.id);
+  });
+
+  dropdown.appendChild(editItem);
+  dropdown.appendChild(delItem);
 
   const editBtn = document.createElement('button');
   editBtn.className = 'budget-action-btn';
@@ -5158,12 +5305,13 @@ function buildBudgetRow(item) {
   delBtn.innerHTML = '×';
   delBtn.addEventListener('click', () => deleteBudgetItem(item.id));
 
+  actions.appendChild(menuBtn);
+  actions.appendChild(dropdown);
   actions.appendChild(editBtn);
   actions.appendChild(delBtn);
 
   row.appendChild(name);
-  row.appendChild(low);
-  row.appendChild(high);
+  row.appendChild(range);
   row.appendChild(buildActualCell(item));
   row.appendChild(actions);
   return row;
@@ -5205,7 +5353,7 @@ function buildActualCell(item) {
 
   input.addEventListener('input', () => {
     DB_STATE.budgetActuals[k] = input.value;
-    db.ref('garden/budgetActuals/' + k).set(input.value || null);
+    db.ref(DB_ROOT + '/budgetActuals/' + k).set(input.value || null);
     updateVariance();
     updateActualTotal();
   });
@@ -5220,6 +5368,7 @@ function buildTotalRow(items) {
   const totalHigh = items.reduce((s, i) => s + (i.high || 0), 0);
 
   const row = document.createElement('div');
+  row.id = 'budget-total-row';
   row.className = 'budget-row';
   row.style.cssText = 'border-top: 1px solid rgba(200,146,42,0.3); background: rgba(200,146,42,0.04);';
 
@@ -5238,15 +5387,33 @@ function buildTotalRow(items) {
   high.style.cssText = 'color: var(--amber); font-size: 15px;';
   high.textContent = `£${totalHigh.toLocaleString('en-GB')}`;
 
-  const actualTotal = document.createElement('span');
-  actualTotal.id = 'actual-total';
-  actualTotal.style.cssText = 'font-family:var(--font-display);font-style:italic;font-size:15px;color:var(--amber);text-align:right;';
-  actualTotal.textContent = '—';
+  const rangeLine = document.createElement('span');
+  rangeLine.className = 'budget-range';
+  const sep = document.createElement('span');
+  sep.className = 'budget-range-sep';
+  sep.textContent = ' – ';
+  rangeLine.appendChild(low);
+  rangeLine.appendChild(sep);
+  rangeLine.appendChild(high);
+
+  // Mobile: stacked under estimate range
+  const actualMobile = document.createElement('span');
+  actualMobile.className = 'budget-total-actual budget-total-actual-mobile';
+  actualMobile.style.display = 'none';
+
+  const rangeCell = document.createElement('div');
+  rangeCell.className = 'budget-range-cell';
+  rangeCell.appendChild(rangeLine);
+  rangeCell.appendChild(actualMobile);
+
+  // Desktop: sits in the Actual column (col 3)
+  const actualDesktop = document.createElement('span');
+  actualDesktop.className = 'budget-total-actual budget-total-actual-desktop';
+  actualDesktop.style.display = 'none';
 
   row.appendChild(name);
-  row.appendChild(low);
-  row.appendChild(high);
-  row.appendChild(actualTotal);
+  row.appendChild(rangeCell);
+  row.appendChild(actualDesktop);
   row.appendChild(document.createElement('div'));
   return row;
 }
@@ -5256,6 +5423,15 @@ function updateTotalCard(items) {
   const totalHigh = items.reduce((s, i) => s + (i.high || 0), 0);
   const rangeEl = document.querySelector('.budget-total-range');
   if (rangeEl) rangeEl.textContent = `£${totalLow.toLocaleString('en-GB')} — £${totalHigh.toLocaleString('en-GB')}`;
+}
+
+function refreshBudgetTotals() {
+  const items = budgetItemsArray();
+  const existingTotal = document.getElementById('budget-total-row');
+  if (existingTotal) existingTotal.parentNode.replaceChild(buildTotalRow(items), existingTotal);
+  updateTotalCard(items);
+  renderBudgetChart(items);
+  updateActualTotal();
 }
 
 function editBudgetRow(row, item) {
@@ -5295,15 +5471,20 @@ function editBudgetRow(row, item) {
       order: item.order ?? 0,
     };
     DB_STATE.budgetItems[item.id] = updated;
-    db.ref('garden/budgetItems/' + item.id).set(updated);
-    renderBudgetTable();
+    db.ref(DB_ROOT + '/budgetItems/' + item.id).set(updated);
+    const newRow = buildBudgetRow({ id: item.id, ...updated });
+    row.parentNode.replaceChild(newRow, row);
+    refreshBudgetTotals();
   });
 
   const cancelBtn = document.createElement('button');
   cancelBtn.className = 'budget-action-btn';
   cancelBtn.title = 'Cancel';
   cancelBtn.innerHTML = '✕';
-  cancelBtn.addEventListener('click', renderBudgetTable);
+  cancelBtn.addEventListener('click', () => {
+    const newRow = buildBudgetRow(item);
+    row.parentNode.replaceChild(newRow, row);
+  });
 
   actions.appendChild(saveBtn);
   actions.appendChild(cancelBtn);
@@ -5327,14 +5508,14 @@ function editBudgetRow(row, item) {
 function deleteBudgetItem(id) {
   if (!confirm('Delete this budget item?')) return;
   delete DB_STATE.budgetItems[id];
-  db.ref('garden/budgetItems/' + id).remove();
+  db.ref(DB_ROOT + '/budgetItems/' + id).remove();
   renderBudgetTable();
 }
 
 function addBudgetItem() {
   const items = budgetItemsArray();
   const order = items.length;
-  const ref = db.ref('garden/budgetItems').push({ name: 'New Item', low: 0, high: 0, order });
+  const ref = db.ref(DB_ROOT + '/budgetItems').push({ name: 'New Item', low: 0, high: 0, order });
   const id = ref.key;
   DB_STATE.budgetItems[id] = { name: 'New Item', low: 0, high: 0, order };
   renderBudgetTable();
@@ -5349,10 +5530,12 @@ function updateActualTotal() {
     const num = parseFloat(input.value.replace(/[^0-9.]/g, ''));
     if (!isNaN(num)) { total += num; count++; }
   });
-  const el = document.getElementById('actual-total');
-  if (el) el.textContent = count > 0 ? `£${Math.round(total).toLocaleString('en-GB')}` : '—';
-
   const varianceEl = document.getElementById('budget-total-variance');
+  const totalText = count > 0 ? `£${Math.round(total).toLocaleString('en-GB')}` : '';
+  document.querySelectorAll('.budget-total-actual').forEach(el => {
+    el.style.display = count > 0 ? '' : 'none';
+    if (count > 0) el.textContent = totalText;
+  });
   if (!varianceEl) return;
   if (count === 0) { varianceEl.style.display = 'none'; return; }
 
@@ -5365,15 +5548,13 @@ function updateActualTotal() {
     const item = DB_STATE.budgetItems[input.dataset.itemId];
     if (item) totalMid += Math.round(((item.low || 0) + (item.high || 0)) / 2);
   });
-  const diff = Math.round(totalMid - total); // positive = under budget
+  const diff = Math.round(totalMid - total);
   const badge = varianceEl.querySelector('.bvf-badge');
-  varianceEl.style.display = 'flex';
+  varianceEl.style.display = 'grid';
   if (diff === 0) {
-    badge.className = 'budget-variance bvf-badge';
-    badge.textContent = 'On target';
+    badge.className = 'budget-variance bvf-badge'; badge.textContent = 'On target';
   } else if (diff > 0) {
-    badge.className = 'budget-variance variance-under bvf-badge';
-    badge.textContent = `£${Math.abs(diff).toLocaleString('en-GB')} under budget`;
+    badge.className = 'budget-variance variance-under bvf-badge'; badge.textContent = `£${Math.abs(diff).toLocaleString('en-GB')} under budget`;
   } else {
     const pctOver = Math.abs(diff) / totalMid * 100;
     badge.className = `budget-variance ${pctOver <= 20 ? 'variance-amber' : 'variance-over'} bvf-badge`;
@@ -5394,7 +5575,7 @@ function renderBudgetChart(items) {
   const rest = sorted.slice(6);
 
   const data = top.map(i => ({
-    label: i.name.replace(/\(.*?\)/g, '').trim().split(' ').slice(0, 2).join(' ').slice(0, 12),
+    label: i.name.replace(/\(.*?\)/g, '').trim().slice(0, 28),
     low: i.low || 0,
     high: i.high || 0,
   }));
@@ -5411,13 +5592,13 @@ function renderBudgetChart(items) {
   container.innerHTML = '';
 
   data.forEach(d => {
-    const heightPct = (d.high / maxVal) * 100;
+    const widthPct = (d.high / maxVal) * 100;
     const div = document.createElement('div');
     div.className = 'budget-bar';
     div.title = `${d.label}: £${d.low.toLocaleString('en-GB')}–£${d.high.toLocaleString('en-GB')}`;
     div.innerHTML = `
-      <div class="budget-bar-fill" style="height:${heightPct}%"></div>
       <div class="budget-bar-label">${d.label}</div>
+      <div class="budget-bar-track"><div class="budget-bar-fill" style="width:${widthPct}%"></div></div>
     `;
     container.appendChild(div);
   });
@@ -5480,7 +5661,7 @@ function getTaskDetail(taskId) {
 
 function persistTaskDetail(taskId, data) {
   DB_STATE.taskDetails[taskId] = data;
-  db.ref('garden/taskDetails/' + taskId).set(data);
+  db.ref(DB_ROOT + '/taskDetails/' + taskId).set(data);
   // Update the indicator button on the task item
   const btn = document.querySelector(`.task-item[data-id="${taskId}"] .task-detail-btn`);
   if (btn) {
@@ -5696,7 +5877,7 @@ function updateUrlLink(input) {
 
 function saveMaterialOptions(key, options) {
   DB_STATE.materialOpts[key] = options;
-  db.ref('garden/materialOpts/' + key).set(options.length ? options : null);
+  db.ref(DB_ROOT + '/materialOpts/' + key).set(options.length ? options : null);
 }
 
 let matModalKey = null;
@@ -5993,7 +6174,7 @@ function setMaterialStatus(key, statusKey, pill) {
   const MAT_STATUS_CLS    = { 'researching': 'status-researching', 'to-order': 'status-to-order', 'ordered': 'status-ordered', 'to-do': 'status-to-do' };
 
   DB_STATE.materialStatus[key] = statusKey;
-  db.ref('garden/materialStatus/' + key).set(statusKey);
+  db.ref(DB_ROOT + '/materialStatus/' + key).set(statusKey);
 
   // Update badge
   const picker = pill.closest('.mat-status-picker');
@@ -6079,7 +6260,7 @@ async function handlePhotoUpload(slotId, input) {
     await ref.put(blob, { contentType: 'image/jpeg' });
     const downloadUrl = await ref.getDownloadURL();
     DB_STATE.photos[slotId] = downloadUrl;
-    db.ref('garden/photos/' + slotId).set(downloadUrl);
+    db.ref(DB_ROOT + '/photos/' + slotId).set(downloadUrl);
     setPhotoCard(slotId, downloadUrl);
   } catch(e) {
     if (e.message === 'undecodable') {
@@ -6168,8 +6349,13 @@ async function handlePhotoUpload(slotId, input) {
 ============================================================ */
 document.addEventListener('DOMContentLoaded', async () => {
   // Load all state from Firebase before first render
-  const snap = await db.ref('garden').once('value');
-  const data = snap.val() || {};
+  let data = {};
+  try {
+    const snap = await db.ref(DB_ROOT).once('value');
+    data = snap.val() || {};
+  } catch (e) {
+    console.warn('Firebase read failed, using defaults:', e);
+  }
   DB_STATE.tasks          = data.tasks          || {};
   DB_STATE.tasksUpdated   = data.tasksUpdated   || null;
   DB_STATE.notes          = data.notes          || {};
@@ -6186,7 +6372,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const id = 'item_' + String(i).padStart(3, '0');
       seedData[id] = { name: item.name, low: item.low, high: item.high, order: i };
     });
-    db.ref('garden/budgetItems').set(seedData);
+    db.ref(DB_ROOT + '/budgetItems').set(seedData);
     DB_STATE.budgetItems = seedData;
   } else {
     DB_STATE.budgetItems = data.budgetItems;
@@ -6199,7 +6385,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const id = 'mat_' + String(i).padStart(3, '0');
       matSeed[id] = { name: item.name, spec: item.spec, cost: item.cost, status: item.status, accent: item.accent, order: i };
     });
-    db.ref('garden/materials').set(matSeed);
+    db.ref(DB_ROOT + '/materials').set(matSeed);
     DB_STATE.materials = matSeed;
   } else {
     DB_STATE.materials = data.materials;
@@ -6218,7 +6404,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         status: phase.status, order: i, tasks: tasksSeed
       };
     });
-    db.ref('garden/phases').set(phaseSeed);
+    db.ref(DB_ROOT + '/phases').set(phaseSeed);
     DB_STATE.phases = phaseSeed;
   } else {
     DB_STATE.phases = data.phases;
@@ -6242,6 +6428,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Real-time sync — picks up changes made by the other person
   setupRealtimeSync();
 
+  // Dismiss budget row dropdowns when clicking outside
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.budget-row.menu-open').forEach(r => r.classList.remove('menu-open'));
+  });
+
   // Close mobile menu on link click
   document.querySelectorAll('.nav-links a').forEach(a => {
     a.addEventListener('click', () => {
@@ -6256,28 +6447,28 @@ function setupRealtimeSync() {
     return el && el.contains(document.activeElement);
   };
 
-  db.ref('garden/phases').on('value', snap => {
+  db.ref(DB_ROOT + '/phases').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.phases)) return;
     DB_STATE.phases = val;
     if (!hasFocus('phases-container')) { renderPhases(); renderNextActions(); }
   });
 
-  db.ref('garden/tasks').on('value', snap => {
+  db.ref(DB_ROOT + '/tasks').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.tasks)) return;
     DB_STATE.tasks = val;
     if (!hasFocus('phases-container')) renderPhases();
   });
 
-  db.ref('garden/notes').on('value', snap => {
+  db.ref(DB_ROOT + '/notes').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.notes)) return;
     DB_STATE.notes = val;
     if (!hasFocus('phases-container')) renderPhases();
   });
 
-  db.ref('garden/taskDetails').on('value', snap => {
+  db.ref(DB_ROOT + '/taskDetails').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.taskDetails)) return;
     DB_STATE.taskDetails = val;
@@ -6287,28 +6478,28 @@ function setupRealtimeSync() {
     }
   });
 
-  db.ref('garden/materials').on('value', snap => {
+  db.ref(DB_ROOT + '/materials').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.materials)) return;
     DB_STATE.materials = val;
     if (!hasFocus('materials-container')) renderMaterials();
   });
 
-  db.ref('garden/materialStatus').on('value', snap => {
+  db.ref(DB_ROOT + '/materialStatus').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.materialStatus)) return;
     DB_STATE.materialStatus = val;
     if (!hasFocus('materials-container')) renderMaterials();
   });
 
-  db.ref('garden/materialOpts').on('value', snap => {
+  db.ref(DB_ROOT + '/materialOpts').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.materialOpts)) return;
     DB_STATE.materialOpts = val;
     if (matModalKey) renderModalOptions(matModalKey);
   });
 
-  db.ref('garden/budgetActuals').on('value', snap => {
+  db.ref(DB_ROOT + '/budgetActuals').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.budgetActuals)) return;
     DB_STATE.budgetActuals = val;
@@ -6323,7 +6514,7 @@ function setupRealtimeSync() {
     updateActualTotal();
   });
 
-  db.ref('garden/budgetItems').on('value', snap => {
+  db.ref(DB_ROOT + '/budgetItems').on('value', snap => {
     const val = snap.val() || {};
     if (!DB_STATE.loaded || JSON.stringify(val) === JSON.stringify(DB_STATE.budgetItems)) return;
     DB_STATE.budgetItems = val;
@@ -6331,14 +6522,14 @@ function setupRealtimeSync() {
     if (!document.querySelector('.budget-row.editing')) renderBudgetTable();
   });
 
-  db.ref('garden/tasksUpdated').on('value', snap => {
+  db.ref(DB_ROOT + '/tasksUpdated').on('value', snap => {
     const val = snap.val() || null;
     if (val === DB_STATE.tasksUpdated) return;
     DB_STATE.tasksUpdated = val;
     updateLastUpdated();
   });
 
-  db.ref('garden/photos').on('value', snap => {
+  db.ref(DB_ROOT + '/photos').on('value', snap => {
     const val = snap.val() || {};
     if (JSON.stringify(val) === JSON.stringify(DB_STATE.photos)) return;
     DB_STATE.photos = val;
