@@ -3,11 +3,17 @@ import { PageHeader } from '../../design-system'
 import { usePhases } from '../../lib/firebase/hooks'
 import { PhaseCard } from './PhaseCard'
 import { PhaseModal } from './PhaseModal'
-import type { Phase } from '../../types'
+import { TaskDrawer } from './TaskDrawer'
+import type { Phase, Task } from '../../types'
 
 export function PlanPage() {
-  const { phases, toggleTask, addPhase, updatePhase, deletePhase, updatePhaseNotes } = usePhases()
+  const {
+    phases, toggleTask, addPhase, updatePhase, deletePhase, updatePhaseNotes,
+    addTask, deleteTask, updateTaskStatus, updateTaskNotes,
+    addTaskOption, selectTaskOption, deleteTaskOption,
+  } = usePhases()
   const [phaseModal, setPhaseModal] = useState<{ open: boolean; phase?: Phase }>({ open: false })
+  const [drawerTask, setDrawerTask] = useState<{ phase: Phase; task: Task } | null>(null)
 
   const totalTasks = phases.reduce((n, p) => n + p.tasks.length, 0)
   const doneTasks  = phases.reduce((n, p) => n + p.tasks.filter(t => t.done).length, 0)
@@ -27,6 +33,9 @@ export function PlanPage() {
             onEdit={() => setPhaseModal({ open: true, phase })}
             onDelete={deletePhase}
             updatePhaseNotes={updatePhaseNotes}
+            onTaskClick={task => setDrawerTask({ phase, task })}
+            onAddTask={addTask}
+            onDeleteTask={deleteTask}
           />
         ))}
       </div>
@@ -44,6 +53,17 @@ export function PlanPage() {
         phase={phaseModal.phase}
         onSave={data => phaseModal.phase ? updatePhase(phaseModal.phase.id, data) : addPhase(data)}
         onClose={() => setPhaseModal({ open: false })}
+      />
+
+      <TaskDrawer
+        phaseId={drawerTask?.phase.id ?? ''}
+        task={drawerTask?.task ?? null}
+        onClose={() => setDrawerTask(null)}
+        onUpdateStatus={updateTaskStatus}
+        onUpdateNotes={updateTaskNotes}
+        onAddOption={addTaskOption}
+        onSelectOption={selectTaskOption}
+        onDeleteOption={deleteTaskOption}
       />
     </div>
   )

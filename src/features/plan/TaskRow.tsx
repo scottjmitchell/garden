@@ -6,9 +6,10 @@ interface TaskRowProps {
   task:     Task
   onToggle: (phaseId: string, taskId: string, done: boolean) => void
   onClick:  (task: Task) => void
+  onDelete: (phaseId: string, taskId: string) => void
 }
 
-export function TaskRow({ phaseId, task, onToggle, onClick }: TaskRowProps) {
+export function TaskRow({ phaseId, task, onToggle, onClick, onDelete }: TaskRowProps) {
   return (
     <li
       data-testid="task-row"
@@ -52,6 +53,14 @@ export function TaskRow({ phaseId, task, onToggle, onClick }: TaskRowProps) {
       >
         {task.text}
       </span>
+      <button
+        data-testid="task-delete-btn"
+        onClick={e => { e.stopPropagation(); onDelete(phaseId, task.id) }}
+        className="ml-auto hidden text-xs text-garden-text/20 hover:text-[#9E4E24] group-hover:inline"
+        aria-label="Delete task"
+      >
+        ✕
+      </button>
     </li>
   )
 }

@@ -250,3 +250,28 @@ test('confirm modal: shows title, body, and delete button', async ({ page }) => 
   await expect(page.getByRole('button', { name: /delete/i })).toBeVisible()
   await expect(page.getByRole('button', { name: /cancel/i })).toBeVisible()
 })
+
+// ─── Plan — Task CRUD ─────────────────────────────────────────────────────────
+
+test('plan: task drawer opens on task click', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="task-text"]')
+  await page.getByTestId('task-text').first().click()
+  await expect(page.getByTestId('task-drawer')).toBeVisible()
+})
+
+test('plan: add task inline appears in list', async ({ page }) => {
+  await page.goto('/plan')
+  await page.getByTestId('add-task-btn').first().click()
+  await page.getByTestId('add-task-input').fill('New test task')
+  await page.keyboard.press('Enter')
+  await expect(page.getByText('New test task')).toBeVisible()
+})
+
+test('plan: delete task requires confirmation', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="task-row"]')
+  await page.getByTestId('task-row').first().hover()
+  await page.getByTestId('task-delete-btn').first().click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+})

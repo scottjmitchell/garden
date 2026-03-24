@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Card, Badge, ConfirmModal } from '../../design-system'
-import type { Phase, PhaseStatus } from '../../types'
+import type { Phase, PhaseStatus, Task } from '../../types'
 import { loadStoredPhaseNote } from '../../lib/firebase/hooks'
 import { TaskRow } from './TaskRow'
 
@@ -22,14 +22,20 @@ interface PhaseCardProps {
   onEdit:           () => void
   onDelete:         (phaseId: string) => void
   updatePhaseNotes: (phaseId: string, notes: string) => void
+  onTaskClick:      (task: Task) => void
+  onAddTask:        (phaseId: string, text: string) => void
+  onDeleteTask:     (phaseId: string, taskId: string) => void
 }
 
-export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes }: PhaseCardProps) {
+export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes, onTaskClick, onAddTask, onDeleteTask }: PhaseCardProps) {
   // Resolve initial notes: Firebase value takes priority, localStorage is fallback
   const initialNotes = phase.notes ?? loadStoredPhaseNote(phase.id)
 
   const [open, setOpen]               = useState(phase.status === 'current')
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [addingTask, setAddingTask]     = useState(false)
+  const [newTaskText, setNewTaskText]   = useState('')
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null)
   const [hasNotes, setHasNotes]       = useState(!!(initialNotes))
   const notesRef    = useRef(initialNotes)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -69,6 +75,11 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes 
       if (el) el.value = incoming
     }
   }, [phase.notes, phase.id])
+
+  function handleAddTask() {
+    if (newTaskText.trim()) onAddTask(phase.id, newTaskText.trim())
+    setNewTaskText(''); setAddingTask(false)
+  }
 
   const done  = phase.tasks.filter(t => t.done).length
   const total = phase.tasks.length
@@ -138,9 +149,35 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes 
               phaseId={phase.id}
               task={task}
               onToggle={onToggle}
-              onClick={() => {}} // no-op for now; wired in Task 9
+              onClick={onTaskClick}
+              onDelete={(phaseId, taskId) => setTaskToDelete(phase.tasks.find(t => t.id === taskId) ?? null)}
             />
           ))}
+          {addingTask ? (
+            <li className="flex items-center gap-3 py-1">
+              <span className="h-4 w-4 shrink-0" />
+              <input
+                data-testid="add-task-input"
+                autoFocus
+                value={newTaskText}
+                onChange={e => setNewTaskText(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') handleAddTask(); if (e.key === 'Escape') setAddingTask(false) }}
+                onBlur={handleAddTask}
+                className="flex-1 bg-transparent text-sm text-garden-text focus:outline-none"
+                placeholder="Task name…"
+              />
+            </li>
+          ) : (
+            <li>
+              <button
+                data-testid="add-task-btn"
+                onClick={() => setAddingTask(true)}
+                className="py-1.5 text-xs text-garden-text/30 hover:text-amber"
+              >
+                ＋ Add task
+              </button>
+            </li>
+          )}
         </ul>
       )}
 
@@ -168,6 +205,13 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes 
         body="This will permanently remove the phase and all its tasks."
         onConfirm={() => { onDelete(phase.id); setConfirmOpen(false) }}
         onCancel={() => setConfirmOpen(false)}
+      />
+      <ConfirmModal
+        open={taskToDelete !== null}
+        title="Delete task?"
+        body="This will permanently remove this task."
+        onConfirm={() => { if (taskToDelete) onDeleteTask(phase.id, taskToDelete.id); setTaskToDelete(null) }}
+        onCancel={() => setTaskToDelete(null)}
       />
     </Card>
   )
