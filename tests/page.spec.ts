@@ -180,6 +180,65 @@ test('plan: checking a task marks it done with strikethrough', async ({ page }) 
   }
 })
 
+// ─── Plan — Phase CRUD ────────────────────────────────────────────────────────
+
+test('plan: add phase via modal appears in list', async ({ page }) => {
+  await page.goto('/plan')
+  await page.getByRole('button', { name: /add phase/i }).click()
+  await page.getByLabel('Title').fill('Test Phase')
+  await page.getByLabel('Date').fill('June 2026')
+  await page.getByRole('button', { name: /save/i }).click()
+  await expect(page.getByText('Test Phase')).toBeVisible()
+})
+
+test('plan: edit phase updates title in list', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="phase-edit-btn"]')
+  await page.getByTestId('phase-edit-btn').first().click()
+  const titleInput = page.getByLabel('Title')
+  await titleInput.clear()
+  await titleInput.fill('Renamed Phase')
+  await page.getByRole('button', { name: /save/i }).click()
+  await expect(page.getByText('Renamed Phase')).toBeVisible()
+})
+
+test('plan: delete phase requires confirmation', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="phase-delete-btn"]')
+  await page.getByTestId('phase-delete-btn').first().click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.getByText(/permanently remove/i)).toBeVisible()
+})
+
+// ─── Plan — Phase notes ───────────────────────────────────────────────────────
+
+test('plan: phase notes save on blur and persist', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="phase-notes"]')
+  const notes = page.getByTestId('phase-notes').first()
+  await notes.fill('Test note content')
+  // Verify local state updated before blur
+  await expect(notes).toHaveValue('Test note content')
+  // Wait for debounce to fire (800ms) and write to Firebase
+  await page.waitForTimeout(1200)
+  // Wait for Firebase write to complete before reload
+  await page.waitForTimeout(1000)
+  await page.reload()
+  await page.waitForSelector('[data-testid="phase-notes"]')
+  // Wait for Firebase to load data (with longer timeout)
+  await expect(page.getByTestId('phase-notes').first()).toHaveValue('Test note content', { timeout: 15000 })
+})
+
+test('plan: amber dot appears when phase has notes', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="phase-notes"]')
+  const notes = page.getByTestId('phase-notes').first()
+  await notes.fill('Dot test note')
+  await notes.blur()
+  await page.waitForTimeout(100)
+  await expect(page.getByTestId('phase-has-notes-dot').first()).toBeVisible()
+})
+
 // ─── ConfirmModal ─────────────────────────────────────────────────────────────
 // Note: phase-delete-btn is added in Task 7. This test will pass then.
 test('confirm modal: shows title, body, and delete button', async ({ page }) => {
