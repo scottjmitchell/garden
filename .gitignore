@@ -12,3 +12,7 @@ playwright-report
 dist/
 .env.local
 .env*.local
+
+*storybook.log
+storybook-static
+vitest.shims.d.ts
