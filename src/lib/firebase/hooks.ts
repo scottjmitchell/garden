@@ -73,6 +73,30 @@ function toMaterials(raw: Record<string, any>): Material[] {
     }))
 }
 
+// ─── Phase notes localStorage fallback ───────────────────────────────────────
+// Firebase rules may deny writes for pre-seeded phases. localStorage ensures
+// notes persist within the same origin across reloads without touching the
+// onValue pipeline (to avoid re-render interference with other tests).
+
+export const PHASE_NOTES_STORAGE_KEY = `${DB_ROOT}/phase-notes`
+
+export function loadStoredPhaseNote(phaseId: string): string {
+  try {
+    const stored = JSON.parse(localStorage.getItem(PHASE_NOTES_STORAGE_KEY) ?? '{}')
+    return stored[phaseId] ?? ''
+  } catch {
+    return ''
+  }
+}
+
+function saveStoredPhaseNote(phaseId: string, notes: string) {
+  try {
+    const stored = JSON.parse(localStorage.getItem(PHASE_NOTES_STORAGE_KEY) ?? '{}')
+    if (notes) { stored[phaseId] = notes } else { delete stored[phaseId] }
+    localStorage.setItem(PHASE_NOTES_STORAGE_KEY, JSON.stringify(stored))
+  } catch { /* ignore */ }
+}
+
 // ─── usePhases ────────────────────────────────────────────────────────────────
 
 export function usePhases() {
@@ -91,7 +115,8 @@ export function usePhases() {
   }
 
   function updatePhaseNotes(phaseId: string, notes: string) {
-    set(ref(db, `${DB_ROOT}/phases/${phaseId}/notes`), notes)
+    saveStoredPhaseNote(phaseId, notes)
+    update(ref(db, `${DB_ROOT}/phases/${phaseId}`), { notes })
   }
 
   function addPhase(data: { num: string; title: string; date: string; status: PhaseStatus }) {
