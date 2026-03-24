@@ -2241,9 +2241,51 @@ footer::before {
   .container { padding: 0 16px; }
   .phase-header { padding: 18px 16px; gap: 12px; }
   .phase-tasks { padding: 0 16px 18px; }
-  .budget-row:not(.editing) { grid-template-columns: 1fr 90px 52px !important; }
-  .budget-low { display: none; }
-  .budget-row-actions { opacity: 1; min-width: 0; }
+  /* Budget: hide the header row — labels don't apply to card layout */
+  .budget-row.header { display: none; }
+
+  /* Budget: each data row becomes a stacked card */
+  .budget-row:not(.header):not(.editing) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 14px 16px;
+    grid-template-columns: unset !important;
+  }
+
+  /* Item name spans full width */
+  .budget-row:not(.header):not(.editing) .budget-item-name {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+
+  /* Low + high sit side by side on one line */
+  .budget-row:not(.header):not(.editing) .budget-low,
+  .budget-row:not(.header):not(.editing) .budget-high {
+    display: block;
+    width: 50%;
+    text-align: left;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  /* Actual input cell takes full width */
+  .budget-row:not(.header):not(.editing) .budget-actual-cell {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .budget-actual-input { width: 100% !important; box-sizing: border-box; }
+
+  /* Actions always visible, right-aligned, 44px touch targets */
+  .budget-row:not(.header):not(.editing) .budget-row-actions {
+    width: 100%;
+    opacity: 1;
+    min-width: 0;
+    justify-content: flex-end;
+  }
+  .budget-action-btn { width: 44px; height: 44px; }
   .phases-grid { padding-left: 44px; }
   .phases-grid::before { left: 14px; }
   .phase-num { left: -38px; width: 26px; height: 26px; font-size: 13px; }
@@ -3156,9 +3198,6 @@ footer::before {
   .budget-row.editing .budget-edit-name { width: 100%; }
   .budget-row.editing .budget-edit-num  { width: 100%; text-align: left; }
 
-  /* Actual-spend input inside normal rows — shrink to fit */
-  .budget-actual-input { width: 72px; }
-
   /* --- Material card actions — keep clear of card title --- */
   .mat-card-actions {
     position: static;
@@ -3175,7 +3214,7 @@ footer::before {
   .phase-edit-input, .phase-edit-select { width: 100%; }
 
   /* --- Touch target sizes for small icon buttons --- */
-  .budget-action-btn  { width: 36px; height: 36px; }
+  .budget-action-btn  { width: 44px; height: 44px; }
   .phase-action-btn   { width: 36px; height: 36px; }
   .task-action-btn    { width: 36px; height: 36px; }
   .task-detail-btn    { width: 36px; height: 36px; }

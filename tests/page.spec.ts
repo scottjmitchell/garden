@@ -412,3 +412,32 @@ test('budget total variance updates when a second actual is entered', async ({ p
   expect(textAfter).toContain('under budget');
   expect(textBefore).not.toBe(textAfter);
 });
+
+// ─── Budget table mobile layout (issue #20) ───────────────────────────────────
+
+test('budget header row is hidden at 375px', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  const display = await page.locator('.budget-row.header').evaluate(el => getComputedStyle(el).display);
+  expect(display).toBe('none');
+});
+
+test('budget low estimate is visible at 375px', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  const firstRow = page.locator('#budget-items-body .budget-row').first();
+  await expect(firstRow.locator('.budget-low')).toBeVisible();
+});
+
+test('budget action buttons are at least 44px tall at 375px', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  const firstRow = page.locator('#budget-items-body .budget-row').first();
+  const btn = firstRow.locator('.budget-action-btn').first();
+  const height = await btn.evaluate(el => el.getBoundingClientRect().height);
+  expect(height).toBeGreaterThanOrEqual(44);
+});
+
+test('budget actual input is at least 120px wide at 375px', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  const input = page.locator('.budget-actual-input').first();
+  const width = await input.evaluate(el => el.getBoundingClientRect().width);
+  expect(width).toBeGreaterThanOrEqual(120);
+});
