@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Card, Badge } from '../../design-system'
 import type { Phase, PhaseStatus } from '../../types'
+import { TaskRow } from './TaskRow'
 
 const statusVariant: Record<PhaseStatus, 'success' | 'warning' | 'default'> = {
   done:     'success',
@@ -55,19 +56,15 @@ export function PhaseCard({ phase, onToggle }: PhaseCardProps) {
 
       {/* Task list */}
       {open && (
-        <ul className="mt-4 space-y-2">
+        <ul className="mt-4 space-y-0.5">
           {phase.tasks.map(task => (
-            <li key={task.id} className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                checked={task.done}
-                onChange={e => onToggle(phase.id, task.id, e.target.checked)}
-                className="mt-0.5 shrink-0 accent-amber"
-              />
-              <span className={`text-sm ${task.done ? 'text-garden-text/40 line-through' : 'text-garden-text/80'}`}>
-                {task.text}
-              </span>
-            </li>
+            <TaskRow
+              key={task.id}
+              phaseId={phase.id}
+              task={task}
+              onToggle={onToggle}
+              onClick={() => {}} // no-op for now; wired in Task 9
+            />
           ))}
         </ul>
       )}

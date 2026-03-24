@@ -163,6 +163,23 @@ test('sidebar: active nav link is highlighted on plan page', async ({ page }) =>
   await expect(planLink).toHaveClass(/text-amber/)
 })
 
+// ─── Plan — checkboxes ────────────────────────────────────────────────────────
+
+test('plan: checking a task marks it done with strikethrough', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="task-row"]')
+  const firstRow = page.getByTestId('task-row').first()
+  const checkbox = firstRow.getByRole('checkbox')
+  const label    = firstRow.getByTestId('task-text')
+  const wasDone  = await checkbox.getAttribute('aria-checked')
+  await checkbox.click()
+  if (wasDone === 'true') {
+    await expect(label).not.toHaveClass(/line-through/)
+  } else {
+    await expect(label).toHaveClass(/line-through/)
+  }
+})
+
 // ─── ConfirmModal ─────────────────────────────────────────────────────────────
 // Note: phase-delete-btn is added in Task 7. This test will pass then.
 test('confirm modal: shows title, body, and delete button', async ({ page }) => {
