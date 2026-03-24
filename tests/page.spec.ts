@@ -12,7 +12,7 @@ test('app loads and shows page title', async ({ page }) => {
 test('nav renders all six links on desktop', async ({ page }) => {
   await page.goto('/')
   for (const name of ['Overview', 'Plan', 'Materials', 'Budget', 'Journal', 'Map']) {
-    await expect(page.getByRole('link', { name })).toBeVisible()
+    await expect(page.getByRole('link', { name, exact: true }).first()).toBeVisible()
   }
 })
 
@@ -83,6 +83,65 @@ test('Tabs: renders tabs and switches active on click', async ({ page }) => {
   await expect(page.getByTestId('tabs-example')).toBeVisible()
   await page.getByRole('tab', { name: 'Second' }).click()
   await expect(page.getByText('Content for Second')).toBeVisible()
+})
+
+// ─── Phase 4 — feature pages ─────────────────────────────────────────────────
+
+test('Plan: phase cards render', async ({ page }) => {
+  await page.goto('/plan')
+  await expect(page.getByText('Preparation')).toBeVisible()
+  await expect(page.getByText('Groundworks')).toBeVisible()
+  await expect(page.getByText('Hard Landscaping')).toBeVisible()
+})
+
+test('Plan: task checkboxes render', async ({ page }) => {
+  await page.goto('/plan')
+  await expect(page.getByRole('checkbox').first()).toBeVisible()
+})
+
+test('Budget: budget rows render', async ({ page }) => {
+  await page.goto('/budget')
+  await expect(page.getByText('Natural Stone Paving')).toBeVisible()
+  await expect(page.getByText('Louvred Pergola')).toBeVisible()
+})
+
+test('Budget: total row renders', async ({ page }) => {
+  await page.goto('/budget')
+  await expect(page.getByText('Total')).toBeVisible()
+})
+
+test('Overview: summary cards render', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByText('tasks complete')).toBeVisible()
+  await expect(page.getByText('low estimate')).toBeVisible()
+})
+
+test('Materials: material cards render', async ({ page }) => {
+  await page.goto('/materials')
+  await expect(page.getByText('Paving Slabs')).toBeVisible()
+  await expect(page.getByText('Pergola (4×3m)')).toBeVisible()
+})
+
+test('Materials: status badges render', async ({ page }) => {
+  await page.goto('/materials')
+  await expect(page.getByText('Researching').first()).toBeVisible()
+})
+
+test('Journal: photo slots render', async ({ page }) => {
+  await page.goto('/journal')
+  await expect(page.getByText('Before — Current State')).toBeVisible()
+  await expect(page.getByText('Finished — Summer 2026')).toBeVisible()
+})
+
+test('Map: SVG garden plan renders', async ({ page }) => {
+  await page.goto('/map')
+  await expect(page.locator('svg#garden-svg')).toBeVisible()
+})
+
+test('Map: zone tooltip appears on hover', async ({ page }) => {
+  await page.goto('/map')
+  await page.locator('[data-zone="zone1"]').getByText('ZONE 1').hover()
+  await expect(page.getByText('Zone 1 — Stone Patio + Pergola')).toBeVisible()
 })
 
 test('Modal: opens and closes', async ({ page }) => {
