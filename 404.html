@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>The Mitchell Garden</title>
+    <script>
+      // Redirect deep links back to index.html so React Router can handle them
+      const path = window.location.pathname + window.location.search + window.location.hash
+      window.location.replace('/?redirect=' + encodeURIComponent(path))
+    </script>
+  </head>
+  <body></body>
+</html>
