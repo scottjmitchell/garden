@@ -2045,17 +2045,20 @@ nav .nav-inner {
   font-weight: 300;
 }
 
+#budget .section-subtitle { margin-bottom: 20px; }
+
 .budget-chart-mini {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-width: 200px;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 180px;
 }
 
 .budget-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .budget-bar-label {
@@ -2064,23 +2067,28 @@ nav .nav-inner {
   color: var(--text-dim);
   letter-spacing: 0.05em;
   white-space: nowrap;
-  width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 64px;
   flex-shrink: 0;
   text-align: right;
 }
 
-.budget-bar-fill {
+.budget-bar-track {
+  flex: 1;
   height: 4px;
-  background: var(--moss);
+  background: rgba(168,155,120,0.08);
   border-radius: 2px;
-  min-width: 4px;
-  transition: background var(--transition);
-  flex-shrink: 0;
 }
 
-.budget-bar:hover .budget-bar-fill {
-  background: var(--amber);
+.budget-bar-fill {
+  height: 100%;
+  background: var(--moss-light);
+  border-radius: 2px;
+  transition: background var(--transition), width var(--transition);
 }
+
+.budget-bar:hover .budget-bar-fill { background: var(--amber); }
 
 .budget-table {
   background: var(--bg-card);
@@ -2092,7 +2100,7 @@ nav .nav-inner {
 
 .budget-row {
   display: grid;
-  grid-template-columns: 1fr 90px 90px 130px 56px;
+  grid-template-columns: 1fr 180px 130px 56px;
   gap: 16px;
   align-items: center;
   padding: 13px 24px;
@@ -2122,12 +2130,21 @@ nav .nav-inner {
   font-weight: 300;
 }
 
+.budget-range { display: block; text-align: right; white-space: nowrap; }
+.budget-range-sep { font-family: var(--font-display); font-style: italic; color: var(--text-dim); font-size: 14px; }
+.budget-range-cell { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+.budget-total-actual { font-family: var(--font-display); font-style: italic; font-size: 18px; color: var(--text); text-align: right; }
+.budget-total-actual-mobile { display: none; }
+@media (max-width: 480px) {
+  .budget-total-actual-desktop { display: none !important; }
+  .budget-total-actual-mobile { display: block; }
+}
+
 .budget-low {
   font-family: var(--font-display);
   font-size: 14px;
   font-style: italic;
   color: var(--text-muted);
-  text-align: right;
 }
 
 .budget-high {
@@ -2135,8 +2152,39 @@ nav .nav-inner {
   font-size: 14px;
   font-style: italic;
   color: var(--amber-light);
-  text-align: right;
 }
+
+.budget-menu-btn { display: none; }
+.budget-row-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 20;
+  min-width: 110px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+}
+.budget-dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 11px 16px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition), color var(--transition);
+}
+.budget-dropdown-item:hover { background: rgba(168,155,120,0.06); color: var(--text); }
+.budget-dropdown-item.delete { color: #c07050; }
 
 .budget-cta {
   font-family: var(--font-display);
@@ -2244,46 +2292,53 @@ footer::before {
   /* Budget: hide header — column labels don't map to card layout */
   .budget-row.header { display: none; }
 
-  /* 2-row compact card:
-     Row 1 → [name ............. actions]
-     Row 2 → [£low – £high ..... actual + variance] */
+  /* Grid card — 3 columns, 2 rows:
+     Col 1 (1fr):  name, spans rows 1–2, vertically centred
+     Col 2 (auto): range (row 1) / actual-cell (row 2)
+     Col 3 (auto): hamburger/actions, spans rows 1–2, vertically centred */
   .budget-row:not(.header):not(.editing) {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid !important;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: auto auto;
     align-items: center;
-    padding: 11px 16px;
-    grid-template-columns: unset !important;
+    column-gap: 6px;
+    row-gap: 3px;
+    padding: 10px 4px 10px 16px;
   }
 
-  /* Row 1 — name */
   .budget-row:not(.header):not(.editing) .budget-item-name {
-    order: 1; flex: 1; min-width: 0;
-    font-size: 13.5px; padding-right: 4px;
+    grid-column: 1; grid-row: 1 / 3; align-self: center; font-size: 13px;
   }
-
-  /* Row 1 — actions pinned right, always visible */
-  .budget-row:not(.header):not(.editing) .budget-row-actions {
-    order: 2; flex-shrink: 0; opacity: 1; min-width: 0;
+  .budget-row:not(.header):not(.editing) .budget-range {
+    grid-column: 2; grid-row: 1; white-space: nowrap; text-align: right;
+    font-size: 11px;
   }
-
-  /* Row 2 — low/high range (left side) */
-  .budget-row:not(.header):not(.editing) .budget-low,
-  .budget-row:not(.header):not(.editing) .budget-high {
-    order: 3; flex-shrink: 0;
-    display: block; width: auto;
-    font-size: 12px; text-align: left; margin-top: 6px;
-  }
-  .budget-row:not(.header):not(.editing) .budget-low::after {
-    content: " – "; color: var(--text-dim);
-  }
-
-  /* Row 2 — actual cell pushed to right */
   .budget-row:not(.header):not(.editing) .budget-actual-cell {
-    order: 3; margin-left: auto; margin-top: 6px;
+    grid-column: 2; grid-row: 2; justify-content: flex-end;
   }
-  .budget-actual-input { width: 120px !important; }
+  .budget-actual-input { width: 75px !important; }
 
-  .budget-action-btn { width: 44px; height: 44px; }
+  /* Actions column: spans both rows, centred */
+  .budget-row:not(.header):not(.editing) .budget-row-actions {
+    grid-column: 3; grid-row: 1 / 3; align-self: center; justify-self: center;
+    opacity: 1; min-width: 0; flex-direction: column; gap: 0;
+  }
+  /* Hide edit + delete by default — shown only when menu-open */
+  .budget-row:not(.header):not(.editing) .budget-action-btn:not(.budget-menu-btn) { display: none; }
+  /* Hamburger button — 3-line CSS icon */
+  .budget-menu-btn {
+    width: 44px; height: 44px; font-size: 0; position: relative; display: flex;
+  }
+  .budget-menu-btn::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px; height: 2px;
+    background: var(--text-muted);
+    box-shadow: 0 -5px 0 var(--text-muted), 0 5px 0 var(--text-muted);
+  }
+  /* menu-open: show dropdown */
+  .budget-row.menu-open .budget-row-dropdown { display: block; }
   .phases-grid { padding-left: 44px; }
   .phases-grid::before { left: 14px; }
   .phase-num { left: -38px; width: 26px; height: 26px; font-size: 13px; }
@@ -2436,15 +2491,16 @@ footer::before {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 10px;
   padding: 10px 24px 14px;
   font-family: var(--font-sans);
   font-size: 12px;
   color: var(--text-dim);
   letter-spacing: 0.04em;
+  border-top: 1px solid rgba(200,146,42,0.15);
 }
+.budget-variance-footer .bvf-badge { white-space: nowrap; }
 .budget-variance-footer .budget-variance { font-size: 12px; }
-.budget-actual-cell { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.budget-actual-cell { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; justify-content: center; }
 
 /* Budget row CRUD controls */
 .budget-row-actions {
@@ -3787,14 +3843,13 @@ footer::before {
           <div class="budget-total-range">£12,700 — £20,200</div>
           <div class="budget-total-note">Materials supply only · Labour additional · Prices ex-VAT where applicable</div>
         </div>
-        <div class="budget-chart-mini" id="budget-chart"></div>
+        <div id="budget-chart" class="budget-chart-mini"></div>
       </div>
 
       <div class="budget-table" style="grid-column: 1 / -1;">
         <div class="budget-row header">
           <span>Item</span>
-          <span style="text-align:right">Low Est.</span>
-          <span style="text-align:right">High Est.</span>
+          <span style="text-align:right">Estimate Range</span>
           <span style="text-align:right">Actual</span>
           <span></span>
         </div>
@@ -5145,7 +5200,9 @@ function renderBudgetTable() {
   varianceFooter.id = 'budget-total-variance';
   varianceFooter.className = 'budget-variance-footer';
   varianceFooter.style.display = 'none';
-  varianceFooter.innerHTML = '<span>Overall</span><span class="budget-variance bvf-badge"></span>';
+  const vBadge = document.createElement('span');
+  vBadge.className = 'budget-variance bvf-badge';
+  varianceFooter.appendChild(vBadge);
   body.appendChild(varianceFooter);
 
   const addRow = document.createElement('div');
@@ -5180,8 +5237,52 @@ function buildBudgetRow(item) {
   high.className = 'budget-high';
   high.textContent = `£${(item.high || 0).toLocaleString('en-GB')}`;
 
+  const range = document.createElement('span');
+  range.className = 'budget-range';
+  const sep = document.createElement('span');
+  sep.className = 'budget-range-sep';
+  sep.textContent = ' – ';
+  range.appendChild(low);
+  range.appendChild(sep);
+  range.appendChild(high);
+
   const actions = document.createElement('div');
   actions.className = 'budget-row-actions';
+  actions.style.position = 'relative';
+
+  const menuBtn = document.createElement('button');
+  menuBtn.className = 'budget-action-btn budget-menu-btn';
+  menuBtn.title = 'Options';
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const wasOpen = row.classList.contains('menu-open');
+    document.querySelectorAll('.budget-row.menu-open').forEach(r => r.classList.remove('menu-open'));
+    if (!wasOpen) row.classList.add('menu-open');
+  });
+
+  const dropdown = document.createElement('div');
+  dropdown.className = 'budget-row-dropdown';
+
+  const editItem = document.createElement('button');
+  editItem.className = 'budget-dropdown-item';
+  editItem.textContent = 'Edit';
+  editItem.addEventListener('click', (e) => {
+    e.stopPropagation();
+    row.classList.remove('menu-open');
+    editBudgetRow(row, item);
+  });
+
+  const delItem = document.createElement('button');
+  delItem.className = 'budget-dropdown-item delete';
+  delItem.textContent = 'Delete';
+  delItem.addEventListener('click', (e) => {
+    e.stopPropagation();
+    row.classList.remove('menu-open');
+    deleteBudgetItem(item.id);
+  });
+
+  dropdown.appendChild(editItem);
+  dropdown.appendChild(delItem);
 
   const editBtn = document.createElement('button');
   editBtn.className = 'budget-action-btn';
@@ -5195,12 +5296,13 @@ function buildBudgetRow(item) {
   delBtn.innerHTML = '×';
   delBtn.addEventListener('click', () => deleteBudgetItem(item.id));
 
+  actions.appendChild(menuBtn);
+  actions.appendChild(dropdown);
   actions.appendChild(editBtn);
   actions.appendChild(delBtn);
 
   row.appendChild(name);
-  row.appendChild(low);
-  row.appendChild(high);
+  row.appendChild(range);
   row.appendChild(buildActualCell(item));
   row.appendChild(actions);
   return row;
@@ -5257,6 +5359,7 @@ function buildTotalRow(items) {
   const totalHigh = items.reduce((s, i) => s + (i.high || 0), 0);
 
   const row = document.createElement('div');
+  row.id = 'budget-total-row';
   row.className = 'budget-row';
   row.style.cssText = 'border-top: 1px solid rgba(200,146,42,0.3); background: rgba(200,146,42,0.04);';
 
@@ -5275,15 +5378,33 @@ function buildTotalRow(items) {
   high.style.cssText = 'color: var(--amber); font-size: 15px;';
   high.textContent = `£${totalHigh.toLocaleString('en-GB')}`;
 
-  const actualTotal = document.createElement('span');
-  actualTotal.id = 'actual-total';
-  actualTotal.style.cssText = 'font-family:var(--font-display);font-style:italic;font-size:15px;color:var(--amber);text-align:right;';
-  actualTotal.textContent = '—';
+  const rangeLine = document.createElement('span');
+  rangeLine.className = 'budget-range';
+  const sep = document.createElement('span');
+  sep.className = 'budget-range-sep';
+  sep.textContent = ' – ';
+  rangeLine.appendChild(low);
+  rangeLine.appendChild(sep);
+  rangeLine.appendChild(high);
+
+  // Mobile: stacked under estimate range
+  const actualMobile = document.createElement('span');
+  actualMobile.className = 'budget-total-actual budget-total-actual-mobile';
+  actualMobile.style.display = 'none';
+
+  const rangeCell = document.createElement('div');
+  rangeCell.className = 'budget-range-cell';
+  rangeCell.appendChild(rangeLine);
+  rangeCell.appendChild(actualMobile);
+
+  // Desktop: sits in the Actual column (col 3)
+  const actualDesktop = document.createElement('span');
+  actualDesktop.className = 'budget-total-actual budget-total-actual-desktop';
+  actualDesktop.style.display = 'none';
 
   row.appendChild(name);
-  row.appendChild(low);
-  row.appendChild(high);
-  row.appendChild(actualTotal);
+  row.appendChild(rangeCell);
+  row.appendChild(actualDesktop);
   row.appendChild(document.createElement('div'));
   return row;
 }
@@ -5293,6 +5414,15 @@ function updateTotalCard(items) {
   const totalHigh = items.reduce((s, i) => s + (i.high || 0), 0);
   const rangeEl = document.querySelector('.budget-total-range');
   if (rangeEl) rangeEl.textContent = `£${totalLow.toLocaleString('en-GB')} — £${totalHigh.toLocaleString('en-GB')}`;
+}
+
+function refreshBudgetTotals() {
+  const items = budgetItemsArray();
+  const existingTotal = document.getElementById('budget-total-row');
+  if (existingTotal) existingTotal.parentNode.replaceChild(buildTotalRow(items), existingTotal);
+  updateTotalCard(items);
+  renderBudgetChart(items);
+  updateActualTotal();
 }
 
 function editBudgetRow(row, item) {
@@ -5333,14 +5463,19 @@ function editBudgetRow(row, item) {
     };
     DB_STATE.budgetItems[item.id] = updated;
     db.ref('garden/budgetItems/' + item.id).set(updated);
-    renderBudgetTable();
+    const newRow = buildBudgetRow({ id: item.id, ...updated });
+    row.parentNode.replaceChild(newRow, row);
+    refreshBudgetTotals();
   });
 
   const cancelBtn = document.createElement('button');
   cancelBtn.className = 'budget-action-btn';
   cancelBtn.title = 'Cancel';
   cancelBtn.innerHTML = '✕';
-  cancelBtn.addEventListener('click', renderBudgetTable);
+  cancelBtn.addEventListener('click', () => {
+    const newRow = buildBudgetRow(item);
+    row.parentNode.replaceChild(newRow, row);
+  });
 
   actions.appendChild(saveBtn);
   actions.appendChild(cancelBtn);
@@ -5386,10 +5521,12 @@ function updateActualTotal() {
     const num = parseFloat(input.value.replace(/[^0-9.]/g, ''));
     if (!isNaN(num)) { total += num; count++; }
   });
-  const el = document.getElementById('actual-total');
-  if (el) el.textContent = count > 0 ? `£${Math.round(total).toLocaleString('en-GB')}` : '—';
-
   const varianceEl = document.getElementById('budget-total-variance');
+  const totalText = count > 0 ? `£${Math.round(total).toLocaleString('en-GB')}` : '';
+  document.querySelectorAll('.budget-total-actual').forEach(el => {
+    el.style.display = count > 0 ? '' : 'none';
+    if (count > 0) el.textContent = totalText;
+  });
   if (!varianceEl) return;
   if (count === 0) { varianceEl.style.display = 'none'; return; }
 
@@ -5402,15 +5539,13 @@ function updateActualTotal() {
     const item = DB_STATE.budgetItems[input.dataset.itemId];
     if (item) totalMid += Math.round(((item.low || 0) + (item.high || 0)) / 2);
   });
-  const diff = Math.round(totalMid - total); // positive = under budget
+  const diff = Math.round(totalMid - total);
   const badge = varianceEl.querySelector('.bvf-badge');
-  varianceEl.style.display = 'flex';
+  varianceEl.style.display = 'grid';
   if (diff === 0) {
-    badge.className = 'budget-variance bvf-badge';
-    badge.textContent = 'On target';
+    badge.className = 'budget-variance bvf-badge'; badge.textContent = 'On target';
   } else if (diff > 0) {
-    badge.className = 'budget-variance variance-under bvf-badge';
-    badge.textContent = `£${Math.abs(diff).toLocaleString('en-GB')} under budget`;
+    badge.className = 'budget-variance variance-under bvf-badge'; badge.textContent = `£${Math.abs(diff).toLocaleString('en-GB')} under budget`;
   } else {
     const pctOver = Math.abs(diff) / totalMid * 100;
     badge.className = `budget-variance ${pctOver <= 20 ? 'variance-amber' : 'variance-over'} bvf-badge`;
@@ -5448,13 +5583,13 @@ function renderBudgetChart(items) {
   container.innerHTML = '';
 
   data.forEach(d => {
-    const heightPct = (d.high / maxVal) * 100;
+    const widthPct = (d.high / maxVal) * 100;
     const div = document.createElement('div');
     div.className = 'budget-bar';
     div.title = `${d.label}: £${d.low.toLocaleString('en-GB')}–£${d.high.toLocaleString('en-GB')}`;
     div.innerHTML = `
-      <div class="budget-bar-fill" style="height:${heightPct}%"></div>
       <div class="budget-bar-label">${d.label}</div>
+      <div class="budget-bar-track"><div class="budget-bar-fill" style="width:${widthPct}%"></div></div>
     `;
     container.appendChild(div);
   });
@@ -6278,6 +6413,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Real-time sync — picks up changes made by the other person
   setupRealtimeSync();
+
+  // Dismiss budget row dropdowns when clicking outside
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.budget-row.menu-open').forEach(r => r.classList.remove('menu-open'));
+  });
 
   // Close mobile menu on link click
   document.querySelectorAll('.nav-links a').forEach(a => {

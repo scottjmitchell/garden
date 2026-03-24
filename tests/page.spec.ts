@@ -435,9 +435,9 @@ test('budget action buttons are at least 44px tall at 375px', async ({ page }) =
   expect(height).toBeGreaterThanOrEqual(44);
 });
 
-test('budget actual input is at least 120px wide at 375px', async ({ page }) => {
+test('budget actual input is at least 70px wide at 375px', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   const input = page.locator('.budget-actual-input').first();
   const width = await input.evaluate(el => el.getBoundingClientRect().width);
-  expect(width).toBeGreaterThanOrEqual(120);
+  expect(width).toBeGreaterThanOrEqual(70);
 });
