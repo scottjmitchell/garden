@@ -16,3 +16,4 @@ dist/
 *storybook.log
 storybook-static
 vitest.shims.d.ts
+scripts/migrate-snapshot.json
