@@ -15,10 +15,10 @@ function MaterialCard({ material, onOpen }: { material: Material; onOpen: () => 
     <Card className="flex flex-col gap-3">
       <div className="flex items-start justify-between gap-2">
         <p className="font-display text-lg" style={{ color: material.accent }}>{material.name}</p>
-        <Badge variant={statusVariant[material.status]}>{material.statusLabel}</Badge>
+        <Badge variant={statusVariant[material.status]}>{material.status}</Badge>
       </div>
       <p className="line-clamp-3 text-sm text-garden-text/60">{material.spec}</p>
-      <p className="text-xs text-garden-text/40">{material.cost}</p>
+      <p className="text-xs text-garden-text/40">{`£${material.low.toLocaleString()} – £${material.high.toLocaleString()}`}</p>
       <button
         onClick={onOpen}
         className="mt-auto self-start text-xs text-amber/70 hover:text-amber transition-colors"
@@ -49,14 +49,14 @@ export function MaterialsPage() {
       >
         {selected && (
           <div className="space-y-4">
-            <Badge variant={statusVariant[selected.status]}>{selected.statusLabel}</Badge>
+            <Badge variant={statusVariant[selected.status]}>{selected.status}</Badge>
             <div>
               <p className="mb-1 text-xs text-garden-text/40">Specification</p>
               <p className="text-sm text-garden-text/80">{selected.spec}</p>
             </div>
             <div>
               <p className="mb-1 text-xs text-garden-text/40">Cost estimate</p>
-              <p className="text-sm text-garden-text/80">{selected.cost}</p>
+              <p className="text-sm text-garden-text/80">{`£${selected.low.toLocaleString()} – £${selected.high.toLocaleString()}`}</p>
             </div>
           </div>
         )}

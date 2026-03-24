@@ -1,11 +1,27 @@
+// src/types/index.ts
+
 // ─── Plan ────────────────────────────────────────────────────────────────────
 
 export type PhaseStatus = 'done' | 'current' | 'upcoming'
 
+export type TaskStatus = 'not-started' | 'in-progress' | 'done'
+
+export interface TaskOption {
+  id:        string
+  name:      string
+  price?:    number
+  url?:      string
+  notes?:    string
+  selected?: boolean
+}
+
 export interface Task {
-  id:   string
-  text: string
-  done: boolean
+  id:      string
+  text:    string
+  done:    boolean
+  status?: TaskStatus
+  notes?:  string
+  options?: Record<string, TaskOption>
 }
 
 export interface Phase {
@@ -22,24 +38,29 @@ export interface Phase {
 
 export type MaterialStatus = 'researching' | 'to-order' | 'ordered' | 'delivered'
 
+export type OptionStatus = 'shortlisted' | 'ordered' | 'rejected' | null
+
 export interface MaterialOption {
   id:        string
   name:      string
-  price:     string
+  supplier?: string
+  leadTime?: string
+  price?:    number
   url?:      string
-  imageUrl?: string
   notes?:    string
+  imageUrl?: string
+  status?:   OptionStatus
 }
 
 export interface Material {
-  id:          string
-  name:        string
-  spec:        string
-  cost:        string
-  status:      MaterialStatus
-  statusLabel: string
-  options:     MaterialOption[]
-  accent:      string
+  id:      string
+  name:    string
+  spec:    string
+  low:     number
+  high:    number
+  status:  MaterialStatus
+  accent:  string
+  options: MaterialOption[]
 }
 
 // ─── Budget ──────────────────────────────────────────────────────────────────
@@ -50,6 +71,7 @@ export interface BudgetItem {
   low:     number
   high:    number
   actual?: number
+  order?:  number
 }
 
 // ─── Journal ─────────────────────────────────────────────────────────────────
