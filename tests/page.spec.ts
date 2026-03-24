@@ -162,3 +162,15 @@ test('sidebar: active nav link is highlighted on plan page', async ({ page }) =>
   const planLink = page.getByRole('link', { name: 'Plan', exact: true })
   await expect(planLink).toHaveClass(/text-amber/)
 })
+
+// ─── ConfirmModal ─────────────────────────────────────────────────────────────
+// Note: phase-delete-btn is added in Task 7. This test will pass then.
+test('confirm modal: shows title, body, and delete button', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="phase-delete-btn"]')
+  await page.getByTestId('phase-delete-btn').first().click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.getByText(/permanently remove/i)).toBeVisible()
+  await expect(page.getByRole('button', { name: /delete/i })).toBeVisible()
+  await expect(page.getByRole('button', { name: /cancel/i })).toBeVisible()
+})
