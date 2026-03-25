@@ -200,7 +200,7 @@ export function useMaterials() {
 
   function addMaterial(data: Omit<Material, 'id' | 'options'>) {
     const newRef = push(ref(db, `${DB_ROOT}/materials`))
-    set(newRef, { ...data, options: {}, order: Date.now() })
+    set(newRef, { ...data, options: {}, order: -Date.now() })
   }
 
   function updateMaterial(id: string, data: Omit<Material, 'id' | 'options'>) {

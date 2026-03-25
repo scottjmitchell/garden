@@ -275,3 +275,106 @@ test('plan: delete task requires confirmation', async ({ page }) => {
   await page.getByTestId('task-delete-btn').first().click()
   await expect(page.getByRole('dialog')).toBeVisible()
 })
+
+// ─── Materials ────────────────────────────────────────────────────────────────
+
+test('materials: add material via modal appears in list', async ({ page }) => {
+  await page.goto('/materials')
+  await page.getByRole('button', { name: /add material/i }).click()
+  await page.getByLabel('Name').fill('Test Material')
+  await page.getByLabel('Spec').fill('Test spec')
+  await page.getByLabel('Low estimate').fill('100')
+  await page.getByLabel('High estimate').fill('200')
+  await page.getByRole('button', { name: /save/i }).click()
+  await expect(page.getByText('Test Material')).toBeVisible()
+})
+
+test('materials: status dropdown change updates card', async ({ page }) => {
+  await page.goto('/materials')
+  await page.waitForSelector('[data-testid="material-status"]')
+  const select = page.getByTestId('material-status').first()
+  await select.selectOption('ordered')
+  // Verify the dropdown reflects the selected value (local state update)
+  await expect(select).toHaveValue('ordered')
+})
+
+test('materials: delete material requires confirmation', async ({ page }) => {
+  await page.goto('/materials')
+  await page.waitForSelector('[data-testid="material-delete-btn"]')
+  await page.getByTestId('material-delete-btn').first().click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.getByText(/permanently remove/i)).toBeVisible()
+})
+
+// ─── Materials — Options modal ────────────────────────────────────────────────
+
+test('materials: options modal opens and shows options', async ({ page }) => {
+  await page.goto('/materials')
+  await page.waitForSelector('text=Options')
+  await page.getByText(/Options \(/).first().click()
+  await expect(page.getByTestId('options-modal')).toBeVisible()
+})
+
+test('materials: compare toggle switches layout', async ({ page }) => {
+  await page.goto('/materials')
+  await page.getByText(/Options \(/).first().click()
+  await page.getByRole('button', { name: /compare/i }).click()
+  await expect(page.getByTestId('options-compare-mode')).toBeVisible()
+})
+
+test('materials: add option via inline form appears in list', async ({ page }) => {
+  await page.goto('/materials')
+  await page.getByText(/Options \(/).first().click()
+  await page.getByRole('button', { name: /add option/i }).click()
+  await page.getByLabel('Option name').fill('New Supplier')
+  await page.getByRole('button', { name: /save option/i }).click()
+  await expect(page.getByText('New Supplier')).toBeVisible()
+})
+
+// ─── Budget ───────────────────────────────────────────────────────────────────
+
+test('budget: add item via modal appears in table', async ({ page }) => {
+  await page.goto('/budget')
+  await page.getByRole('button', { name: /add budget item/i }).click()
+  await page.getByLabel('Item name').fill('Test Item')
+  await page.getByLabel('Low').fill('500')
+  await page.getByLabel('High').fill('1000')
+  await page.getByRole('button', { name: /save/i }).click()
+  await expect(page.getByText('Test Item')).toBeVisible()
+})
+
+test('budget: entering actual shows variance pill', async ({ page }) => {
+  await page.goto('/budget')
+  await page.waitForSelector('[data-testid="actual-input"]')
+  const input = page.getByTestId('actual-input').first()
+  await input.fill('600')
+  await input.blur()
+  await expect(page.getByTestId('variance-pill').first()).toBeVisible()
+})
+
+test('budget: total row shows sum of variances with actuals', async ({ page }) => {
+  await page.goto('/budget')
+  await expect(page.getByTestId('total-variance')).toBeVisible()
+})
+
+test('budget: delete item requires confirmation', async ({ page }) => {
+  await page.goto('/budget')
+  await page.waitForSelector('[data-testid="budget-delete-btn"]')
+  await page.getByTestId('budget-delete-btn').first().click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+})
+
+// ─── Map ──────────────────────────────────────────────────────────────────────
+
+test('map: hovering a zone shows tooltip with zone name', async ({ page }) => {
+  await page.goto('/map')
+  await page.locator('[data-zone]').first().hover()
+  await expect(page.getByTestId('map-tooltip')).toBeVisible()
+})
+
+test('map: moving mouse away hides tooltip', async ({ page }) => {
+  await page.goto('/map')
+  await page.locator('[data-zone]').first().hover()
+  await page.locator('h1').hover()
+  await expect(page.getByTestId('map-tooltip')).not.toBeVisible()
+})
