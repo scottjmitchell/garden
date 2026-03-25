@@ -25,9 +25,11 @@ interface PhaseCardProps {
   onTaskClick:      (task: Task) => void
   onAddTask:        (phaseId: string, text: string) => void
   onDeleteTask:     (phaseId: string, taskId: string) => void
+  onRenamePhase:    (phaseId: string, title: string) => void
+  onRenameTask:     (phaseId: string, taskId: string, text: string) => void
 }
 
-export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes, onTaskClick, onAddTask, onDeleteTask }: PhaseCardProps) {
+export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes, onTaskClick, onAddTask, onDeleteTask, onRenamePhase, onRenameTask }: PhaseCardProps) {
   // Resolve initial notes: Firebase value takes priority, localStorage is fallback
   const initialNotes = phase.notes ?? loadStoredPhaseNote(phase.id)
 
@@ -37,6 +39,14 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
   const [newTaskText, setNewTaskText]   = useState('')
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null)
   const [hasNotes, setHasNotes]       = useState(!!(initialNotes))
+  const [editingTitle, setEditingTitle] = useState(false)
+  const [titleDraft, setTitleDraft]     = useState(phase.title)
+
+  function saveTitle() {
+    const t = titleDraft.trim()
+    if (t && t !== phase.title) onRenamePhase(phase.id, t)
+    setEditingTitle(false)
+  }
   const notesRef    = useRef(initialNotes)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -97,16 +107,37 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
             {phase.num}
           </span>
           <div>
-            <p className="font-display text-lg text-garden-text flex items-center gap-2">
-              {phase.title}
-              {hasNotes && (
-                <span
-                  data-testid="phase-has-notes-dot"
-                  className="inline-block h-1.5 w-1.5 rounded-full bg-amber"
-                  title="Has notes"
-                />
-              )}
-            </p>
+            {editingTitle ? (
+              <input
+                data-testid="phase-title-input"
+                autoFocus
+                value={titleDraft}
+                onChange={e => setTitleDraft(e.target.value)}
+                onKeyDown={e => {
+                  e.stopPropagation()
+                  if (e.key === 'Enter') saveTitle()
+                  if (e.key === 'Escape') setEditingTitle(false)
+                }}
+                onBlur={saveTitle}
+                onClick={e => e.stopPropagation()}
+                className="bg-transparent font-display text-lg text-garden-text focus:outline-none border-b border-amber/40 w-full"
+              />
+            ) : (
+              <p
+                data-testid="phase-card-title"
+                className="font-display text-lg text-garden-text flex items-center gap-2"
+                onDoubleClick={e => { e.stopPropagation(); setTitleDraft(phase.title); setEditingTitle(true) }}
+              >
+                {phase.title}
+                {hasNotes && (
+                  <span
+                    data-testid="phase-has-notes-dot"
+                    className="inline-block h-1.5 w-1.5 rounded-full bg-amber"
+                    title="Has notes"
+                  />
+                )}
+              </p>
+            )}
             <p className="text-xs text-garden-text/40">{phase.date}</p>
           </div>
         </div>
@@ -128,6 +159,19 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
           >
             ✕
           </button>
+          <svg
+            data-testid="phase-collapse-chevron"
+            className={`h-3 w-3 text-garden-text/30 transition-transform duration-200 ml-1 ${open ? 'rotate-180' : ''}`}
+            viewBox="0 0 10 6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="1,1 5,5 9,1" />
+          </svg>
         </div>
       </button>
 
@@ -151,6 +195,7 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
               onToggle={onToggle}
               onClick={onTaskClick}
               onDelete={(_phaseId, taskId) => setTaskToDelete(phase.tasks.find(t => t.id === taskId) ?? null)}
+              onRename={onRenameTask}
             />
           ))}
           {addingTask ? (
