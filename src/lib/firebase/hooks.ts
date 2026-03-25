@@ -1,5 +1,5 @@
 // src/lib/firebase/hooks.ts
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ref, onValue, update, set, remove, push } from 'firebase/database'
 import { db } from './config'
 import type {
@@ -102,16 +102,39 @@ function saveStoredPhaseNote(phaseId: string, notes: string) {
 export function usePhases() {
   const [phases, setPhases] = useState<Phase[]>([])
   const [loading, setLoading] = useState(true)
+  // Optimistic done overrides: prevents Firebase rollbacks (permission_denied on seeded data)
+  // from reverting UI immediately after toggle
+  const optimisticDone = useRef<Map<string, boolean>>(new Map())
 
   useEffect(() => {
     return onValue(ref(db, `${DB_ROOT}/phases`), snap => {
-      setPhases(snap.val() ? toPhases(snap.val()) : [])
+      const rawPhases = snap.val() ? toPhases(snap.val()) : []
+      const overrides = optimisticDone.current
+      setPhases(
+        overrides.size === 0
+          ? rawPhases
+          : rawPhases.map(p => ({
+              ...p,
+              tasks: p.tasks.map(t => {
+                const key = `${p.id}/${t.id}`
+                return overrides.has(key) ? { ...t, done: overrides.get(key)! } : t
+              }),
+            }))
+      )
       setLoading(false)
     })
   }, [])
 
   function toggleTask(phaseId: string, taskId: string, done: boolean) {
+    const key = `${phaseId}/${taskId}`
+    optimisticDone.current.set(key, done)
+    setPhases(prev => prev.map(p => p.id !== phaseId ? p : {
+      ...p,
+      tasks: p.tasks.map(t => t.id !== taskId ? t : { ...t, done }),
+    }))
     update(ref(db, `${DB_ROOT}/phases/${phaseId}/tasks/${taskId}`), { done })
+      .then(() => optimisticDone.current.delete(key))
+      .catch(() => setTimeout(() => optimisticDone.current.delete(key), 3000))
   }
 
   function updatePhaseNotes(phaseId: string, notes: string) {
