@@ -11,7 +11,10 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-const SKIP_AUTH = import.meta.env.VITE_SKIP_AUTH === 'true'
+const SKIP_AUTH      = import.meta.env.VITE_SKIP_AUTH === 'true'
+const ALLOWED_EMAILS = new Set(
+  (import.meta.env.VITE_ALLOWED_EMAILS ?? '').split(',').map((e: string) => e.trim()).filter(Boolean)
+)
 
 // Fake user used in dev/test when VITE_SKIP_AUTH=true
 const DEV_USER = { displayName: 'Dev User', email: 'dev@local', uid: 'dev' } as User
@@ -28,7 +31,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return
     }
     return onAuthStateChanged(auth, u => {
-      setUser(u)
+      if (u && ALLOWED_EMAILS.size > 0 && !ALLOWED_EMAILS.has(u.email ?? '')) {
+        firebaseSignOut(auth)
+        setUser(null)
+      } else {
+        setUser(u)
+      }
       setLoading(false)
     })
   }, [])
