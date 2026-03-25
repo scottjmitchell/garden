@@ -115,13 +115,13 @@ Add a `StatusChip` section to the existing `/components` page showing all three 
 
 ### Title inline edit
 
-- Single click (not double-click — now that the header no longer toggles on click, single click is correct).
+- Single click (not double-click). The entire header no longer toggles on click — collapse is chevron-only — so single click is unambiguous. Drag gestures are handled exclusively by the drag handle element and will not accidentally trigger the title input.
 - Shows `<input>` in place of `<p>`. Enter or blur saves via `onRenamePhase`.
 - Escape cancels.
 
 ### Date inline edit
 
-- Same pattern: click the date text → `<input>`, Enter/blur saves via new `onUpdatePhaseField` prop.
+- Same pattern: click the date text → `<input>`, Enter/blur saves via `onUpdatePhaseDate` prop.
 - Placeholder: `"Add date…"` when empty.
 
 ### Status
@@ -179,7 +179,7 @@ onUpdatePhaseDate:    (phaseId: string, date: string) => void
 </DndContext>
 ```
 
-`PhaseCardGhost` is a lightweight dimmed version of the card (no interactive elements) used only in the overlay.
+`PhaseCardGhost` is a lightweight dimmed version of the card (no interactive elements, `opacity-50`) used only in the overlay. Defined as an inline component inside `PlanPage.tsx` — no separate file needed.
 
 ### `handleDragEnd`
 
@@ -205,9 +205,10 @@ function reorderPhases(orderedIds: string[]) {
 }
 ```
 
-### New hook functions
+### New / updated hook functions
 
 ```ts
+// New — targeted updates replace the old full-object updatePhase where possible
 function updatePhaseStatus(phaseId: string, status: PhaseStatus) {
   update(ref(db, `${DB_ROOT}/phases/${phaseId}`), { status })
 }
@@ -217,7 +218,17 @@ function updatePhaseDate(phaseId: string, date: string) {
 }
 ```
 
-Both added to the `usePhases` return object.
+**`updatePhase` signature change:** The existing `updatePhase(phaseId, { num, title, date, status })` must drop `num` from both the TypeScript signature and the Firebase write, since `num` is no longer a stored field. Updated signature:
+
+```ts
+function updatePhase(phaseId: string, data: { title: string; date: string; status: PhaseStatus }) {
+  update(ref(db, `${DB_ROOT}/phases/${phaseId}`), data)
+}
+```
+
+`updatePhase` is still used by `PhaseModal` (add-only path) to write `title`, `date`, and `status` on creation. All other field updates go through the targeted functions above.
+
+All new/updated functions added to the `usePhases` return object.
 
 ---
 
@@ -290,7 +301,7 @@ Add to the existing gallery:
 
 - `plan: StatusChip changes phase status inline` — click chip, pick option, verify badge updates
 - `plan: StatusChip changes task status in drawer` — open drawer, click chip, pick option
-- `plan: drag reorders phases` — drag second phase above first, verify new order
+- `plan: drag reorders phases` — drag second phase above first, verify new order. Use Playwright's `page.mouse` sequence (`move` → `down` → `move` → `up`) rather than `dragTo`, as `@dnd-kit` relies on pointer events that `dragTo` does not reliably trigger.
 - `components: StatusChip renders all variants` — checks `data-testid="status-chip-example"` visible
 
 ### Updated tests
@@ -302,11 +313,13 @@ Add to the existing gallery:
 
 ## Implementation Order
 
-1. `StatusChip` component + gallery entry + test
-2. `hooks.ts` — `reorderPhases`, `updatePhaseStatus`, `updatePhaseDate`
-3. `PhaseCard` — inline date, StatusChip, drag handle wiring, remove `onEdit`
-4. `PlanPage` — `@dnd-kit` setup, `handleDragEnd`, pass new props, remove edit modal path
-5. `TaskDrawer` — swap pills for StatusChip
-6. `PhaseModal` — remove `Num` field
-7. `types/index.ts` — remove `num` from `Phase`
-8. Tests — new + updated
+1. `types/index.ts` — remove `num` from `Phase` **first**, so all downstream changes compile cleanly
+2. `hooks.ts` — update `updatePhase` signature (drop `num`), add `reorderPhases`, `updatePhaseStatus`, `updatePhaseDate`. New phase `order` value: `(existingPhases.length) * 1000` — appends at end.
+3. `StatusChip` component + gallery entry + gallery test
+4. `PhaseCard` — inline date, StatusChip, drag handle wiring, remove `onEdit` prop, receive `num: number` prop
+5. `PlanPage` — install `@dnd-kit`, `handleDragEnd`, pass new props, remove edit modal path
+6. `TaskDrawer` — swap pills for StatusChip
+7. `PhaseModal` — remove `Num` field
+8. Playwright tests — new + updated
+
+> **Note on step 1:** removing `num` from `Phase` will immediately break all existing references (`PhaseCard`, `PhaseModal`, `hooks.ts`, `PlanPage`). Step 1 should land together with steps 2–7 in a single commit, not incrementally.
