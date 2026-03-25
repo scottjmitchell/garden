@@ -68,7 +68,7 @@ export function TaskRow({ phaseId, task, onToggle, onClick, onDelete, onRename }
       ) : (
         <span
           data-testid="task-text"
-          onClick={() => onClick(task)}
+          onClick={() => { setDraft(task.text); setEditing(true) }}
           className={`flex-1 cursor-pointer text-sm select-none ${
             task.done
               ? 'text-garden-text/40 line-through decoration-amber/40'
@@ -83,9 +83,9 @@ export function TaskRow({ phaseId, task, onToggle, onClick, onDelete, onRename }
         <>
           <button
             data-testid="task-edit-btn"
-            onClick={e => { e.stopPropagation(); setDraft(task.text); setEditing(true) }}
+            onClick={e => { e.stopPropagation(); onClick(task) }}
             className="hidden text-xs text-garden-text/20 hover:text-amber group-hover:inline"
-            aria-label="Rename task"
+            aria-label="Open task details"
           >
             ✎
           </button>

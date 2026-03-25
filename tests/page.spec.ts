@@ -253,10 +253,11 @@ test('confirm modal: shows title, body, and delete button', async ({ page }) => 
 
 // ─── Plan — Task CRUD ─────────────────────────────────────────────────────────
 
-test('plan: task drawer opens on task click', async ({ page }) => {
+test('plan: task drawer opens on edit button click', async ({ page }) => {
   await page.goto('/plan')
-  await page.waitForSelector('[data-testid="task-text"]')
-  await page.getByTestId('task-text').first().click()
+  await page.waitForSelector('[data-testid="task-row"]')
+  await page.getByTestId('task-row').first().hover()
+  await page.getByTestId('task-edit-btn').first().click()
   await expect(page.getByTestId('task-drawer')).toBeVisible()
 })
 
@@ -292,11 +293,10 @@ test('plan: inline edit phase title by double-click', async ({ page }) => {
   await expect(page.getByTestId('phase-card-title').first()).toHaveText('Quick Renamed Phase')
 })
 
-test('plan: task edit button visible on hover and enables inline rename', async ({ page }) => {
+test('plan: click task name enters inline rename mode', async ({ page }) => {
   await page.goto('/plan')
-  await page.waitForSelector('[data-testid="task-row"]')
-  await page.getByTestId('task-row').first().hover()
-  await page.getByTestId('task-edit-btn').first().click()
+  await page.waitForSelector('[data-testid="task-text"]')
+  await page.getByTestId('task-text').first().click()
   const input = page.getByTestId('task-edit-input').first()
   await input.fill('Renamed Task Inline')
   await input.press('Enter')

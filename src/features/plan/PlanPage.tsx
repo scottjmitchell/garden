@@ -4,7 +4,7 @@ import { usePhases } from '../../lib/firebase/hooks'
 import { PhaseCard } from './PhaseCard'
 import { PhaseModal } from './PhaseModal'
 import { TaskDrawer } from './TaskDrawer'
-import type { Phase, Task } from '../../types'
+import type { Phase } from '../../types'
 
 export function PlanPage() {
   const {
@@ -13,7 +13,11 @@ export function PlanPage() {
     addTaskOption, selectTaskOption, deleteTaskOption,
   } = usePhases()
   const [phaseModal, setPhaseModal] = useState<{ open: boolean; phase?: Phase }>({ open: false })
-  const [drawerTask, setDrawerTask] = useState<{ phase: Phase; task: Task } | null>(null)
+  const [drawerTask, setDrawerTask] = useState<{ phaseId: string; taskId: string } | null>(null)
+
+  // Derive live task/phase from phases so the drawer always reflects current Firebase state
+  const drawerPhase = drawerTask ? phases.find(p => p.id === drawerTask.phaseId) ?? null : null
+  const liveTask    = drawerPhase?.tasks.find(t => t.id === drawerTask?.taskId) ?? null
 
   const totalTasks = phases.reduce((n, p) => n + p.tasks.length, 0)
   const doneTasks  = phases.reduce((n, p) => n + p.tasks.filter(t => t.done).length, 0)
@@ -33,7 +37,7 @@ export function PlanPage() {
             onEdit={() => setPhaseModal({ open: true, phase })}
             onDelete={deletePhase}
             updatePhaseNotes={updatePhaseNotes}
-            onTaskClick={task => setDrawerTask({ phase, task })}
+            onTaskClick={task => setDrawerTask({ phaseId: phase.id, taskId: task.id })}
             onAddTask={addTask}
             onDeleteTask={deleteTask}
             onRenamePhase={(phaseId, title) => updatePhase(phaseId, { num: phase.num, title, date: phase.date, status: phase.status })}
@@ -58,8 +62,8 @@ export function PlanPage() {
       />
 
       <TaskDrawer
-        phaseId={drawerTask?.phase.id ?? ''}
-        task={drawerTask?.task ?? null}
+        phaseId={drawerTask?.phaseId ?? ''}
+        task={liveTask}
         onClose={() => setDrawerTask(null)}
         onUpdateStatus={updateTaskStatus}
         onUpdateNotes={updateTaskNotes}
