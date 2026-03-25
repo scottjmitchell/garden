@@ -1,4 +1,5 @@
 // src/features/plan/TaskRow.tsx
+import { useState } from 'react'
 import type { Task } from '../../types'
 
 interface TaskRowProps {
@@ -7,9 +8,19 @@ interface TaskRowProps {
   onToggle: (phaseId: string, taskId: string, done: boolean) => void
   onClick:  (task: Task) => void
   onDelete: (phaseId: string, taskId: string) => void
+  onRename: (phaseId: string, taskId: string, text: string) => void
 }
 
-export function TaskRow({ phaseId, task, onToggle, onClick, onDelete }: TaskRowProps) {
+export function TaskRow({ phaseId, task, onToggle, onClick, onDelete, onRename }: TaskRowProps) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft]     = useState(task.text)
+
+  function saveRename() {
+    const t = draft.trim()
+    if (t && t !== task.text) onRename(phaseId, task.id, t)
+    setEditing(false)
+  }
+
   return (
     <li
       data-testid="task-row"
@@ -41,26 +52,53 @@ export function TaskRow({ phaseId, task, onToggle, onClick, onDelete }: TaskRowP
         )}
       </button>
 
-      {/* Task text — single click to open drawer */}
-      <span
-        data-testid="task-text"
-        onClick={() => onClick(task)}
-        className={`flex-1 cursor-pointer text-sm select-none ${
-          task.done
-            ? 'text-garden-text/40 line-through decoration-amber/40'
-            : 'text-garden-text/80 hover:text-garden-text'
-        }`}
-      >
-        {task.text}
-      </span>
-      <button
-        data-testid="task-delete-btn"
-        onClick={e => { e.stopPropagation(); onDelete(phaseId, task.id) }}
-        className="ml-auto hidden text-xs text-garden-text/20 hover:text-[#9E4E24] group-hover:inline"
-        aria-label="Delete task"
-      >
-        ✕
-      </button>
+      {editing ? (
+        <input
+          data-testid="task-edit-input"
+          autoFocus
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter') saveRename()
+            if (e.key === 'Escape') setEditing(false)
+          }}
+          onBlur={saveRename}
+          className="flex-1 bg-transparent text-sm text-garden-text focus:outline-none border-b border-amber/40"
+        />
+      ) : (
+        <span
+          data-testid="task-text"
+          onClick={() => { setDraft(task.text); setEditing(true) }}
+          className={`flex-1 cursor-pointer text-sm select-none ${
+            task.done
+              ? 'text-garden-text/40 line-through decoration-amber/40'
+              : 'text-garden-text/80 hover:text-garden-text'
+          }`}
+        >
+          {task.text}
+        </span>
+      )}
+
+      {!editing && (
+        <>
+          <button
+            data-testid="task-edit-btn"
+            onClick={e => { e.stopPropagation(); onClick(task) }}
+            className="hidden text-xs text-garden-text/20 hover:text-amber group-hover:inline"
+            aria-label="Open task details"
+          >
+            ✎
+          </button>
+          <button
+            data-testid="task-delete-btn"
+            onClick={e => { e.stopPropagation(); onDelete(phaseId, task.id) }}
+            className="hidden text-xs text-garden-text/20 hover:text-[#9E4E24] group-hover:inline"
+            aria-label="Delete task"
+          >
+            ✕
+          </button>
+        </>
+      )}
     </li>
   )
 }
