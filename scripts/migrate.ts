@@ -70,7 +70,7 @@ const phases = existingPhases
 
 // Materials — fresh seed from mock-data
 const materials: Record<string, object> = {}
-for (const m of MATERIALS) {
+for (const [i, m] of MATERIALS.entries()) {
   materials[m.id] = {
     id:          m.id,
     name:        m.name,
@@ -79,6 +79,7 @@ for (const m of MATERIALS) {
     status:      m.status,
     statusLabel: m.statusLabel,
     accent:      m.accent,
+    order:       i,
     options:     {},
   }
 }

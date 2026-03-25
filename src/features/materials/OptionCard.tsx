@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import type { MaterialOption, OptionStatus } from '../../types'
 import { storeOptionImage, imageFromClipboard } from '../../lib/firebase/storage'
 
-const CHIP_OPTIONS: { value: OptionStatus; label: string }[] = [
+const CHIP_OPTIONS: { value: Exclude<OptionStatus, null>; label: string }[] = [
   { value: 'shortlisted', label: 'Shortlisted' },
   { value: 'ordered',     label: 'Ordered'     },
   { value: 'rejected',    label: 'Rejected'    },

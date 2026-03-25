@@ -6,6 +6,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 0,
   reporter: 'html',
+  expect: {
+    timeout: 15000,
+  },
   use: {
     baseURL: process.env.BASE_URL ?? 'https://garden.scottjmitchell.com',
     trace: 'on-first-retry',

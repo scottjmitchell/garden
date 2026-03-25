@@ -11,13 +11,13 @@ export const PHASES: Phase[] = [
       { id: 'p0t3', text: 'Measure side gate width (mini-digger needs 800mm+ clearance)',    done: false },
       { id: 'p0t4', text: 'Mark out zones with spray paint / hose pipe',                    done: false },
       { id: 'p0t5', text: 'Order skip hire (~8 yard)',                                       done: false },
-      { id: 'p0t6', text: 'Source and order pergola (8+ week lead time — ORDER NOW)',        done: false },
-      { id: 'p0t7', text: 'Source and order natural stone paving (3–6 week lead time)',      done: false },
+      { id: 'p0t6', text: 'Source and order pergola',                                        done: false },
+      { id: 'p0t7', text: 'Source and order natural stone paving',                           done: false },
       { id: 'p0t8', text: 'Check left fence post depth before raising lawn level',           done: false },
     ],
   },
   {
-    id: 'phase1', num: '1', title: 'Groundworks', date: 'Late April 2026', status: 'upcoming',
+    id: 'phase1', num: '1', title: 'Groundworks', date: 'April 2026', status: 'upcoming',
     tasks: [
       { id: 'p1t1', text: 'Hire mini-digger (half to full day, tracked machine)',                            done: false },
       { id: 'p1t2', text: 'CUT right patio zone: excavate ~300–450mm to reach patio datum level',          done: false },
@@ -44,8 +44,8 @@ export const PHASES: Phase[] = [
   {
     id: 'phase3', num: '3', title: 'Structures', date: 'June 2026', status: 'upcoming',
     tasks: [
-      { id: 'p3t1', text: 'Erect pergola (louvred aluminium, anthracite/black, motorised)',                done: false },
-      { id: 'p3t2', text: 'Install 4× large raised planters (corten steel recommended)',                   done: false },
+      { id: 'p3t1', text: 'Erect pergola',                                                                  done: false },
+      { id: 'p3t2', text: 'Install 4× large raised planters',                                             done: false },
       { id: 'p3t3', text: 'Wire electricity: outbuilding fusebox → pergola lights + outdoor socket',       done: false },
       { id: 'p3t4', text: 'Build/position new shed in back-right corner',                                  done: false },
       { id: 'p3t5', text: 'Lay shingle ground cover around new shed zone (Zone 4)',                       done: false },
@@ -58,7 +58,7 @@ export const PHASES: Phase[] = [
       { id: 'p4t2', text: 'Final fine levelling, raking and treading for turf',                            done: false },
       { id: 'p4t3', text: 'Lay turf (irrigate daily for 3 weeks)',                                         done: false },
       { id: 'p4t4', text: 'Existing cherry tree: stake if needed, mulch ring 1m diameter',                done: false },
-      { id: 'p4t5', text: "Plant star jasmine × 1–2 and clematis montana 'Alba' × 1 at pergola base",    done: false },
+      { id: 'p4t5', text: "Plant clematis montana 'Alba' × 2 at pergola base",                          done: false },
       { id: 'p4t6', text: 'Plant hydrangea petiolaris on back fence (if chosen)',                          done: false },
       { id: 'p4t7', text: 'Plant border shrubs and perennials',                                             done: false },
     ],
@@ -66,11 +66,11 @@ export const PHASES: Phase[] = [
   {
     id: 'phase5', num: '5', title: 'Finishing', date: 'July–August 2026', status: 'upcoming',
     tasks: [
-      { id: 'p5t1', text: 'Install outdoor corner sofa + furniture',                                       done: false },
-      { id: 'p5t2', text: 'Install pergola LED lighting (IP65)',                                            done: false },
-      { id: 'p5t3', text: 'Children\'s swing set + rubber safety tiles',                                   done: false },
-      { id: 'p5t4', text: 'Snagging: check pointing, drainage, levels, electrics',                         done: false },
-      { id: 'p5t5', text: 'Final photography',                                                              done: false },
+      { id: 'p5t1', text: 'Install pergola LED lighting (IP65 rated)',                                      done: false },
+      { id: 'p5t2', text: "Install children's swing set on lawn (rubber safety tiles beneath)",             done: false },
+      { id: 'p5t3', text: 'Lay bark mulch in border beds',                                                  done: false },
+      { id: 'p5t4', text: 'Install outdoor corner sofa set + furniture',                                    done: false },
+      { id: 'p5t5', text: 'Final landscaping touches and photography',                                      done: false },
     ],
   },
 ]
@@ -120,6 +120,37 @@ export const MATERIALS: Material[] = [
     low: 50, high: 120,
     options: [],
   },
+  {
+    id: 'furniture', name: 'Outdoor Corner Sofa', accent: '#8B9A8E', status: 'researching',
+    spec: 'PE rattan/aluminium frame, charcoal, Olefin fabric cushions with fitted weatherproof cover. Suitable for year-round outdoor storage.',
+    low: 1200, high: 2500, options: [],
+  },
+  {
+    id: 'swing', name: "Children's Swing Set", accent: '#4A6B8B', status: 'researching',
+    spec: 'Blue steel, EN71 compliant, hot-dip galvanised. Add rubber safety tiles beneath.',
+    low: 200, high: 500, options: [],
+  },
+  {
+    id: 'shed', name: 'New Shed', accent: '#6B5C3A', status: 'researching',
+    spec: 'Approx 2×2m or 2×3m — size to confirm. Position in back-right corner (Zone 4). Gravel/shingle ground cover surrounding area.',
+    low: 500, high: 1000, options: [],
+  },
+  {
+    id: 'trellis', name: 'Right Fence Trellis', accent: '#8B9A8E', status: 'researching',
+    spec: '', low: 0, high: 0, options: [],
+  },
+  {
+    id: 'shingle', name: 'Shingle', accent: '#8B9A8E', status: 'researching',
+    spec: '', low: 0, high: 0, options: [],
+  },
+  {
+    id: 'turf', name: 'Turf', accent: '#8B9A8E', status: 'researching',
+    spec: '', low: 0, high: 0, options: [],
+  },
+  {
+    id: 'fence-trees', name: 'Fence Trees', accent: '#8B9A8E', status: 'researching',
+    spec: '', low: 0, high: 0, options: [],
+  },
 ]
 
 // ─── Budget ──────────────────────────────────────────────────────────────────
@@ -128,7 +159,7 @@ export const BUDGET_ITEMS: BudgetItem[] = [
   { id: 'paving',     name: 'Natural Stone Paving (~50 sqm)',            low: 3500, high: 4500 },
   { id: 'pergola',    name: 'Louvred Pergola (motorised aluminium)',      low: 3500, high: 5500 },
   { id: 'mot',        name: 'MOT Type 1 Hardcore (~8 tonnes)',            low:  400, high:  600 },
-  { id: 'planters',   name: 'Raised Corten Steel Planters (×4)',          low:  800, high: 2000 },
+  { id: 'planters',   name: 'Raised Planters (×4)',                        low:  200, high:  400 },
   { id: 'edging',     name: 'EverEdge Lawn Edging (~30 lin. m)',          low:  300, high:  400 },
   { id: 'swa',        name: 'SWA Armoured Cable + Electrics',             low:  150, high:  250 },
   { id: 'plants',     name: 'Clematis montana + Hydrangea petiolaris',    low:   50, high:  120 },
@@ -141,6 +172,8 @@ export const BUDGET_ITEMS: BudgetItem[] = [
   { id: 'lights',     name: 'Pergola LED Lighting (IP65)',                low:  200, high:  400 },
   { id: 'shingle',    name: 'Bark Mulch + Shingle Ground Cover',          low:  150, high:  280 },
   { id: 'breaker',    name: 'Breaker Hire (2 weekends)',                  low:  172, high:  172 },
+  { id: 'weedkiller', name: 'Weedkiller',                                low:   30, high:   60 },
+  { id: 'fence-trellis', name: 'Right Fence Trellis',                   low:    0, high:    0 },
 ]
 
 // ─── Journal ─────────────────────────────────────────────────────────────────

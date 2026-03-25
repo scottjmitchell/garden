@@ -7,7 +7,9 @@ import type {
   Task, TaskStatus, TaskOption,
   Material, MaterialStatus, MaterialOption, OptionStatus,
   BudgetItem,
+  JournalSlot,
 } from '../../types'
+import { JOURNAL_SLOTS } from '../mock-data'
 
 const DB_ROOT = import.meta.env.VITE_DB_ROOT ?? 'garden'
 
@@ -306,4 +308,21 @@ export function useBudget() {
   }
 
   return { items, loading, setActual, addBudgetItem, updateBudgetItem, deleteBudgetItem }
+}
+
+// ─── useJournal ───────────────────────────────────────────────────────────────
+
+export function useJournal() {
+  const [slots, setSlots] = useState<JournalSlot[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    return onValue(ref(db, `${DB_ROOT}/journal`), snap => {
+      const data = snap.val() ?? {}
+      setSlots(JOURNAL_SLOTS.map(s => ({ ...s, imageUrl: data[s.id]?.imageUrl })))
+      setLoading(false)
+    })
+  }, [])
+
+  return { slots, loading }
 }

@@ -150,7 +150,7 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
               task={task}
               onToggle={onToggle}
               onClick={onTaskClick}
-              onDelete={(phaseId, taskId) => setTaskToDelete(phase.tasks.find(t => t.id === taskId) ?? null)}
+              onDelete={(_phaseId, taskId) => setTaskToDelete(phase.tasks.find(t => t.id === taskId) ?? null)}
             />
           ))}
           {addingTask ? (

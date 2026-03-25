@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  Button, Card, Badge, Modal, Input, Tabs, PageHeader, EmptyState,
+  Button, Card, Badge, Modal, Input, Tabs, PageHeader, EmptyState, Skeleton,
 } from '../../design-system'
 
 const TABS = [
@@ -86,6 +86,19 @@ export function ComponentsPage() {
             {activeTab === 'second' && <p>Content for Second</p>}
             {activeTab === 'third'  && <p>Content for Third</p>}
           </div>
+        </div>
+      </section>
+
+      {/* Skeleton */}
+      <section className="space-y-3">
+        <h2 className="text-xs uppercase tracking-widest text-garden-text/40">Skeleton</h2>
+        <div data-testid="skeleton-example" className="space-y-3 max-w-xs">
+          <Card className="space-y-3">
+            <Skeleton className="h-3 w-20" />
+            <Skeleton className="h-7 w-28" />
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-3/4" />
+          </Card>
         </div>
       </section>
 

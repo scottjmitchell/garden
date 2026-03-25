@@ -1,5 +1,15 @@
-import { PageHeader } from '../../design-system'
-import { JOURNAL_SLOTS } from '../../lib/mock-data'
+import { PageHeader, Skeleton } from '../../design-system'
+import { useJournal } from '../../lib/firebase/hooks'
+
+function JournalSkeleton() {
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {[0, 1, 2, 3, 4, 5].map(i => (
+        <Skeleton key={i} className="aspect-[3/2] rounded" />
+      ))}
+    </div>
+  )
+}
 
 function PhotoSlot({ label, phase, imageUrl }: { label: string; phase: string; imageUrl?: string }) {
   return (
@@ -24,14 +34,18 @@ function PhotoSlot({ label, phase, imageUrl }: { label: string; phase: string; i
 }
 
 export function JournalPage() {
+  const { slots, loading } = useJournal()
+
   return (
     <div>
       <PageHeader title="Journal" subtitle="Visual progress through each phase of the build" />
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {JOURNAL_SLOTS.map(slot => (
-          <PhotoSlot key={slot.id} label={slot.label} phase={slot.phase} imageUrl={slot.imageUrl} />
-        ))}
-      </div>
+      {loading ? <JournalSkeleton /> : (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {slots.map(slot => (
+            <PhotoSlot key={slot.id} label={slot.label} phase={slot.phase} imageUrl={slot.imageUrl} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
