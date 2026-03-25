@@ -1,13 +1,17 @@
+import { useEffect } from 'react'
 import { useAuth } from '../../app/AuthProvider'
 import { useNavigate } from 'react-router-dom'
 
 export function LoginPage() {
-  const { signIn } = useAuth()
-  const navigate   = useNavigate()
+  const { signIn, user, loading } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!loading && user) navigate('/', { replace: true })
+  }, [user, loading])
 
   async function handleSignIn() {
     await signIn()
-    navigate('/')
   }
 
   return (
