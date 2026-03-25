@@ -33,7 +33,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
       />
 
       {/* Panel */}
-      <div className="relative z-10 w-full max-w-lg rounded border border-white/10 bg-[#1c2017] p-6 shadow-xl">
+      <div className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto rounded border border-white/10 bg-[#1c2017] p-6 shadow-xl">
         <div className="mb-4 flex items-start justify-between gap-4">
           {title && (
             <h2 className="font-display text-xl text-amber">{title}</h2>
