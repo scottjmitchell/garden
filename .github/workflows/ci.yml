@@ -22,9 +22,17 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_DB_ROOT: garden-test
+          VITE_SKIP_AUTH: true
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+
+      - name: Seed test database
+        run: VITE_DB_ROOT=garden-test npx tsx scripts/seed-test-db.ts
+        env:
+          FIREBASE_DB_SECRET: ${{ secrets.FIREBASE_DB_SECRET }}
 
       - name: Run Playwright tests
         run: npx vite preview --port 4173 & sleep 2 && BASE_URL=http://localhost:4173 npx playwright test --reporter=line
