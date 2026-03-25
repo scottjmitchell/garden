@@ -276,6 +276,33 @@ test('plan: delete task requires confirmation', async ({ page }) => {
   await expect(page.getByRole('dialog')).toBeVisible()
 })
 
+test('plan: phase card shows collapse chevron', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="phase-collapse-chevron"]')
+  await expect(page.getByTestId('phase-collapse-chevron').first()).toBeVisible()
+})
+
+test('plan: inline edit phase title by double-click', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="phase-card-title"]')
+  await page.getByTestId('phase-card-title').first().dblclick()
+  const input = page.getByTestId('phase-title-input').first()
+  await input.fill('Quick Renamed Phase')
+  await input.press('Enter')
+  await expect(page.getByTestId('phase-card-title').first()).toHaveText('Quick Renamed Phase')
+})
+
+test('plan: task edit button visible on hover and enables inline rename', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="task-row"]')
+  await page.getByTestId('task-row').first().hover()
+  await page.getByTestId('task-edit-btn').first().click()
+  const input = page.getByTestId('task-edit-input').first()
+  await input.fill('Renamed Task Inline')
+  await input.press('Enter')
+  await expect(page.getByText('Renamed Task Inline')).toBeVisible()
+})
+
 // ─── Materials ────────────────────────────────────────────────────────────────
 
 test('materials: add material via modal appears in list', async ({ page }) => {
