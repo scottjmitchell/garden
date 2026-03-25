@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { onAuthStateChanged, signOut as firebaseSignOut, type User } from 'firebase/auth'
-import { auth, signInWithGoogle, signOutUser, getGoogleRedirectResult } from '../lib/firebase/auth'
+import { auth, signInWithGoogle, signOutUser } from '../lib/firebase/auth'
 
 interface AuthContextValue {
   user:    User | null
@@ -27,8 +27,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       firebaseSignOut(auth)
       return
     }
-    // Handle redirect result from signInWithRedirect
-    getGoogleRedirectResult().catch(() => {})
     return onAuthStateChanged(auth, u => {
       setUser(u)
       setLoading(false)
