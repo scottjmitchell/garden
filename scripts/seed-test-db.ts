@@ -32,6 +32,10 @@ async function put(path: string, data: object) {
   }
 }
 
+// Clear previous test data before seeding
+const clearRes = await fetch(`${BASE_URL}/${DB_ROOT}.json?auth=${SECRET}`, { method: 'DELETE' })
+if (!clearRes.ok) throw new Error(`DELETE ${DB_ROOT} failed: ${clearRes.status}`)
+
 console.log(`Seeding ${DB_ROOT}...`)
 
 // Phases
