@@ -1,33 +1,42 @@
 import { useState } from 'react'
 import { PageHeader } from '../../design-system'
 import { ZONES } from '../../lib/mock-data'
-import type { Zone } from '../../types'
-
-function Tooltip({ zone }: { zone: Zone }) {
-  return (
-    <div className="absolute left-1/2 top-4 z-10 w-64 -translate-x-1/2 rounded border border-white/10 bg-[#1c2017] p-3 shadow-xl">
-      <p className="font-display text-sm text-amber">{zone.title}</p>
-      <p className="mt-1 text-xs text-garden-text/60">{zone.desc}</p>
-    </div>
-  )
-}
 
 export function MapPage() {
   const [activeZone, setActiveZone] = useState<string | null>(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const zone = ZONES.find(z => z.id === activeZone) ?? null
+
+  function handleMouseMove(e: React.MouseEvent) {
+    setMousePos({ x: e.clientX, y: e.clientY })
+  }
 
   return (
     <div>
       <PageHeader title="Map" subtitle="Garden plan — hover a zone for details" />
 
-      <div className="relative mx-auto max-w-sm">
-        {zone && <Tooltip zone={zone} />}
+      {activeZone && zone && (
+        <div
+          data-testid="map-tooltip"
+          className="pointer-events-none fixed z-50 w-56 rounded border border-white/10 bg-[#1c2017] p-3 shadow-xl"
+          style={{
+            left: mousePos.x + 16,
+            top:  mousePos.y - 8,
+            transform: 'translateY(-50%)',
+          }}
+        >
+          <p className="font-display text-sm text-amber">{zone.title}</p>
+          <p className="mt-1 text-xs text-garden-text/60">{zone.desc}</p>
+        </div>
+      )}
 
+      <div className="relative mx-auto max-w-sm">
         <svg
           id="garden-svg"
           viewBox="0 0 450 1000"
           xmlns="http://www.w3.org/2000/svg"
           style={{ fontFamily: "'Jost', sans-serif" }}
+          onMouseMove={handleMouseMove}
           onMouseLeave={() => setActiveZone(null)}
         >
           <defs>
