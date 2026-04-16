@@ -128,6 +128,19 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
           >
             ✕
           </button>
+          <svg
+            data-testid="phase-collapse-chevron"
+            className={`h-4 w-4 text-garden-text/50 transition-transform duration-200 ml-1 ${open ? 'rotate-180' : ''}`}
+            viewBox="0 0 10 6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="1,1 5,5 9,1" />
+          </svg>
         </div>
       </button>
 
@@ -139,6 +152,16 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
         />
       </div>
       <p className="mt-1 text-right text-xs text-garden-text/40">{done}/{total} tasks</p>
+
+      {/* Collapsed hint */}
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className="mt-2 text-xs text-garden-text/30 hover:text-amber transition-colors"
+        >
+          Show {total} task{total !== 1 ? 's' : ''}…
+        </button>
+      )}
 
       {/* Task list */}
       {open && (
