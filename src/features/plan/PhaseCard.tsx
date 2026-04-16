@@ -55,7 +55,7 @@ export function PhaseCard({ phase, index, onToggle, onEdit, onDelete, updatePhas
   // Resolve initial notes: Firebase value takes priority, localStorage is fallback
   const initialNotes = phase.notes ?? loadStoredPhaseNote(phase.id)
 
-  const [open, setOpenRaw]            = useState(() => {
+  const [open, setOpenRaw]            = useState<boolean>(() => {
     try {
       const stored = JSON.parse(localStorage.getItem('garden/phase-collapse') ?? '{}')
       return stored[phase.id] ?? phase.status === 'current'
