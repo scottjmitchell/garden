@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, rectSortingStrategy, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
-import { PageHeader, Card, Tabs } from '../../design-system'
+import { PageHeader, Card } from '../../design-system'
 import { useMaterials } from '../../lib/firebase/hooks'
 import { MaterialCard }     from './MaterialCard'
 import { MaterialTableRow } from './MaterialTableRow'
@@ -24,11 +24,6 @@ function useViewPreference(): [ViewMode, (v: ViewMode) => void] {
   }
   return [view, setView]
 }
-
-const VIEW_TABS = [
-  { id: 'tiles', label: 'Tiles' },
-  { id: 'table', label: 'Table' },
-]
 
 export function MaterialsPage() {
   const {
@@ -70,9 +65,27 @@ export function MaterialsPage() {
 
   return (
     <div>
-      <PageHeader title="Materials" subtitle="Sourcing and procurement tracker" />
-
-      <Tabs tabs={VIEW_TABS} active={view} onChange={id => setView(id as ViewMode)} />
+      <div className="flex items-start justify-between gap-4">
+        <PageHeader title="Materials" subtitle="Sourcing and procurement tracker" />
+        <div className="flex items-center gap-1 rounded-full border border-white/10 p-0.5 shrink-0">
+          <button
+            onClick={() => setView('tiles')}
+            className={`rounded-full px-3 py-1 text-xs transition-colors ${
+              view === 'tiles' ? 'bg-amber/20 text-amber' : 'text-garden-text/40 hover:text-garden-text/60'
+            }`}
+          >
+            Tiles
+          </button>
+          <button
+            onClick={() => setView('table')}
+            className={`rounded-full px-3 py-1 text-xs transition-colors ${
+              view === 'table' ? 'bg-amber/20 text-amber' : 'text-garden-text/40 hover:text-garden-text/60'
+            }`}
+          >
+            Table
+          </button>
+        </div>
+      </div>
 
       <div className="mt-4">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
