@@ -51,7 +51,7 @@ export function TaskRow({ phaseId, task, onToggle, onClick, onDelete, onRename }
       <button
         ref={setActivatorNodeRef}
         {...listeners}
-        className="hidden shrink-0 cursor-grab text-garden-text/20 hover:text-garden-text/50 group-hover:flex active:cursor-grabbing"
+        className="flex w-3 shrink-0 cursor-grab justify-center opacity-0 transition-opacity group-hover:opacity-100 text-garden-text/20 hover:text-garden-text/50 active:cursor-grabbing"
         aria-label="Drag to reorder"
         tabIndex={-1}
       >

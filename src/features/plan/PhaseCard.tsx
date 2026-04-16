@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core'
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { Card, Badge, ConfirmModal } from '../../design-system'
 import type { Phase, PhaseStatus, Task } from '../../types'
@@ -32,6 +32,7 @@ interface PhaseCardProps {
 }
 
 export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes, onTaskClick, onAddTask, onDeleteTask, onRenameTask, onReorderTasks }: PhaseCardProps) {
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
   // Resolve initial notes: Firebase value takes priority, localStorage is fallback
   const initialNotes = phase.notes ?? loadStoredPhaseNote(phase.id)
 
@@ -170,6 +171,7 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
       {/* Task list */}
       {open && (
         <DndContext
+          sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={(event: DragEndEvent) => {
             const { active, over } = event
