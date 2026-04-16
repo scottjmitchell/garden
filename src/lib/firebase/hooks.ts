@@ -144,12 +144,12 @@ export function usePhases() {
     update(ref(db, `${DB_ROOT}/phases/${phaseId}`), { notes })
   }
 
-  function addPhase(data: { num: string; title: string; date: string; status: PhaseStatus }) {
+  function addPhase(data: { title: string; date: string; status: PhaseStatus }) {
     const newRef = push(ref(db, `${DB_ROOT}/phases`))
     set(newRef, { ...data, tasks: {}, order: Date.now() })
   }
 
-  function updatePhase(phaseId: string, data: { num: string; title: string; date: string; status: PhaseStatus }) {
+  function updatePhase(phaseId: string, data: { title: string; date: string; status: PhaseStatus }) {
     update(ref(db, `${DB_ROOT}/phases/${phaseId}`), data)
   }
 
@@ -205,10 +205,18 @@ export function usePhases() {
     update(ref(db), updates)
   }
 
+  function reorderPhases(phaseIds: string[]) {
+    const updates: Record<string, number> = {}
+    phaseIds.forEach((id, i) => {
+      updates[`${DB_ROOT}/phases/${id}/order`] = i
+    })
+    update(ref(db), updates)
+  }
+
   return {
     phases, loading,
     toggleTask, updatePhaseNotes,
-    addPhase, updatePhase, deletePhase,
+    addPhase, updatePhase, deletePhase, reorderPhases,
     addTask, updateTaskText, updateTaskStatus, updateTaskNotes, deleteTask,
     reorderTasks,
     addTaskOption, selectTaskOption, deleteTaskOption,

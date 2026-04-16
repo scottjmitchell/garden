@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { Card, Badge, ConfirmModal } from '../../design-system'
 import type { Phase, PhaseStatus, Task } from '../../types'
 import { loadStoredPhaseNote } from '../../lib/firebase/hooks'
@@ -20,6 +22,7 @@ const statusLabel: Record<PhaseStatus, string> = {
 
 interface PhaseCardProps {
   phase:            Phase
+  index:            number
   onToggle:         (phaseId: string, taskId: string, done: boolean) => void
   onEdit:           () => void
   onDelete:         (phaseId: string) => void
@@ -31,8 +34,24 @@ interface PhaseCardProps {
   onReorderTasks:   (phaseId: string, taskIds: string[]) => void
 }
 
-export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes, onTaskClick, onAddTask, onDeleteTask, onRenameTask, onReorderTasks }: PhaseCardProps) {
+export function PhaseCard({ phase, index, onToggle, onEdit, onDelete, updatePhaseNotes, onTaskClick, onAddTask, onDeleteTask, onRenameTask, onReorderTasks }: PhaseCardProps) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
+
+  const {
+    attributes: phaseAttributes,
+    listeners: phaseListeners,
+    setNodeRef: setPhaseNodeRef,
+    setActivatorNodeRef: setPhaseActivatorRef,
+    transform: phaseTransform,
+    transition: phaseTransition,
+    isDragging: phaseDragging,
+  } = useSortable({ id: phase.id })
+
+  const phaseStyle = {
+    transform: CSS.Transform.toString(phaseTransform),
+    transition: phaseTransition,
+    opacity: phaseDragging ? 0.5 : undefined,
+  }
   // Resolve initial notes: Firebase value takes priority, localStorage is fallback
   const initialNotes = phase.notes ?? loadStoredPhaseNote(phase.id)
 
@@ -107,6 +126,7 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
   const pct   = total > 0 ? Math.round((done / total) * 100) : 0
 
   return (
+    <div ref={setPhaseNodeRef} style={phaseStyle} {...phaseAttributes} className="group/phase">
     <Card>
       {/* Header */}
       <button
@@ -114,8 +134,25 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
         onClick={() => setOpen(o => !o)}
       >
         <div className="flex items-center gap-3">
+          <button
+            ref={setPhaseActivatorRef}
+            {...phaseListeners}
+            onClick={e => e.stopPropagation()}
+            className="flex w-3 shrink-0 cursor-grab justify-center opacity-0 transition-opacity group-hover/phase:opacity-100 text-garden-text/20 hover:text-garden-text/50 active:cursor-grabbing"
+            aria-label="Drag to reorder phase"
+            tabIndex={-1}
+          >
+            <svg viewBox="0 0 10 16" className="h-4 w-2.5" fill="currentColor">
+              <circle cx="3" cy="2" r="1.2" />
+              <circle cx="7" cy="2" r="1.2" />
+              <circle cx="3" cy="8" r="1.2" />
+              <circle cx="7" cy="8" r="1.2" />
+              <circle cx="3" cy="14" r="1.2" />
+              <circle cx="7" cy="14" r="1.2" />
+            </svg>
+          </button>
           <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-amber/30 text-xs text-amber">
-            {phase.num}
+            {index + 1}
           </span>
           <div>
             <p className="font-display text-lg text-garden-text flex items-center gap-2">
@@ -275,5 +312,6 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
         onCancel={() => setTaskToDelete(null)}
       />
     </Card>
+    </div>
   )
 }
