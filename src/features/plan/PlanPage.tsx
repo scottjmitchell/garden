@@ -9,7 +9,8 @@ import type { Phase, Task } from '../../types'
 export function PlanPage() {
   const {
     phases, toggleTask, addPhase, updatePhase, deletePhase, updatePhaseNotes,
-    addTask, deleteTask, updateTaskStatus, updateTaskNotes,
+    addTask, deleteTask, updateTaskText, updateTaskStatus, updateTaskNotes,
+    reorderTasks,
     addTaskOption, selectTaskOption, deleteTaskOption,
   } = usePhases()
   const [phaseModal, setPhaseModal] = useState<{ open: boolean; phase?: Phase }>({ open: false })
@@ -36,6 +37,8 @@ export function PlanPage() {
             onTaskClick={task => setDrawerTask({ phase, task })}
             onAddTask={addTask}
             onDeleteTask={deleteTask}
+            onRenameTask={updateTaskText}
+            onReorderTasks={reorderTasks}
           />
         ))}
       </div>

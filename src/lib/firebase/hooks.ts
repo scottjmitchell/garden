@@ -197,11 +197,20 @@ export function usePhases() {
     remove(ref(db, `${DB_ROOT}/phases/${phaseId}/tasks/${taskId}/options/${optionId}`))
   }
 
+  function reorderTasks(phaseId: string, taskIds: string[]) {
+    const updates: Record<string, number> = {}
+    taskIds.forEach((id, i) => {
+      updates[`${DB_ROOT}/phases/${phaseId}/tasks/${id}/order`] = i
+    })
+    update(ref(db), updates)
+  }
+
   return {
     phases, loading,
     toggleTask, updatePhaseNotes,
     addPhase, updatePhase, deletePhase,
     addTask, updateTaskText, updateTaskStatus, updateTaskNotes, deleteTask,
+    reorderTasks,
     addTaskOption, selectTaskOption, deleteTaskOption,
   }
 }

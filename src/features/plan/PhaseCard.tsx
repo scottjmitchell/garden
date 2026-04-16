@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
+import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { Card, Badge, ConfirmModal } from '../../design-system'
 import type { Phase, PhaseStatus, Task } from '../../types'
 import { loadStoredPhaseNote } from '../../lib/firebase/hooks'
@@ -25,9 +27,11 @@ interface PhaseCardProps {
   onTaskClick:      (task: Task) => void
   onAddTask:        (phaseId: string, text: string) => void
   onDeleteTask:     (phaseId: string, taskId: string) => void
+  onRenameTask:     (phaseId: string, taskId: string, text: string) => void
+  onReorderTasks:   (phaseId: string, taskIds: string[]) => void
 }
 
-export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes, onTaskClick, onAddTask, onDeleteTask }: PhaseCardProps) {
+export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes, onTaskClick, onAddTask, onDeleteTask, onRenameTask, onReorderTasks }: PhaseCardProps) {
   // Resolve initial notes: Firebase value takes priority, localStorage is fallback
   const initialNotes = phase.notes ?? loadStoredPhaseNote(phase.id)
 
@@ -165,43 +169,59 @@ export function PhaseCard({ phase, onToggle, onEdit, onDelete, updatePhaseNotes,
 
       {/* Task list */}
       {open && (
-        <ul className="mt-4 space-y-0.5">
-          {phase.tasks.map(task => (
-            <TaskRow
-              key={task.id}
-              phaseId={phase.id}
-              task={task}
-              onToggle={onToggle}
-              onClick={onTaskClick}
-              onDelete={(_phaseId, taskId) => setTaskToDelete(phase.tasks.find(t => t.id === taskId) ?? null)}
-            />
-          ))}
-          {addingTask ? (
-            <li className="flex items-center gap-3 py-1">
-              <span className="h-4 w-4 shrink-0" />
-              <input
-                data-testid="add-task-input"
-                autoFocus
-                value={newTaskText}
-                onChange={e => setNewTaskText(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') handleAddTask(); if (e.key === 'Escape') setAddingTask(false) }}
-                onBlur={handleAddTask}
-                className="flex-1 bg-transparent text-sm text-garden-text focus:outline-none"
-                placeholder="Task name…"
-              />
-            </li>
-          ) : (
-            <li>
-              <button
-                data-testid="add-task-btn"
-                onClick={() => setAddingTask(true)}
-                className="py-1.5 text-xs text-garden-text/30 hover:text-amber"
-              >
-                ＋ Add task
-              </button>
-            </li>
-          )}
-        </ul>
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={(event: DragEndEvent) => {
+            const { active, over } = event
+            if (over && active.id !== over.id) {
+              const oldIndex = phase.tasks.findIndex(t => t.id === active.id)
+              const newIndex = phase.tasks.findIndex(t => t.id === over.id)
+              const reordered = arrayMove(phase.tasks, oldIndex, newIndex)
+              onReorderTasks(phase.id, reordered.map(t => t.id))
+            }
+          }}
+        >
+          <SortableContext items={phase.tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
+            <ul className="mt-4 space-y-0.5">
+              {phase.tasks.map(task => (
+                <TaskRow
+                  key={task.id}
+                  phaseId={phase.id}
+                  task={task}
+                  onToggle={onToggle}
+                  onClick={onTaskClick}
+                  onDelete={(_phaseId, taskId) => setTaskToDelete(phase.tasks.find(t => t.id === taskId) ?? null)}
+                  onRename={onRenameTask}
+                />
+              ))}
+              {addingTask ? (
+                <li className="flex items-center gap-3 py-1">
+                  <span className="h-4 w-4 shrink-0" />
+                  <input
+                    data-testid="add-task-input"
+                    autoFocus
+                    value={newTaskText}
+                    onChange={e => setNewTaskText(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') handleAddTask(); if (e.key === 'Escape') setAddingTask(false) }}
+                    onBlur={handleAddTask}
+                    className="flex-1 bg-transparent text-sm text-garden-text focus:outline-none"
+                    placeholder="Task name…"
+                  />
+                </li>
+              ) : (
+                <li>
+                  <button
+                    data-testid="add-task-btn"
+                    onClick={() => setAddingTask(true)}
+                    className="py-1.5 text-xs text-garden-text/30 hover:text-amber"
+                  >
+                    ＋ Add task
+                  </button>
+                </li>
+              )}
+            </ul>
+          </SortableContext>
+        </DndContext>
       )}
 
       {/* Notes */}
