@@ -266,9 +266,18 @@ export function useMaterials() {
     set(ref(db, `${DB_ROOT}/materials/${materialId}/options/${optionId}/imageUrl`), imageUrl)
   }
 
+  function reorderMaterials(materialIds: string[]) {
+    const updates: Record<string, number> = {}
+    materialIds.forEach((id, i) => {
+      updates[`${DB_ROOT}/materials/${id}/order`] = i
+    })
+    update(ref(db), updates)
+  }
+
   return {
     materials, loading,
     setMaterialStatus, addMaterial, updateMaterial, deleteMaterial,
+    reorderMaterials,
     addOption, updateOption, deleteOption, setOptionStatus, setOptionImage,
   }
 }
