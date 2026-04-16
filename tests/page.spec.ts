@@ -253,11 +253,28 @@ test('confirm modal: shows title, body, and delete button', async ({ page }) => 
 
 // ─── Plan — Task CRUD ─────────────────────────────────────────────────────────
 
-test('plan: task drawer opens on task click', async ({ page }) => {
+test('plan: task drawer opens on edit button click', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="task-row"]')
+  await page.getByTestId('task-row').first().hover()
+  await page.getByTestId('task-edit-btn').first().click()
+  await expect(page.getByTestId('task-drawer')).toBeVisible()
+})
+
+test('plan: click task name enters inline rename mode', async ({ page }) => {
   await page.goto('/plan')
   await page.waitForSelector('[data-testid="task-text"]')
   await page.getByTestId('task-text').first().click()
-  await expect(page.getByTestId('task-drawer')).toBeVisible()
+  const input = page.getByTestId('task-edit-input').first()
+  await input.fill('Renamed Task Inline')
+  await input.press('Enter')
+  await expect(page.getByText('Renamed Task Inline')).toBeVisible()
+})
+
+test('plan: phase card shows collapse chevron', async ({ page }) => {
+  await page.goto('/plan')
+  await page.waitForSelector('[data-testid="phase-collapse-chevron"]')
+  await expect(page.getByTestId('phase-collapse-chevron').first()).toBeVisible()
 })
 
 test('plan: add task inline appears in list', async ({ page }) => {
