@@ -7,9 +7,9 @@ import type {
   Task, TaskStatus, TaskOption,
   Material, MaterialStatus, MaterialOption, OptionStatus,
   BudgetItem,
-  JournalSlot,
+  JournalEntry,
 } from '../../types'
-import { JOURNAL_SLOTS } from '../mock-data'
+import { storeJournalImage } from './storage'
 
 const DB_ROOT = import.meta.env.VITE_DB_ROOT ?? 'garden'
 
@@ -338,17 +338,90 @@ export function useBudget() {
 
 // ─── useJournal ───────────────────────────────────────────────────────────────
 
+// One-time migration map: legacy slot IDs → caption used after migration.
+// Newer slot order means newer createdAt (so newest-first sort puts the build
+// finale at the top).
+const LEGACY_SLOT_LABELS: Record<string, string> = {
+  before:      'Before — Current State',
+  groundworks: 'Groundworks — Dig & Level',
+  paving:      'Hard Landscaping — Paving',
+  pergola:     'Structures — Pergola Erected',
+  turf:        'Soft Landscaping — Turf Laid',
+  finished:    'Finished — Summer 2026',
+}
+const LEGACY_SLOT_ORDER = Object.keys(LEGACY_SLOT_LABELS)
+
+// Fire-and-forget. Runs at most once per page load; tolerates permission_denied
+// silently (legacy keys stay in the DB but are filtered out by the entry
+// validator in useJournal).
+let legacyMigrationAttempted = false
+function tryMigrateLegacySlots(data: Record<string, any>) {
+  if (legacyMigrationAttempted) return
+  legacyMigrationAttempted = true
+
+  const updates: Record<string, unknown> = {}
+  let needs = false
+  for (const slotId of LEGACY_SLOT_ORDER) {
+    const v = data[slotId]
+    if (!v || typeof v !== 'object') continue
+    if (v.imageUrl && v.createdAt == null) {
+      const newRef = push(ref(db, `${DB_ROOT}/journal`))
+      const idx    = LEGACY_SLOT_ORDER.indexOf(slotId)
+      const offset = (LEGACY_SLOT_ORDER.length - 1 - idx) * 86_400_000
+      updates[`${DB_ROOT}/journal/${newRef.key}`] = {
+        imageUrl:  v.imageUrl,
+        caption:   LEGACY_SLOT_LABELS[slotId],
+        createdAt: Date.now() - offset,
+      }
+      updates[`${DB_ROOT}/journal/${slotId}`] = null
+      needs = true
+    }
+  }
+  if (!needs) return
+  update(ref(db), updates).catch(() => { /* best effort */ })
+}
+
 export function useJournal() {
-  const [slots, setSlots] = useState<JournalSlot[]>([])
+  const [entries, setEntries] = useState<JournalEntry[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     return onValue(ref(db, `${DB_ROOT}/journal`), snap => {
       const data = snap.val() ?? {}
-      setSlots(JOURNAL_SLOTS.map(s => ({ ...s, imageUrl: data[s.id]?.imageUrl })))
+      tryMigrateLegacySlots(data)
+
+      const list: JournalEntry[] = (Object.entries(data) as [string, any][])
+        .filter(([, v]) =>
+          v && typeof v === 'object' && typeof v.imageUrl === 'string' && typeof v.createdAt === 'number'
+        )
+        .map(([id, v]) => ({
+          id,
+          imageUrl:  v.imageUrl,
+          caption:   v.caption,
+          createdAt: v.createdAt,
+        }))
+        .sort((a, b) => b.createdAt - a.createdAt)
+      setEntries(list)
       setLoading(false)
     })
   }, [])
 
-  return { slots, loading }
+  async function addEntry(file: File | Blob, caption?: string) {
+    const newRef   = push(ref(db, `${DB_ROOT}/journal`))
+    const id       = newRef.key!
+    const imageUrl = await storeJournalImage(file, id)
+    const payload: Omit<JournalEntry, 'id'> = { imageUrl, createdAt: Date.now() }
+    if (caption) payload.caption = caption
+    await set(newRef, payload)
+  }
+
+  async function deleteEntry(id: string) {
+    await remove(ref(db, `${DB_ROOT}/journal/${id}`))
+  }
+
+  async function updateCaption(id: string, caption: string) {
+    await update(ref(db, `${DB_ROOT}/journal/${id}`), { caption: caption || null })
+  }
+
+  return { entries, loading, addEntry, deleteEntry, updateCaption }
 }

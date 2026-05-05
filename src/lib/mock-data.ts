@@ -1,4 +1,4 @@
-import type { Phase, Material, BudgetItem, JournalSlot, Zone } from '../types'
+import type { Phase, Material, BudgetItem, Zone } from '../types'
 
 // ─── Phases ──────────────────────────────────────────────────────────────────
 
@@ -174,17 +174,6 @@ export const BUDGET_ITEMS: BudgetItem[] = [
   { id: 'breaker',    name: 'Breaker Hire (2 weekends)',                  low:  172, high:  172 },
   { id: 'weedkiller', name: 'Weedkiller',                                low:   30, high:   60 },
   { id: 'fence-trellis', name: 'Right Fence Trellis',                   low:    0, high:    0 },
-]
-
-// ─── Journal ─────────────────────────────────────────────────────────────────
-
-export const JOURNAL_SLOTS: JournalSlot[] = [
-  { id: 'before',      label: 'Before — Current State',        phase: 'Phase 0' },
-  { id: 'groundworks', label: 'Groundworks — Dig & Level',     phase: 'Phase 1' },
-  { id: 'paving',      label: 'Hard Landscaping — Paving',     phase: 'Phase 2' },
-  { id: 'pergola',     label: 'Structures — Pergola Erected',  phase: 'Phase 3' },
-  { id: 'turf',        label: 'Soft Landscaping — Turf Laid',  phase: 'Phase 4' },
-  { id: 'finished',    label: 'Finished — Summer 2026',        phase: 'Phase 5' },
 ]
 
 // ─── Map zones ───────────────────────────────────────────────────────────────

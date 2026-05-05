@@ -76,11 +76,11 @@ export interface BudgetItem {
 
 // ─── Journal ─────────────────────────────────────────────────────────────────
 
-export interface JournalSlot {
+export interface JournalEntry {
   id:        string
-  label:     string
-  phase:     string
-  imageUrl?: string
+  imageUrl:  string
+  caption?:  string
+  createdAt: number
 }
 
 // ─── Map ─────────────────────────────────────────────────────────────────────
