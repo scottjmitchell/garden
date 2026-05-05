@@ -66,5 +66,17 @@ for (const [i, m] of MATERIALS.entries()) {
 }
 console.log(`  ✓ ${DB_ROOT}/materials (${MATERIALS.length} materials)`)
 
-// Journal — seeded empty; entries are created at runtime via uploads.
+// Journal — seed two entries so tests can exercise the lightbox flow
+// (open, prev/next, caption edit, delete-with-confirm).
+const PIXEL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+const journalEntries = [
+  // Older first; newest-first sort means the second entry shows at index 0
+  { id: 'test-entry-old', imageUrl: PIXEL, caption: 'First test photo',  createdAt: 1_700_000_000_000 },
+  { id: 'test-entry-new', imageUrl: PIXEL, caption: 'Second test photo', createdAt: 1_700_000_001_000 },
+]
+for (const e of journalEntries) {
+  await put(`journal/${e.id}`, { imageUrl: e.imageUrl, caption: e.caption, createdAt: e.createdAt })
+}
+console.log(`  ✓ ${DB_ROOT}/journal (${journalEntries.length} entries)`)
+
 console.log('Done.')
