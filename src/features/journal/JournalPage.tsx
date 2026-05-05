@@ -1,5 +1,8 @@
-import { PageHeader, Skeleton } from '../../design-system'
+import { useEffect, useRef, useState } from 'react'
+import { Button, EmptyState, PageHeader, Skeleton } from '../../design-system'
 import { useJournal } from '../../lib/firebase/hooks'
+import { imageFromClipboard } from '../../lib/firebase/storage'
+import { JournalLightbox } from './JournalLightbox'
 
 function JournalSkeleton() {
   return (
@@ -11,40 +14,139 @@ function JournalSkeleton() {
   )
 }
 
-function PhotoSlot({ label, phase, imageUrl }: { label: string; phase: string; imageUrl?: string }) {
-  return (
-    <div className="group relative aspect-[3/2] overflow-hidden rounded border border-white/10 bg-[#1c2017]">
-      {imageUrl ? (
-        <img src={imageUrl} alt={label} className="h-full w-full object-cover" />
-      ) : (
-        <div className="flex h-full flex-col items-center justify-center gap-2 p-4">
-          <svg className="h-8 w-8 text-garden-text/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <path d="m21 15-5-5L5 21" />
-          </svg>
-          <span className="text-xs text-garden-text/30">{phase}</span>
-        </div>
-      )}
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2">
-        <p className="text-xs text-garden-text/80">{label}</p>
-      </div>
-    </div>
-  )
-}
-
 export function JournalPage() {
-  const { slots, loading } = useJournal()
+  const { entries, loading, addEntry, deleteEntry, updateCaption } = useJournal()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading]   = useState(false)
+  const [openIndex, setOpenIndex]   = useState<number | null>(null)
+  const [dragging, setDragging]     = useState(false)
+  const dragDepth = useRef(0)
+
+  // Close the lightbox if the entry it was pointing at disappears (e.g. delete).
+  useEffect(() => {
+    if (openIndex === null) return
+    if (entries.length === 0) { setOpenIndex(null); return }
+    if (openIndex >= entries.length) setOpenIndex(entries.length - 1)
+  }, [entries.length, openIndex])
+
+  async function handleFiles(files: FileList | File[]) {
+    const list = Array.from(files).filter(f => f.type.startsWith('image/'))
+    if (list.length === 0) return
+    setUploading(true)
+    try {
+      // Upload sequentially so push-key timestamps stay distinct and ordered.
+      for (const file of list) await addEntry(file)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  function handlePaste(e: React.ClipboardEvent) {
+    const file = imageFromClipboard(e.nativeEvent)
+    if (file) handleFiles([file])
+  }
+
+  function handleDragEnter(e: React.DragEvent) {
+    if (!Array.from(e.dataTransfer.items ?? []).some(i => i.kind === 'file')) return
+    e.preventDefault()
+    dragDepth.current += 1
+    setDragging(true)
+  }
+  function handleDragOver(e: React.DragEvent) { e.preventDefault() }
+  function handleDragLeave() {
+    dragDepth.current -= 1
+    if (dragDepth.current <= 0) { dragDepth.current = 0; setDragging(false) }
+  }
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    dragDepth.current = 0
+    setDragging(false)
+    if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files)
+  }
 
   return (
-    <div>
-      <PageHeader title="Journal" subtitle="Visual progress through each phase of the build" />
-      {loading ? <JournalSkeleton /> : (
+    <div
+      onPaste={handlePaste}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className="relative"
+    >
+      <div className="mb-6 flex items-end justify-between gap-4">
+        <PageHeader title="Journal" subtitle="Photos from the build — upload, browse, caption" />
+        <Button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+        >
+          {uploading ? 'Uploading…' : 'Add photo'}
+        </Button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={e => {
+            if (e.target.files?.length) handleFiles(e.target.files)
+            e.target.value = ''
+          }}
+        />
+      </div>
+
+      {loading ? (
+        <JournalSkeleton />
+      ) : entries.length === 0 ? (
+        <EmptyState
+          title="No photos yet"
+          description="Upload your first photo, paste from the clipboard, or drag an image onto this page."
+          action={
+            <Button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+              {uploading ? 'Uploading…' : 'Add photo'}
+            </Button>
+          }
+        />
+      ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {slots.map(slot => (
-            <PhotoSlot key={slot.id} label={slot.label} phase={slot.phase} imageUrl={slot.imageUrl} />
+          {entries.map((entry, i) => (
+            <button
+              key={entry.id}
+              onClick={() => setOpenIndex(i)}
+              className="group relative aspect-[3/2] overflow-hidden rounded border border-white/10 bg-[#1c2017] transition-transform hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-amber/60"
+              data-testid="journal-tile"
+            >
+              <img
+                src={entry.imageUrl}
+                alt={entry.caption ?? 'Journal photo'}
+                className="h-full w-full object-cover"
+              />
+              {entry.caption && (
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2 text-left">
+                  <p className="truncate text-xs text-garden-text/85">{entry.caption}</p>
+                </div>
+              )}
+            </button>
           ))}
         </div>
+      )}
+
+      {dragging && (
+        <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center bg-black/40">
+          <div className="rounded border-2 border-dashed border-amber/60 bg-[#1c2017]/90 px-6 py-4 text-amber">
+            Drop image to upload
+          </div>
+        </div>
+      )}
+
+      {openIndex !== null && entries[openIndex] && (
+        <JournalLightbox
+          entries={entries}
+          index={openIndex}
+          onIndexChange={setOpenIndex}
+          onClose={() => setOpenIndex(null)}
+          onDelete={async (id) => { await deleteEntry(id) }}
+          onCaptionChange={(id, caption) => updateCaption(id, caption)}
+        />
       )}
     </div>
   )

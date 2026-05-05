@@ -55,6 +55,26 @@ export async function storeOptionImage(
   return getDownloadURL(sRef)
 }
 
+/**
+ * Compress and store a journal image.
+ * - ≤ 100KB compressed → store as data URL (returned directly)
+ * - > 100KB → upload to Firebase Storage at journal/{entryId}.jpg
+ */
+export async function storeJournalImage(file: File | Blob, entryId: string): Promise<string> {
+  const dataUrl  = await compressImage(file)
+  const byteSize = Math.round((dataUrl.length * 3) / 4)
+
+  if (byteSize <= 100 * 1024) {
+    return dataUrl
+  }
+
+  const res  = await fetch(dataUrl)
+  const blob = await res.blob()
+  const sRef = storageRef(storage, `journal/${entryId}.jpg`)
+  await uploadBytes(sRef, blob, { contentType: 'image/jpeg' })
+  return getDownloadURL(sRef)
+}
+
 /** Extract an image File from a paste ClipboardEvent. Returns null if no image found. */
 export function imageFromClipboard(e: ClipboardEvent): File | null {
   const items = Array.from(e.clipboardData?.items ?? [])

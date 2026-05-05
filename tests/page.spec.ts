@@ -110,10 +110,29 @@ test('Materials: status badges render', async ({ page }) => {
   await expect(page.getByText('Researching').first()).toBeVisible()
 })
 
-test('Journal: photo slots render', async ({ page }) => {
+test('Journal: page renders with add-photo affordance', async ({ page }) => {
   await page.goto('/journal')
-  await expect(page.getByText('Before — Current State')).toBeVisible()
-  await expect(page.getByText('Finished — Summer 2026')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Journal', level: 1 })).toBeVisible()
+  await expect(page.getByRole('button', { name: /add photo/i }).first()).toBeVisible()
+})
+
+test('Journal: file input accepts multiple images', async ({ page }) => {
+  await page.goto('/journal')
+  const input = page.locator('input[type="file"]')
+  await expect(input).toHaveAttribute('accept', 'image/*')
+  await expect(input).toHaveAttribute('multiple', '')
+})
+
+test('Journal: drag-over shows drop overlay', async ({ page }) => {
+  await page.goto('/journal')
+  await page.waitForSelector('h1:has-text("Journal")')
+  // Dispatch on the heading so the dragenter event bubbles up to the wrapper's handler.
+  await page.locator('h1:has-text("Journal")').evaluate(el => {
+    const dt = new DataTransfer()
+    dt.items.add(new File(['x'], 'x.png', { type: 'image/png' }))
+    el.dispatchEvent(new DragEvent('dragenter', { bubbles: true, dataTransfer: dt }))
+  })
+  await expect(page.getByText('Drop image to upload')).toBeVisible()
 })
 
 test('Map: SVG garden plan renders', async ({ page }) => {
