@@ -8,7 +8,7 @@
  *   VITE_DB_ROOT=garden-test FIREBASE_DB_SECRET=<secret> npx tsx scripts/seed-test-db.ts
  */
 
-import { PHASES, BUDGET_ITEMS, MATERIALS, JOURNAL_SLOTS } from '../src/lib/mock-data'
+import { PHASES, BUDGET_ITEMS, MATERIALS } from '../src/lib/mock-data'
 
 const DB_ROOT   = process.env.VITE_DB_ROOT ?? 'garden-test'
 const SECRET    = process.env.FIREBASE_DB_SECRET
@@ -66,10 +66,5 @@ for (const [i, m] of MATERIALS.entries()) {
 }
 console.log(`  ✓ ${DB_ROOT}/materials (${MATERIALS.length} materials)`)
 
-// Journal
-for (const s of JOURNAL_SLOTS) {
-  await put(`journal/${s.id}`, { id: s.id, label: s.label, phase: s.phase })
-}
-console.log(`  ✓ ${DB_ROOT}/journal (${JOURNAL_SLOTS.length} slots)`)
-
+// Journal — seeded empty; entries are created at runtime via uploads.
 console.log('Done.')

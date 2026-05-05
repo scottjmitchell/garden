@@ -15,7 +15,7 @@
  */
 
 import { writeFileSync } from 'node:fs'
-import { MATERIALS, BUDGET_ITEMS, JOURNAL_SLOTS } from '../src/lib/mock-data'
+import { MATERIALS, BUDGET_ITEMS } from '../src/lib/mock-data'
 
 const args  = process.argv.slice(2)
 const print = args.includes('--print')
@@ -97,20 +97,10 @@ for (const [i, item] of BUDGET_ITEMS.entries()) {
   }
 }
 
-// Journal — seed from mock-data, merge photo URLs
+// Journal is now an open list of entries created at runtime; not seeded here.
+// Legacy slot photos are converted to entries by the in-app migration in
+// useJournal() on first signed-in load.
 const journal: Record<string, object> = {}
-for (const slot of JOURNAL_SLOTS) {
-  journal[slot.id] = {
-    id:       slot.id,
-    label:    slot.label,
-    phase:    slot.phase,
-    imageUrl: (existingPhotos as Record<string, string>)[slot.id] ?? null,
-  }
-}
-const preserved = JOURNAL_SLOTS.filter(s => (existingPhotos as Record<string, string>)[s.id])
-if (preserved.length) {
-  console.log(`  Preserved photos: ${preserved.map(s => s.id).join(', ')}`)
-}
 
 // ─── Output ───────────────────────────────────────────────────────────────────
 
