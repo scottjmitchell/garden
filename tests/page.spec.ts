@@ -135,6 +135,61 @@ test('Journal: drag-over shows drop overlay', async ({ page }) => {
   await expect(page.getByText('Drop image to upload')).toBeVisible()
 })
 
+// The lightbox tests below assume seeded journal entries exist in the test DB
+// (see scripts/seed-test-db.ts). They run against garden-test in CI.
+
+test('Journal: clicking a tile opens the lightbox', async ({ page }) => {
+  await page.goto('/journal')
+  await page.getByTestId('journal-tile').first().waitFor()
+  await page.getByTestId('journal-tile').first().click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+})
+
+test('Journal: arrow keys navigate between photos in the lightbox', async ({ page }) => {
+  await page.goto('/journal')
+  await page.getByTestId('journal-tile').first().waitFor()
+  await page.getByTestId('journal-tile').first().click()
+  await expect(page.getByText('1 / 2')).toBeVisible()
+  await page.keyboard.press('ArrowRight')
+  await expect(page.getByText('2 / 2')).toBeVisible()
+  await page.keyboard.press('ArrowLeft')
+  await expect(page.getByText('1 / 2')).toBeVisible()
+})
+
+test('Journal: editing the caption persists optimistically', async ({ page }) => {
+  await page.goto('/journal')
+  await page.getByTestId('journal-tile').first().waitFor()
+  await page.getByTestId('journal-tile').first().click()
+  await page.getByTestId('journal-caption-display').click()
+  const input = page.getByTestId('journal-caption-input')
+  await input.fill('Edited caption')
+  await input.press('Enter')
+  await expect(page.getByTestId('journal-caption-display')).toContainText('Edited caption')
+})
+
+test('Journal: delete photo opens confirm modal', async ({ page }) => {
+  await page.goto('/journal')
+  await page.getByTestId('journal-tile').first().waitFor()
+  await page.getByTestId('journal-tile').first().click()
+  await page.getByRole('button', { name: 'Delete photo' }).click()
+  await expect(page.getByText(/permanently remove/i)).toBeVisible()
+})
+
+test('Journal: uploading a photo via the hidden input adds a new tile', async ({ page }) => {
+  await page.goto('/journal')
+  await page.getByTestId('journal-tile').first().waitFor()
+  const before = await page.getByTestId('journal-tile').count()
+  await page.locator('input[type="file"]').first().setInputFiles({
+    name: 'pixel.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
+      'base64',
+    ),
+  })
+  await expect(page.getByTestId('journal-tile')).toHaveCount(before + 1)
+})
+
 test('Map: SVG garden plan renders', async ({ page }) => {
   await page.goto('/map')
   await expect(page.locator('svg#garden-svg')).toBeVisible()
