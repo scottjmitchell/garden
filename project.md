@@ -195,29 +195,66 @@ collapsing, and eight months of root development before heavy summer use in 2027
 **Precondition:** all hard landscaping traffic across the centre/left lawn zone must be
 finished. Seed will not survive barrow routes.
 
-### Compost — use half of the 2000L
+### Compost — none of it goes in the lawn (revised 6 Sept)
 
-2000L over 80 m² is a 25 mm blanket. **Do not lay it as a blanket.** A pure compost surface
-dries out fast at exactly the depth the seed sits, and settles into a soft, spongy,
-scalp-prone surface later.
+With **8 tonnes of fresh topsoil** down, the seedbed is already good soil and the marginal
+gain from working compost into it is small. The downside is immediate: compost fluffs the
+soil back up at exactly the moment we're trying to consolidate it, and would mean firming
+twice around it, since incorporating undoes firming.
 
-- Spread ~1000L (≈12 mm) and **rake or rotavate into the top 100–150 mm** so it becomes part
-  of the soil profile
-- Put the remaining ~1000L into the raised planters and the border in front of the
-  outbuilding — worth far more there than under grass
+- **All 2000L goes to the raised planters and the outbuilding border**, where it is worth
+  far more than under grass
+- Exception: if the new topsoil looks pale and sandy when worked, rake ~500L into the top
+  100 mm **before** the firming pass — never after
 - Check it doesn't smell of ammonia; if it does it isn't finished and needs weathering
+
+### Firming — the step that decides whether dips appear later
+
+8 tonnes over ~80 m² is roughly 65–75 mm of fresh soil, and fresh topsoil settles
+differentially. Firm it properly or dips will surface over the following weeks in a seeded
+lawn that shows every one of them.
+
+- **Heel, don't stomp.** Shuffle across on your heels in small overlapping steps at full body
+  weight, so every square inch is pressed once. Walk the whole area, then repeat at 90°.
+  Stomping leaves compaction pockets between impacts.
+- **A roller is the wrong tool for this pass** — it bridges hollows and firms only the high
+  spots. Use it for a light final pass after levelling, if at all.
+- **Firm first, level second.** Consolidate, then screed and fill, then re-firm lightly.
+- ⚠️ **Never work wet soil.** If it balls in the hand or clags onto boots it is too wet, and
+  heeling will smear it into a compacted pan — worse than not firming at all. Wait for
+  damp-but-crumbly. A day's delay costs nothing; a pan lasts years.
 
 ### Sequence
 
+**The stale seedbed step has been dropped.** It existed to germinate and kill the weed seed
+bank in the top layer. Two things bypassed it: the 8 tonnes of imported topsoil means the
+seedbed is a new layer rather than the old weed bank (now buried, and glyphosate-killed
+underneath), and weeks of warm damp September weather with nothing coming up is a passive
+stale seedbed that has already run. That is better evidence than a 10-day wait would give.
+
 | When | Work |
 |---|---|
-| Now → ~16 Sept | **Stale seedbed + fine level.** Rake to break the settled crust, work compost in, leave 10 days. Weed seeds germinate; hoe off flush. Free removal of most seedbed competition. |
-| Same window | **Fine levelling.** Seed shows every dip that turf would bridge. Screed board or scaffold plank on string lines, fill hollows with screened topsoil, heel firm, cross-rake to fine tilth. |
-| Same window | **Set EverEdge** 5–10 mm below intended finished grass level. |
-| ~17–22 Sept | **Sow.** Fertiliser first, raked in. Split seed in half, sow in two passes at right angles (far more even than one pass). Rake in **very lightly — 5–10 mm**; buried seed does not come up. Tread or roll gently for seed-to-soil contact. |
-| Weeks 1–3 | **Keep top 10 mm moist.** Light watering 1–2× daily *only* if there's a dry spell. Ryegrass shows 7–10 days, fescue 10–14, meadow grass 14–28 — a patchy week 2 is normal, not failure. |
-| Mid–late Oct | **First cut** at 60–75 mm height, down to ~40 mm. Genuinely sharp blades, box on. A blunt rotary rips seedlings out by the roots. Possibly one more cut before growth stops. |
-| April 2027 | **Overseed** thin patches with the leftover kilo. |
+| Mon 7 Sept | **Firm**, if the soil is damp-but-crumbly. Overlapping heel passes, then again at 90°. If it's too wet, wait — this is not a step to rush. |
+| Mon 7 Sept | **Fine level.** Screed board or scaffold plank on string lines, fill hollows, re-firm lightly, cross-rake to a fine tilth. |
+| Tue 8 Sept | Seed + fertiliser arrive. Store cool, dry, out of sunlight. Sprinkler arrives Mon 7th. |
+| Wed 9 Sept onward | **Sow, first good weather.** Fertiliser and seed in the **same session** — see below. Split seed in half, sow in two passes at right angles. Rake in **very lightly, 5–10 mm**; buried seed does not come up. Tread or roll gently for seed-to-soil contact. |
+| Weeks 1–3 | **Keep top 10 mm moist.** Ryegrass shows 7–10 days, fescue 10–14 — a patchy week 2 is normal, not failure. |
+| ~4–6 weeks after sowing | **First cut** at 60–75 mm height, down to ~40 mm. Genuinely sharp blades, box on. A blunt rotary rips seedlings out by the roots. Likely 2–3 cuts before growth stops. |
+| April 2027 | **Overseed** thin patches with the leftover ~1.8 kg. |
+
+### Fertiliser goes down WITH the seed, not before
+
+Pre-seed fertiliser is not a base dressing to front-load. The phosphate is durable, but the
+6-9-6 also carries nitrogen and potash and both are soluble — put it down two weeks early and
+a wet September fortnight leaches much of it past the root zone it's meant to feed. In the
+gap, the only thing it can feed is whatever weed seed is present. Same session, every time.
+
+### Sowing earlier raises the watering stakes
+
+Early-to-mid September in SE England is warmer and typically **drier** than late September.
+Faster germination, but higher evaporation and less reliable rain — so an earlier sowing
+needs *more* watering attention, not less. Do not sow immediately ahead of a dry bright
+spell unless watering is sorted.
 
 ### Kids — the trade-off vs turf
 
@@ -250,11 +287,13 @@ rhizomatous self-repair.
 | Delivery (single basket) | Pre-2pm weekday dispatch | Boston Seeds | — | £5.99 |
 | Sprinkler | Verve Oscillating Large — 210 m² at 3 bar, built-in 0–120 min mechanical run timer | B&Q Sidcup (DA14 6LX) | 1 | £22.00 |
 | Tap timer | **Not purchased** — covered by the Gardena duo tap timer + smart multi-zone irrigation controller being installed separately | — | — | £0 |
-| Screened topsoil | **Defer** — buy to measured volume after the fine-level pass | see below | 0–900 kg | £0–120 |
+| Screened topsoil | **Cancelled** — 8 tonnes already down | — | — | £0 |
 | Compost | Already have | — | 2000L | £0 |
-| **Total** | | | | **£92–212** |
+| **Total** | | | | **£69.99** |
 
-**Ordered 6 Sept 2026:** seed + fertiliser, £47.99 (Boston Seeds, arriving Tue 8 Sept).
+**Ordered 6 Sept 2026:** seed + fertiliser, £47.99 (Boston Seeds, arriving Tue 8 Sept) and the
+Verve sprinkler, £22 (arriving Mon 7 Sept). **Final spend £69.99** — topsoil cancelled, tap
+timer covered by the separate Gardena irrigation install.
 
 Sprinkler decision: the B&Q Verve at £22 was chosen over the Gardena AquaZoom S (£43.99 on
 Amazon). The AquaZoom's extra cost buys build quality, a 5-year warranty and tidiness inside
@@ -266,7 +305,7 @@ Turf for the same area would have been £400–600 supply-only, plus a same-day 
 ### ⚠️ Germination watering — the one real risk
 
 Weeks 1–3 after sowing are the only period where the top 10 mm genuinely cannot dry out:
-roughly **22 Sept – 13 Oct 2026**. A dry week here does not set the project back, it kills the
+roughly **9–30 Sept 2026** on the revised timeline. A dry week here does not set the project back, it kills the
 sowing outright and pushes re-sowing to late March 2027.
 
 No standalone tap timer was bought — unattended watering depends on the **Gardena duo tap timer
@@ -278,23 +317,14 @@ Stopgap if the irrigation setup slips past ~20 Sept: the Verve sprinkler has a b
 will shut itself off. Realistically late September in SE England does most of the watering,
 but the downside is asymmetric.
 
-### Topsoil — deferred deliberately
+### Topsoil — no longer required
 
-Buy topsoil only *after* the fine-level pass, when the actual dip volume is known. Two routes
-depending on what levelling reveals:
+8 tonnes of fresh topsoil is already down, so levelling uses what's there. **The planned
+purchase is cancelled**, saving £90–120 and removing the Gardenscape lead-time risk entirely.
 
-- **Minor dips:** Verve Peat-free Top soil 25L at £4.50/bag, B&Q Sidcup, same-day collection.
-  20 bags = 500L for £90.
-- **Substantial fill needed:** Gardenscape Direct TS6 Blended Premium Topsoil **5mm**, 900 kg
-  bulk bag, **£120 delivered** (DA postcode = £0 delivery surcharge). Screened to 5mm, BS3882,
-  explicitly sold for fine lawn levelling. Their lorry has a **4m HIAB crane** — the driver can
-  hover the bag over the target area and slit the base, so no barrowing. Rolawn and Earth Cycle
-  are kerbside pallet drops by comparison.
-- DA14 is inside the ULEZ but well outside the Congestion Charge zone; Gardenscape already
-  prices DA at zero surcharge.
-
-**Unverified — check before ordering:** Gardenscape publishes no lead time (phone 0800 854 663).
-Rolawn's terms mention a temporary 6.5% fuel surcharge that may not be in displayed prices.
+Kept for reference in case a future top-up is needed: Gardenscape Direct TS6 Blended Premium
+Topsoil 5 mm, 900 kg bulk bag, £120 delivered, DA postcode = £0 surcharge, 4 m HIAB crane
+places the bag on target rather than at the kerb. Phone 0800 854 663 — no published lead time.
 
 ### Sourcing notes
 
@@ -332,7 +362,13 @@ _Add dated notes here as work progresses._
 - 2000L compost delivered and waiting
 - **Lawn changed from turf to seed.** June–July turf window passed; September seeding is the
   better agronomic call, not a fallback. See Lawn Seeding Plan above
-- Target sowing date: 17–22 September 2026
+- Target sowing date: **Wed 9 September 2026 onward**, first suitable weather
+- Topsoil purchase **cancelled** — 8 tonnes of fresh topsoil already down
+- EverEdge steel edging **already installed**
+- Weedkiller confirmed as **glyphosate** — no soil residual activity, no waiting period, safe
+  to sow. Had it been a residual path or brushwood herbicide the sowing would have been at risk
+- Stale seedbed step dropped — soil has sat warm and damp for weeks with no weeds emerging
+- Compost redirected entirely to planters and border; none in the lawn seedbed
 - **Seed + pre-seed fertiliser ordered** from Boston Seeds, £47.99, arriving Tue 8 Sept
 - Sprinkler: B&Q Verve Oscillating Large, £22, collecting from Sidcup
 - Standalone tap timer dropped — Gardena duo + smart multi-zone irrigation controller ordered

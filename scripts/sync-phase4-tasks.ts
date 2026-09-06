@@ -41,17 +41,17 @@ if (!phase4) throw new Error('phase4 not found in mock-data PHASES')
  */
 const LAWN_TASK_IDS = [
   'p4t1',  // hard landscaping traffic finished
-  'p4t2',  // rake + compost incorporation
-  'p4t3',  // stale seedbed
+  'p4t3',  // soil moisture check before working it
+  'p4t2',  // firm the fresh topsoil layer
   'p4t8',  // fine levelling
-  'p4t9',  // EverEdge
-  'p4t10', // pre-seed fertiliser
-  'p4t16', // irrigation live before sowing
+  'p4t9',  // EverEdge (already installed)
+  'p4t16', // watering plan confirmed before sowing
+  'p4t10', // pre-seed fertiliser, same session as sowing
   'p4t11', // sow
   'p4t12', // rake in + firm
   'p4t13', // keep moist 3 weeks
   'p4t14', // first cut
-  'p4t15', // surplus compost to planters
+  'p4t15', // all compost to planters and border
 ]
 
 const lawnTasks = LAWN_TASK_IDS.map(id => {
