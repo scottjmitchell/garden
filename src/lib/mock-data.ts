@@ -62,6 +62,7 @@ export const PHASES: Phase[] = [
       { id: 'p4t10', text: 'Apply pre-seed fertiliser (low-N/high-P) @ 35 g/m², rake in',                   done: false },
       { id: 'p4t11', text: 'Sow 3.2kg hard-wearing RPR seed @ 40 g/m² — two passes at right angles',        done: false },
       { id: 'p4t12', text: 'Rake in lightly (5–10mm max), tread or roll for seed-to-soil contact',          done: false },
+      { id: 'p4t16', text: 'Confirm Gardena duo timer + irrigation controller live BEFORE sowing',          done: false },
       { id: 'p4t13', text: 'Keep top 10mm moist for 3 weeks — light watering 1–2× daily if dry',            done: false },
       { id: 'p4t14', text: 'First cut mid–late Oct at 60–75mm down to 40mm, sharp blades, box on',          done: false },
       { id: 'p4t15', text: 'Remaining ~1000L compost into raised planters and outbuilding border',          done: false },
@@ -152,7 +153,7 @@ export const MATERIALS: Material[] = [
     spec: '', low: 0, high: 0, options: [],
   },
   {
-    id: 'turf', name: 'Lawn Seed', accent: '#8B9A8E', status: 'to-order',
+    id: 'turf', name: 'Lawn Seed', accent: '#8B9A8E', status: 'ordered',
     spec: 'Hard-wearing family mix: ~50% dwarf perennial ryegrass (incl. regenerating RPR types), 30% strong creeping red fescue, 20% smooth-stalked meadow grass. 4kg for ~80 sqm at 40 g/m². Avoid ornamental fine-fescue/bent mixes and coarse agricultural amenity ryegrass. Sow by end September, absolute cut-off mid-October.',
     low: 28, high: 35, options: [],
   },

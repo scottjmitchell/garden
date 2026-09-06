@@ -248,13 +248,35 @@ rhizomatous self-repair.
 | Lawn seed | BS Child's Play — 50% dwarf perennial ryegrass, 32% strong creeping red fescue, 16% chewings/slender CRF, 2% bent | Boston Seeds | 5 kg | £28.00 |
 | Pre-seed fertiliser | KissMyGrass Pre-seeding 6-9-6 | Boston Seeds | 5 kg | £14.00 |
 | Delivery (single basket) | Pre-2pm weekday dispatch | Boston Seeds | — | £5.99 |
-| Sprinkler | Verve Oscillating Large — 210 m² at 3 bar, built-in 0–120 min timer | B&Q Sidcup (DA14 6LX) | 1 | £22.00 |
-| Tap timer | Titan Single Outlet Watering Timer (579PT) — weekly programming, up to 10 waterings/day | Screwfix Sidcup | 1 | £24.99 |
+| Sprinkler | Verve Oscillating Large — 210 m² at 3 bar, built-in 0–120 min mechanical run timer | B&Q Sidcup (DA14 6LX) | 1 | £22.00 |
+| Tap timer | **Not purchased** — covered by the Gardena duo tap timer + smart multi-zone irrigation controller being installed separately | — | — | £0 |
 | Screened topsoil | **Defer** — buy to measured volume after the fine-level pass | see below | 0–900 kg | £0–120 |
 | Compost | Already have | — | 2000L | £0 |
-| **Total** | | | | **£95–215** |
+| **Total** | | | | **£92–212** |
+
+**Ordered 6 Sept 2026:** seed + fertiliser, £47.99 (Boston Seeds, arriving Tue 8 Sept).
+
+Sprinkler decision: the B&Q Verve at £22 was chosen over the Gardena AquaZoom S (£43.99 on
+Amazon). The AquaZoom's extra cost buys build quality, a 5-year warranty and tidiness inside
+the Gardena system — not better coverage of an 80 m² lawn. The Verve's 210 m² at 3 bar covers
+the lawn from one position.
 
 Turf for the same area would have been £400–600 supply-only, plus a same-day laying deadline.
+
+### ⚠️ Germination watering — the one real risk
+
+Weeks 1–3 after sowing are the only period where the top 10 mm genuinely cannot dry out:
+roughly **22 Sept – 13 Oct 2026**. A dry week here does not set the project back, it kills the
+sowing outright and pushes re-sowing to late March 2027.
+
+No standalone tap timer was bought — unattended watering depends on the **Gardena duo tap timer
++ smart multi-zone irrigation controller** being installed and working. Confirm that is
+operational *before* sowing.
+
+Stopgap if the irrigation setup slips past ~20 Sept: the Verve sprinkler has a built-in
+0–120 min mechanical run timer. It cannot start unattended, but a hand-started morning soak
+will shut itself off. Realistically late September in SE England does most of the watering,
+but the downside is asymmetric.
 
 ### Topsoil — deferred deliberately
 
@@ -311,3 +333,8 @@ _Add dated notes here as work progresses._
 - **Lawn changed from turf to seed.** June–July turf window passed; September seeding is the
   better agronomic call, not a fallback. See Lawn Seeding Plan above
 - Target sowing date: 17–22 September 2026
+- **Seed + pre-seed fertiliser ordered** from Boston Seeds, £47.99, arriving Tue 8 Sept
+- Sprinkler: B&Q Verve Oscillating Large, £22, collecting from Sidcup
+- Standalone tap timer dropped — Gardena duo + smart multi-zone irrigation controller ordered
+  separately will cover germination watering. Must be live before sowing
+- Topsoil still deferred pending the fine-level pass
