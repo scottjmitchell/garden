@@ -56,8 +56,9 @@ export const PHASES: Phase[] = [
     tasks: [
       { id: 'p4t1',  text: 'Confirm all hard landscaping traffic across lawn zone is finished',             done: false },
       { id: 'p4t3',  text: 'Check soil is damp-but-crumbly before firming — if it balls or clags, wait',    done: false },
+      { id: 'p4t15', text: 'Spread 2000L compost, incorporate through full depth of new topsoil',          done: false },
       { id: 'p4t2',  text: 'Firm the 8t topsoil layer: overlapping heel passes, then repeat at 90°',        done: false },
-      { id: 'p4t8',  text: 'Fine levelling: screed board on string lines, fill dips, re-firm, cross-rake',  done: false },
+      { id: 'p4t8',  text: 'Level against EverEdge — fill dips with topsoil not compost, re-firm, rake',    done: false },
       { id: 'p4t9',  text: 'Set EverEdge 5–10mm below finished grass level',                                done: true  },
       { id: 'p4t16', text: 'Confirm watering plan before sowing — Gardena timer, or hand-started Verve',    done: false },
       { id: 'p4t10', text: 'Apply pre-seed fertiliser @ 35 g/m² — same session as sowing, not before',      done: false },
@@ -65,7 +66,6 @@ export const PHASES: Phase[] = [
       { id: 'p4t12', text: 'Rake in lightly (5–10mm max), tread or roll for seed-to-soil contact',          done: false },
       { id: 'p4t13', text: 'Keep top 10mm moist for 3 weeks — light watering 1–2× daily if dry',            done: false },
       { id: 'p4t14', text: 'First cut at 60–75mm down to 40mm, sharp blades, box on',                       done: false },
-      { id: 'p4t15', text: 'All 2000L compost into raised planters and outbuilding border (not the lawn)',  done: false },
       { id: 'p4t4', text: 'Existing cherry tree: stake if needed, mulch ring 1m diameter',                done: false },
       { id: 'p4t5', text: "Plant clematis montana 'Alba' × 2 at pergola base",                          done: false },
       { id: 'p4t6', text: 'Plant hydrangea petiolaris on back fence (if chosen)',                          done: false },

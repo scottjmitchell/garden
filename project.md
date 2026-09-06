@@ -195,18 +195,37 @@ collapsing, and eight months of root development before heavy summer use in 2027
 **Precondition:** all hard landscaping traffic across the centre/left lawn zone must be
 finished. Seed will not survive barrow routes.
 
-### Compost — none of it goes in the lawn (revised 6 Sept)
+### Compost — all 2000L into the lawn, as amendment not fill
 
-With **8 tonnes of fresh topsoil** down, the seedbed is already good soil and the marginal
-gain from working compost into it is small. The downside is immediate: compost fluffs the
-soil back up at exactly the moment we're trying to consolidate it, and would mean firming
-twice around it, since incorporating undoes firming.
+The new topsoil is **relatively light coloured**, which means low organic matter. The practical
+consequence is surface capping: low-OM soil crusts after heavy rain, and a crust is exactly
+what stops grass seedlings emerging. That puts organic matter directly on the critical path
+for germination, so all 2000L goes into the lawn.
 
-- **All 2000L goes to the raised planters and the outbuilding border**, where it is worth
-  far more than under grass
-- Exception: if the new topsoil looks pale and sandy when worked, rake ~500L into the top
-  100 mm **before** the firming pass — never after
+**But compost will not hold a level.** Green waste compost mineralises — the organic fraction
+decomposes and the volume goes with it, losing a substantial share over two to three years.
+Whatever height is built from compost, less of it comes back later.
+
+This matters here because **the EverEdge is already set**. Finished grass should sit 5–10 mm
+above the steel. If part of that height comes from compost that sinks 10 mm over two summers,
+the lawn ends up *below* the edging — a visible lip round the whole curve, and a scalping line
+for the mower.
+
+- **Use compost as an amendment, not as fill.** Set finished height with firmed soil; let the
+  compost be what's mixed through it
+- **Incorporate through the full depth of the new topsoil** (~65–75 mm) and just into the old
+  ground beneath. This also **keys the new layer into the old** — left as a clean interface,
+  new topsoil over old soil forms a shear plane that impedes drainage and rooting. One pass
+  solves both
+- **Check finished level against the EverEdge while levelling.** Any shortfall is made up with
+  topsoil, never more compost — Verve 25L bags at £4.50 from B&Q Sidcup are a same-day fix
 - Check it doesn't smell of ammonia; if it does it isn't finished and needs weathering
+
+**The planters lose out, deliberately.** Four planters at 1500–2000 × 600–800 × 400 mm would
+want ~1500–2500L on their own, so 2000L cannot do both jobs. The lawn is time-critical and its
+soil genuinely needs the organic matter. The planters are not on the September path, and should
+not be filled with pure compost anyway — it slumps badly in a container. Buy a topsoil/compost
+blend for those later.
 
 ### Firming — the step that decides whether dips appear later
 
@@ -219,7 +238,8 @@ lawn that shows every one of them.
   Stomping leaves compaction pockets between impacts.
 - **A roller is the wrong tool for this pass** — it bridges hollows and firms only the high
   spots. Use it for a light final pass after levelling, if at all.
-- **Firm first, level second.** Consolidate, then screed and fill, then re-firm lightly.
+- **Incorporate compost first, then firm.** Working compost in undoes any firming already done,
+  so the order is: spread → incorporate → firm → level → re-firm → rake to tilth.
 - ⚠️ **Never work wet soil.** If it balls in the hand or clags onto boots it is too wet, and
   heeling will smear it into a compacted pan — worse than not firming at all. Wait for
   damp-but-crumbly. A day's delay costs nothing; a pan lasts years.
@@ -234,8 +254,9 @@ stale seedbed that has already run. That is better evidence than a 10-day wait w
 
 | When | Work |
 |---|---|
+| Mon 7 Sept | **Spread + incorporate 2000L compost** through the full depth of the new topsoil and just into the old ground beneath — amends the pale low-OM soil and keys the two layers together. |
 | Mon 7 Sept | **Firm**, if the soil is damp-but-crumbly. Overlapping heel passes, then again at 90°. If it's too wet, wait — this is not a step to rush. |
-| Mon 7 Sept | **Fine level.** Screed board or scaffold plank on string lines, fill hollows, re-firm lightly, cross-rake to a fine tilth. |
+| Mon 7 Sept | **Fine level** against the EverEdge. Screed board or scaffold plank on string lines, fill hollows **with topsoil not compost**, re-firm lightly, cross-rake to a fine tilth. |
 | Tue 8 Sept | Seed + fertiliser arrive. Store cool, dry, out of sunlight. Sprinkler arrives Mon 7th. |
 | Wed 9 Sept onward | **Sow, first good weather.** Fertiliser and seed in the **same session** — see below. Split seed in half, sow in two passes at right angles. Rake in **very lightly, 5–10 mm**; buried seed does not come up. Tread or roll gently for seed-to-soil contact. |
 | Weeks 1–3 | **Keep top 10 mm moist.** Ryegrass shows 7–10 days, fescue 10–14 — a patchy week 2 is normal, not failure. |
@@ -287,7 +308,7 @@ rhizomatous self-repair.
 | Delivery (single basket) | Pre-2pm weekday dispatch | Boston Seeds | — | £5.99 |
 | Sprinkler | Verve Oscillating Large — 210 m² at 3 bar, built-in 0–120 min mechanical run timer | B&Q Sidcup (DA14 6LX) | 1 | £22.00 |
 | Tap timer | **Not purchased** — covered by the Gardena duo tap timer + smart multi-zone irrigation controller being installed separately | — | — | £0 |
-| Screened topsoil | **Cancelled** — 8 tonnes already down | — | — | £0 |
+| Screened topsoil | Only if levelling shows a shortfall vs the EverEdge — Verve 25L bags, B&Q Sidcup | B&Q | 0–20 bags | £0–90 |
 | Compost | Already have | — | 2000L | £0 |
 | **Total** | | | | **£69.99** |
 
@@ -317,10 +338,12 @@ Stopgap if the irrigation setup slips past ~20 Sept: the Verve sprinkler has a b
 will shut itself off. Realistically late September in SE England does most of the watering,
 but the downside is asymmetric.
 
-### Topsoil — no longer required
+### Topsoil — contingency only
 
-8 tonnes of fresh topsoil is already down, so levelling uses what's there. **The planned
-purchase is cancelled**, saving £90–120 and removing the Gardenscape lead-time risk entirely.
+8 tonnes of fresh topsoil is already down, so levelling uses what's there and the planned bulk
+purchase is cancelled. **Not fully dead, though:** if firming leaves the surface short of the
+EverEdge height, make the shortfall up with topsoil rather than compost. Verve Peat-free Top
+soil 25L at £4.50/bag from B&Q Sidcup is a same-day fix for a modest gap.
 
 Kept for reference in case a future top-up is needed: Gardenscape Direct TS6 Blended Premium
 Topsoil 5 mm, 900 kg bulk bag, £120 delivered, DA postcode = £0 surcharge, 4 m HIAB crane
@@ -368,7 +391,11 @@ _Add dated notes here as work progresses._
 - Weedkiller confirmed as **glyphosate** — no soil residual activity, no waiting period, safe
   to sow. Had it been a residual path or brushwood herbicide the sowing would have been at risk
 - Stale seedbed step dropped — soil has sat warm and damp for weeks with no weeds emerging
-- Compost redirected entirely to planters and border; none in the lawn seedbed
+- Topsoil is **light coloured** = low organic matter, so all 2000L compost now goes into the
+  lawn as an amendment against surface capping. Reverses the earlier call to send it to the
+  planters — that was right for a dark humus-rich topsoil, wrong for this one
+- Compost is amendment, **not fill**: it mineralises and loses volume, and the EverEdge is
+  already set, so finished height must come from firmed soil
 - **Seed + pre-seed fertiliser ordered** from Boston Seeds, £47.99, arriving Tue 8 Sept
 - Sprinkler: B&Q Verve Oscillating Large, £22, collecting from Sidcup
 - Standalone tap timer dropped — Gardena duo + smart multi-zone irrigation controller ordered
