@@ -45,6 +45,7 @@ _Looking from house toward back of garden_
 - **Lawn edging:** EverEdge 3mm galvanised steel
 - **Climbers:** Star Jasmine (Trachelospermum jasminoides) × 1–2 (pergola, SE-facing = ideal), Clematis montana 'Alba' × 1 (fast coverage), Hydrangea petiolaris × 1 (back fence option)
 - **New shed:** back-right corner, size TBD, shingle ground cover around it
+- **Irrigation:** 2 × LinkTap G2S smart tap controllers (+ FM-20S flow meters, GW-02 gateway) on a brass 4-way manifold off the outside tap; two drip zones — left border inline dripline, planter drippers. Full detail, stack order and open items in [`irrigation.md`](irrigation.md)
 
 ---
 
@@ -54,6 +55,8 @@ _Looking from house toward back of garden_
 - [ ] Shed size: 2×2m or 2×3m?
 - [ ] Curved path: through lawn or along right edge?
 - [ ] Left fence constraint: check post depth before determining max fill height on left lawn side
+- [ ] Irrigation backflow device (fluid category 4): Type DB pipe interrupter discontinued — awaiting Thames Water guidance, see `irrigation.md` §5
+- [ ] Lawn germination watering timer: current irrigation layout leaves the sprinkler hose port untimed — see `irrigation.md` §6
 
 ---
 
@@ -153,6 +156,12 @@ The left-side fence limits how high the lawn can be raised. Before levelling:
 - Clematis montana 'Alba' × 1 — fast coverage while jasmine establishes
 - Hydrangea petiolaris × 1 — optional for back fence if shaded
 
+### Irrigation
+
+- See [`irrigation.md`](irrigation.md) — hardware all ordered or in hand as of 7 Sept 2026 (~£480 so far, FC4 backflow device and bracket still to buy)
+- Stack per zone: G2S → FM-20S → Amiad 120 mesh filter → Netafim 1.4 bar regulator → backflow device → 16mm LDPE
+- Soil moisture sensors deferred to spring 2027
+
 ### Outdoor Furniture
 
 - **Spec:** Large corner sofa, PE rattan/aluminium, charcoal, Olefin/Sunbrella cushions, quick-dry foam, fitted winter cover
@@ -180,8 +189,9 @@ The left-side fence limits how high the lawn can be raised. Before levelling:
 | Electrical materials | £300 | £500 |
 | Shed (new) | £500 | £1,500 |
 | Shingle (Zone 4) | £150 | £300 |
+| Irrigation (LinkTap G2S ×2, manifold, drip kits, filters) | £480 | £600 |
 | Tools, hire, skip | £1,000 | £1,500 |
-| **Total** | **~£14,000** | **~£23,000** |
+| **Total** | **~£14,500** | **~£23,600** |
 
 
 ---
@@ -307,14 +317,14 @@ rhizomatous self-repair.
 | Pre-seed fertiliser | KissMyGrass Pre-seeding 6-9-6 | Boston Seeds | 5 kg | £14.00 |
 | Delivery (single basket) | Pre-2pm weekday dispatch | Boston Seeds | — | £5.99 |
 | Sprinkler | Verve Oscillating Large — 210 m² at 3 bar, built-in 0–120 min mechanical run timer | B&Q Sidcup (DA14 6LX) | 1 | £22.00 |
-| Tap timer | **Not purchased** — covered by the Gardena duo tap timer + smart multi-zone irrigation controller being installed separately | — | — | £0 |
+| Tap timer | **Not purchased** — was to be covered by the separate irrigation install. That design has since changed and the sprinkler hose port is currently untimed — see `irrigation.md` §6 | — | — | £0 |
 | Screened topsoil | Only if levelling shows a shortfall vs the EverEdge — Verve 25L bags, B&Q Sidcup | B&Q | 0–20 bags | £0–90 |
 | Compost | Already have | — | 2000L | £0 |
 | **Total** | | | | **£69.99** |
 
 **Ordered 6 Sept 2026:** seed + fertiliser, £47.99 (Boston Seeds, arriving Tue 8 Sept) and the
 Verve sprinkler, £22 (arriving Mon 7 Sept). **Final spend £69.99** — topsoil cancelled, tap
-timer covered by the separate Gardena irrigation install.
+timer deferred to the separate irrigation install (see `irrigation.md` §6).
 
 Sprinkler decision: the B&Q Verve at £22 was chosen over the Gardena AquaZoom S (£43.99 on
 Amazon). The AquaZoom's extra cost buys build quality, a 5-year warranty and tidiness inside
@@ -329,9 +339,10 @@ Weeks 1–3 after sowing are the only period where the top 10 mm genuinely canno
 roughly **9–30 Sept 2026** on the revised timeline. A dry week here does not set the project back, it kills the
 sowing outright and pushes re-sowing to late March 2027.
 
-No standalone tap timer was bought — unattended watering depends on the **Gardena duo tap timer
-+ smart multi-zone irrigation controller** being installed and working. Confirm that is
-operational *before* sowing.
+No standalone tap timer was bought — unattended watering was to depend on the separate smart
+irrigation install. **That design has changed:** it is now 2 × LinkTap G2S on a brass 4-way
+manifold, both units allocated to the drip zones, and the sprinkler hose port has no timer.
+Options are laid out in `irrigation.md` §6 — resolve *before* sowing.
 
 Stopgap if the irrigation setup slips past ~20 Sept: the Verve sprinkler has a built-in
 0–120 min mechanical run timer. It cannot start unattended, but a hand-started morning soak
@@ -398,6 +409,18 @@ _Add dated notes here as work progresses._
   already set, so finished height must come from firmed soil
 - **Seed + pre-seed fertiliser ordered** from Boston Seeds, £47.99, arriving Tue 8 Sept
 - Sprinkler: B&Q Verve Oscillating Large, £22, collecting from Sidcup
-- Standalone tap timer dropped — Gardena duo + smart multi-zone irrigation controller ordered
-  separately will cover germination watering. Must be live before sowing
+- Standalone tap timer dropped in favour of the separate irrigation install. That install has
+  since moved from the Gardena Twin-Tap plan to LinkTap G2S ×2 on a brass 4-way manifold, so the
+  lawn germination watering timer is now an **open item** — see `irrigation.md` §6
 - Topsoil still deferred pending the fine-level pass
+- **Irrigation hardware all ordered or in hand (7 Sept):** LinkTap G2S ×2 + FM-20S flow meters ×2
+  + GW-02 gateway and Photener brass 4-way manifold (Amazon, arrived, £313.95); dripline kit,
+  patio kit, Amiad filters ×2 and Netafim 1.4 bar regulators ×2 (irrigationonline, ordered).
+  Nothing installed yet. Full state in `irrigation.md`
+- Irrigation backflow compliance: Arrow Valves confirmed the Type DB pipe interrupter is
+  **discontinued**. In conversation with Thames Water (WhatsApp) about the acceptable alternative
+  for an automated domestic drip system; water-fittings notification still to submit. Only
+  unattended daily drip service waits on this — pipe laying, compost and planting proceed
+- Indoor DCV route abandoned (supply branch unfindable); integral-DCV bib tap to be bought from
+  Screwfix instead. Flomasta DCV + lever valve now surplus
+- Soil moisture sensors (Ecowitt) deferred to spring 2027

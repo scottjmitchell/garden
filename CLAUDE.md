@@ -9,6 +9,17 @@
 - Playwright (E2E tests)
 - GitHub Pages (hosting via `gh-pages` branch)
 
+## Project Docs (garden domain)
+
+The site tracks a real garden build. Domain state lives in two root-level docs — read the relevant one before working on garden content, and update it in the same commit as any related data change:
+
+| File | What |
+|------|------|
+| `project.md` | Master reference — survey, zones, decisions, materials, budget, lawn seeding plan, dated progress notes |
+| `irrigation.md` | Irrigation sub-project — hardware, stack order, compliance thread, install sequence, open items, suggested next sessions |
+
+Live Plan/Materials/Budget data is in Firebase, not in the repo. `scripts/sync-phase4-tasks.ts` is the pattern for pushing canonical `src/lib/mock-data.ts` tasks to the live DB (dry run by default; needs `FIREBASE_DB_SECRET` to commit).
+
 ## Commands
 
 | Command | What |

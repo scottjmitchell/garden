@@ -60,7 +60,7 @@ export const PHASES: Phase[] = [
       { id: 'p4t2',  text: 'Firm the 8t topsoil layer: overlapping heel passes, then repeat at 90°',        done: false },
       { id: 'p4t8',  text: 'Level against EverEdge — fill dips with topsoil not compost, re-firm, rake',    done: false },
       { id: 'p4t9',  text: 'Set EverEdge 5–10mm below finished grass level',                                done: true  },
-      { id: 'p4t16', text: 'Confirm watering plan before sowing — Gardena timer, or hand-started Verve',    done: false },
+      { id: 'p4t16', text: 'Confirm watering plan before sowing — timed sprinkler via irrigation, or hand-started Verve', done: false },
       { id: 'p4t10', text: 'Apply pre-seed fertiliser @ 35 g/m² — same session as sowing, not before',      done: false },
       { id: 'p4t11', text: 'Sow 3.2kg hard-wearing seed @ 40 g/m² — two passes at right angles',            done: false },
       { id: 'p4t12', text: 'Rake in lightly (5–10mm max), tread or roll for seed-to-soil contact',          done: false },
