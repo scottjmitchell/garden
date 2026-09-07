@@ -1,14 +1,14 @@
 > **ARCHIVED EVIDENCE BASE — decisions now live in [`../../irrigation.md`](../../irrigation.md) (2026-09-07).**
-> Copied verbatim on 2026-09-07 from the Home Assistant repo worktree
-> (`claude/smart-irrigation-setup-597b26`, `docs/irrigation-kit-research-2026-09.md`), where it was
-> still uncommitted. This is the primary-source research (manufacturer manuals, HA integration
+> Copied on 2026-09-07 from the (private) Home Assistant repo, where it was still uncommitted.
+> House-specific Home Assistant details (network, entity names, device inventory) were removed
+> for this public copy; the technical findings are unchanged. This is the primary-source research (manufacturer manuals, HA integration
 > manifests, Defra water-fittings guidance, UK retailers) behind the controller, sensor and
 > backflow choices. Consult it before re-litigating any device decision. Facts marked
 > UNVERIFIED here may have been resolved later — check `irrigation.md` §4 first.
 
 # Smart irrigation: controller + soil sensor selection (research, 2026-09-06)
 
-Greenfield — no prior garden/irrigation work in TRACKER or CONTEXT.
+Greenfield — no prior garden/irrigation work in the Home Assistant repo.
 
 Built from four parallel research passes against primary sources (manufacturer
 manuals, HA integration docs/manifests, Zigbee2MQTT converters, the Defra
@@ -16,19 +16,9 @@ guidance to the Water Supply (Water Fittings) Regulations 1999, UK retailers).
 Every load-bearing claim is quoted verbatim with a URL in the sections below;
 anything that could not be sourced is marked UNVERIFIED rather than asserted.
 
-## Verified against THIS Pi (not from docs)
+## Verified against the household Home Assistant instance
 
-| Check | Result |
-|---|---|
-| `ecowitt` integration | core, `local_push`, config_flow, `aioecowitt==2026.6.0` |
-| `gardena_bluetooth` integration | core, `local_polling` |
-| `hydrawise` | `cloud_polling` — rejected |
-| HA HTTP port | **80** (8123 refuses connection) — Ecowitt push target must be 80, not the 8123 every guide prints |
-| Weather source | `weather.forecast_home` (met.no), `supported_features: 3` = daily + hourly, precipitation in mm |
-| Observed rainfall | **none** — no rain gauge. Rain-skip can only be forecast-based today |
-| Z2M mains routers | **one** (`switch.landing_siren_plug`, upstairs landing). All other Z2M devices are battery end devices and do not route |
-| Aqara wall switches / Hue bulbs | on Matter + Hue bridge respectively — **cannot** extend the Z2M mesh |
-| Areas | 12, all indoor — a Garden area must be created before `ha-parity` can see anything |
+*Table removed from the public copy. It recorded: the `ecowitt` integration is core, `local_push`, config-flow; the HA HTTP port differs from the default and must be checked before pointing the Ecowitt gateway at it; the weather entity is met.no with daily+hourly precipitation; there is no observed-rainfall sensor; the Zigbee2MQTT mesh has no mains router able to reach the garden; all existing HA areas are indoor, so a Garden area must be created.*
 
 
 ---
@@ -1334,7 +1324,7 @@ Configuration is done entirely on-LAN:
 > "Your Home Assistant instance is accessible via HTTP. Ecowitt devices do not support HTTPS connections. If your instance only accepts HTTPS, refer to [TLS/SSL limitations]."
 > — https://www.home-assistant.io/integrations/ecowitt/
 
-**Relevance to this hub:** benign. Per `CLAUDE.md`, this HA serves on **port 80 (HTTP)** already, so the gateway can post to it directly with no reverse-proxy work.
+**Relevance here:** benign if the HA instance serves plain HTTP on the port the gateway is pointed at; otherwise a reverse proxy or port change is needed.
 
 ### 3.3 ⚠️ GW1100 is NOT in the supported-devices list
 
@@ -1727,7 +1717,7 @@ Genuinely local by definition, and ESPHome has **first-party components for two 
 1. Bench-test each sensor per the manual (air → 0 %, cup of water → ≥ 90 %) **before** burying. Keep the pairing order — channel number follows power-on sequence.
 2. Dig a pre-formed hole; never force the probe. Bury **only to the `MAX DEPTH` mark**. Fit both silicone caps.
 3. Site the body so it cannot sit in standing water — the unit is IP66, **not** IP68. In the border, consider mounding slightly or choosing a spot that drains. If any location genuinely ponds in winter, buy the **WH51L (£39)** for that spot instead and keep its battery body out of the wet on the 1 m cable — its probe is **IP68**.
-4. Point the gateway at HA over **HTTP** (this hub already serves on port 80) using the `192.168.4.1` web UI — **no Ecowitt account needed**.
+4. Point the gateway at HA over **HTTP**, at the port HA actually serves on (verify — do not assume the 8123 most guides print), using the `192.168.4.1` web UI — **no Ecowitt account needed**.
 5. **Calibrate each bed separately** in HA off `Soil AD N`, not off the gateway `%`. The loam border and the compost planter will not share a threshold.
 6. **Alarm on `Soil Battery N` voltage (< ~1.2 V) plus staleness of `last_reported`**, not on a battery percentage — the soil channels report volts, not percent.
 7. Diarise an **annual battery swap**; consider lithium AA for cold performance and leak resistance (do not mix chemistries).

@@ -84,8 +84,8 @@ cantilevered off a ½" bib tap. Support manifold and/or each stack independently
 - §10 "outlet thread" — FM-20S confirmed G2S/G2-only, fits G2S outlet; LinkTap Q1 and
   D1 cannot take it (Q1 has own built-in meters — checked, rejected same as D1).
 - NEW open item the old doc missed: **gateway placement**. GW-02 talks to G2S over
-  LinkTap's own radio (~200m open air), NOT the garden WiFi AP. Place indoors, back
-  room nearest the tap, USB power. Pair G2S at the tap and check signal BEFORE
+  LinkTap's own radio (~200m open air), NOT WiFi. Place indoors as near the tap as
+  possible, USB power. Pair G2S at the tap and check signal BEFORE
   plumbing (inside Amazon return window). LinkTap extender exists if marginal.
 - Amazon UK (LinkTap-UK seller) beat link-tap.com direct: no £14 shipping, easy
   returns, BSP-threaded stock.
@@ -158,7 +158,7 @@ Candidate resolutions (not yet decided):
 
 ## 7. Install sequence (hardware day)
 
-1. Gateway on back windowsill nearest tap → app setup
+1. Gateway indoors nearest the tap → app setup
 2. Pair both G2S **at the tap**, check signal (return window!)
 3. Swap standard meters for FM-20S on each G2S
 4. Swap bib tap for integral-DCV tap (main stopcock off, PTFE, 15 min)
@@ -170,19 +170,19 @@ Candidate resolutions (not yet decided):
 9. Manual test cycles per zone; check FM-20S readings register (~1.1–1.3 L/min Z1,
    ~0.33 L/min Z2)
 
-## 8. Pi/HA-side tasks (unchanged from old doc §11, none done)
+## 8. Home Assistant-side tasks (unchanged from old doc §11, none done)
 
-These live on the Home Assistant Pi, not in this repo.
+These live in the Home Assistant repo, not here.
 
-- Create **Garden** area (all 12 existing areas indoor; area-less entities invisible
-  to `ha-parity`)
+- Create **Garden** area (all existing areas are indoor; the repo's parity tooling ignores
+  area-less entities)
 - HACS: `sh00t2kill/linktap_local_http_component` (gateway local HTTP API)
-- Label tuning knobs `plumbing`; run `./bin/ha-parity` after onboarding
+- Label tuning knobs `plumbing`; run the repo's parity check after onboarding
 - Automations v1 (no soil sensors yet): per-zone schedules (Z2 frequent/shallow,
-  Z1 infrequent/deep), forecast-based skip via `weather.forecast_home` (daily+hourly,
+  Z1 infrequent/deep), forecast-based skip via the HA forecast weather entity (daily+hourly,
   precip mm), FM-20S anomaly alerts (no-flow / unexpected-flow), G2S battery alerts
 - Spring 2027: add Ecowitt (`ecowitt` core integration, `local_push`, gateway posts
-  to **port 80** on this Pi, not 8123; battery arrives as VOLTS ~1.2V threshold;
+  to the port HA actually serves on — verify, don't assume 8123; battery arrives as VOLTS ~1.2V threshold;
   moisture % is a raw index needing per-soil calibration — template sensors in YAML;
   WH51L variant for spots that pond; WH40 rain gauge for observed-rain skip)
 
@@ -215,7 +215,7 @@ auto-open is a backstop, not the plan.
    water-fittings notification.
 2. **Lawn watering decision** — resolve §6 before the 9 Sept sowing window.
 3. **Hardware day** — walk §7 with photos into the journal; record FM-20S baseline flows.
-4. **Home Assistant integration** — §8, on the Pi.
+4. **Home Assistant integration** — §8, in the Home Assistant repo.
 5. **Site sync** — add an irrigation phase/tasks, materials and budget line to the app
    (pattern: `scripts/sync-phase4-tasks.ts`, dry-run first).
 
@@ -228,7 +228,7 @@ Full reasoning with verbatim quotes and URLs: `docs/irrigation/irrigation-kit-re
 | LinkTap D1-B (one-box, two zones) | Non-removable 2–50 L/min meters; cannot take the Micro Flow Meter, so drip-scale faults are undetectable |
 | LinkTap Q1 | Same built-in-meter problem as D1 |
 | Gardena smart Dual Water Control 19034-20 | **Not** because it is cloud-only — GARDENA publish a genuinely local HACS integration. Lost on: that integration being a v0.2.0 preview on an "experimental" gateway service shipped disabled; gateway out of stock; vertical-only mounting that a Twin-Tap's angled outlets may break |
-| GIEX GX03 (Zigbee) | Open Z2M issue (valve 2 ON falsely reports valve 1 active); the house Z2M mesh has one mains router upstairs and nothing that can extend it to the garden |
+| GIEX GX03 (Zigbee) | Open Z2M issue (valve 2 ON falsely reports valve 1 active); the house Z2M mesh has no mains router able to reach the garden |
 | Netro Pixie | Cloud polling, single outlet |
 | RainPoint / Diivoo | HomGar cloud platform; RF/BLE behind a gateway |
 | Hozelock Cloud Controller | Hozelock state it ceases to function end of April 2027; no HA integration |

@@ -1,7 +1,6 @@
 > **ARCHIVED — superseded for decisions by [`../../irrigation.md`](../../irrigation.md) (2026-09-07).**
-> Copied verbatim on 2026-09-07 from the Home Assistant repo worktree
-> (`claude/smart-irrigation-setup-597b26`, `docs/irrigation-handoff-2026-09.md`), where it was
-> still uncommitted. Kept as the record of *why* the kit was chosen. Its "nothing ordered" status
+> Copied on 2026-09-07 from the (private) Home Assistant repo, where it was still uncommitted.
+> House-specific Home Assistant details were removed for this public copy. Kept as the record of *why* the kit was chosen. Its "nothing ordered" status
 > and the Gardena Twin-Tap / indoor-DCV / Type DB assumptions are out of date. The two
 > `learnings/` files it links to live in the Home Assistant repo, not here.
 
@@ -11,7 +10,7 @@ Cross-check sheet for the deeper irrigation session. Full evidence with verbatim
 quotes and URLs: `irrigation-kit-research-2026-09.md` (2,301 lines).
 
 **Status: DECIDED, NOTHING ORDERED.** No hardware bought, nothing installed,
-nothing on the Pi. This was a selection pass only.
+nothing on the Home Assistant side. This was a selection pass only.
 
 ---
 
@@ -72,8 +71,8 @@ Derived from the emitter counts, not from a datasheet:
 4. **A double check valve alone is NOT legally sufficient.** See §4. This is the one
    place the original plan was wrong.
 
-5. **Ecowitt gateway must point at port 80**, not the 8123 every published guide
-   prints. Verified on this Pi: port 80 serves, 8123 refuses connection.
+5. **Ecowitt gateway must point at the port HA actually serves on**, not the 8123
+   every published guide prints. Verified against the household instance.
 
 ---
 
@@ -163,7 +162,7 @@ sensor at all.
 
 ## 8. Automation design — two gaps in the stated goals
 
-- **"Skip after rain" has no data source.** `weather.forecast_home` exists (met.no,
+- **"Skip after rain" has no data source.** the HA forecast weather entity exists (met.no,
   `supported_features: 3` = daily + hourly, precipitation in mm) but there is **no
   observed rainfall sensor anywhere on the system**. Today only *forecast*-based
   skipping is possible. An Ecowitt **WH40 rain gauge** bolts onto the same GW1200
@@ -203,11 +202,10 @@ loosely... Don't tighten these caps completely."*
 
 ## 11. Pi-side prep (nothing done yet)
 
-- [ ] Create a **Garden area** — all 12 existing areas are indoor, and an entity with no area is invisible to `ha-parity`.
+- [ ] Create a **Garden area** — all existing areas are indoor, and the repo's parity tooling ignores area-less entities.
 - [ ] Install the LinkTap HACS component (HACS is present).
-- [ ] Add `ecowitt` via config flow; point the gateway at **port 80**.
-- [ ] Label tuning knobs `plumbing` so `./bin/ha-parity` stays quiet.
-- [ ] Run `./bin/ha-parity` after onboarding.
+- [ ] Add `ecowitt` via config flow; point the gateway at the port HA serves on.
+- [ ] Label tuning knobs `plumbing`; run the repo's parity check after onboarding.
 
 ## 12. Rejected, with the reason (so it isn't re-litigated)
 
@@ -215,7 +213,7 @@ loosely... Don't tighten these caps completely."*
 |---|---|
 | LinkTap D1-B | Non-removable 2–50 L/min meters; cannot take the Micro Flow Meter |
 | Gardena Dual 19034-20 | v0.2.0 preview integration, "experimental" service shipped disabled, gateway OOS, vertical-only mounting |
-| GIEX GX03 (Zigbee) | Z2M issue where valve 2 ON falsely reports valve 1 active; and this house's Z2M mesh has **one** mains router (upstairs landing) — Aqara switches are on Matter, Hue bulbs on the Hue bridge, so **neither can extend Z2M** to the garden |
+| GIEX GX03 (Zigbee) | Z2M issue where valve 2 ON falsely reports valve 1 active; and the house Z2M mesh has no mains router able to reach the garden |
 | Netro Pixie | `cloud_polling` against api.netrohome.com; single outlet |
 | RainPoint / Diivoo | Same HomGar cloud platform; integration literally named "RainPoint Cloud"; 433 MHz RF or BLE behind a gateway, not WiFi |
 | Hozelock Cloud Controller | Hozelock's own listing: *"will cease to function at the end of April 2027"*. No HA integration ever existed |
