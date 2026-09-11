@@ -197,6 +197,30 @@ space, cost — and a pump over 12 L/min is itself notifiable under Table 5 item
    before hardware day.
 4. Buy Zone 1 parts for whichever option TW accepts.
 
+### Zone 1 layout decision (2026-09-11)
+
+Surface-lay the plain 16mm along the back of the border on pegs and hide it under bark mulch —
+not buried in soil. The pipe carries no outlets so its position is irrelevant to the category,
+every joint stays inspectable, and the shallow-burial rules (item 4(i), Schedule 2 depth) never
+arise. **Measure the 150mm from the top of the mulch**, not the soil: aim for ~200mm so mulch
+top-ups don't erode the margin. Take-offs at the surface, never below it.
+
+### Parts to buy for the FC3 conversion (~£45–70, one irrigationonline basket)
+
+| Item | Qty | Why |
+|---|---|---|
+| Riser stakes for 5mm tube, 300mm | 30 | 10 planter + up to 20 border. Kit clamp stakes are too short for 150mm above mulch |
+| 2 L/h PC drippers | 20 | Border, one per plant, two per fruit tree |
+| 5mm micro tube | 25m | Risers (~0.6m each). Check kit leftover first |
+| Plain 16mm LDPE | 25m | Border supply; dripline can't be reused as plain pipe. Check kit leftover first |
+| 16mm pegs/hooks | 20 | Pin surface run before mulching |
+| 16mm tee/elbows/figure-8 | as needed | Dripline kit fittings fit plain 16mm — likely nothing |
+| Non-potable ID tape | 1 roll | BS 1710-style marking along both runs |
+| Integral-DCV bib tap | 0–1 | **Only** if the builder confirms no indoor DCV (~£15–25, Screwfix) |
+
+Design flows after conversion: Zone 2 ~0.33 L/min; Zone 1 ~0.5–0.7 L/min for 15–20 drippers;
+~1 L/min total. Both inside the FM-20S 0.2–5 L/min range.
+
 ### Draft description for the form (Section 4) — fill the brackets
 
 > Alteration to an existing house: a small automatic garden watering system fed from the
@@ -206,8 +230,8 @@ space, cost — and a pump over 12 L/min is itself notifiable under Table 5 item
 > the supply to the outside tap, inside the building / WRAS-approved hose union bib tap with
 > integral double check valve]. Downstream of the tap: brass 4-way manifold with isolating ball
 > valves → two battery tap timers (LinkTap G2S with 0.2–5 L/min flow meters) → 120-mesh filter
-> and 1.4 bar pressure regulator per zone → 16mm LDPE laid on the surface along the deck face,
-> marked as irrigation/non-potable → Zone 1: [N] pressure-compensating drippers of ~2 L/h along
+> and 1.4 bar pressure regulator per zone → plain unperforated 16mm LDPE laid on the surface
+> (under bark mulch in the border, no joints below ground), marked as irrigation/non-potable → Zone 1: [N] pressure-compensating drippers of ~2 L/h along
 > the left border on stakes; Zone 2: 10 × 2 L/h drippers on stakes in a raised planter. Design
 > flow about [X] L/min total. Third manifold outlet: hand hose, plus a temporary lawn sprinkler
 > during grass establishment. The whole assembly is removed and drained each winter. Start
