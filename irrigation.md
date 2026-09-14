@@ -6,11 +6,11 @@ sub-project. It supersedes the 2026-09-06 kit-selection handoff, now archived wi
 picks were independently cross-checked and **survive**; corrections to it are in §4 and the
 alternatives it rejected are summarised in §12 so they are not re-litigated.
 
-**Status (2026-09-11): ALL HARDWARE ORDERED OR IN HAND. Thames Water have answered (§5): the
-on-soil dripline design is not approvable without a Type DB device, and their alternative — a
-break tank with an air gap — is rejected on cost. Direction: redesign both zones to fluid
-category 3 with every emitter ≥150mm above soil. Notification form still to submit. Nothing
-installed yet.**
+**Status (2026-09-14): ALL HARDWARE IN HAND; FC3 redesign settled (§5). Thames Water refused
+the on-soil dripline design (no Type DB device exists); both zones move to fluid category 3 with
+every emitter ≥150mm above the finished mulch. The extension invoice confirms a double check
+valve on the outside tap's indoor supply, so no tap change is needed. Remaining: reply to TW,
+submit the notification, buy ~£45–70 of stakes/pipe, then install on consent.**
 
 How to maintain: when a decision changes, edit the relevant section *and* §9 open items in
 the same commit. Dated progress lands in `project.md` → Progress Notes. Start every new
@@ -27,7 +27,7 @@ irrigation session by reading this file; §10 lists the natural one-topic sessio
 | Zone 1 (border) | 25m PC inline dripline kit (irrigationonline KIT0104) — **to be revised for FC3**: emitters must sit ≥150mm above soil. Staked drippers vs suspended dripline: §5 |
 | Zone 2 (planter) | Patio kit (KIT0120): plain 16mm supply + 10 × 2 L/h Potpeckerlock drippers on 5mm tube, staked ≥150mm above the compost (FC3) |
 | Per-zone conditioning | Amiad ¾" 120 mesh filter + Netafim ¾" 1.4 bar preset regulator — **×2 of each** (one full stack per zone; the old handoff's option (a), duplicates ordered) |
-| Backflow | **FC3 route, direction set 2026-09-11** — see §5. Protection = servicing valve + double check valve on the tap's supply, ideally indoors. Builder asked whether the extension already has them; if not, WRAS-approved integral-DCV bib tap outdoors, subject to TW accepting it |
+| Backflow | **FC3 route** — see §5. Protection = double check valve on the outside tap's indoor supply, **confirmed 2026-09-14 from the extension builder's invoice** (check the line says "check" not "stop"). Existing tap retained; integral-DCV tap not needed |
 | Soil sensors | **Deferred to spring 2027** (Ecowitt WH51 ×2 + GW1200 + optional WH40 rain gauge). Rationale: nothing needs laying now, G2S has weather-skip, first-season establishment watering wants fixed schedules anyway |
 | D1 downgrade | Considered and rejected *with eyes open*: D1's non-removable 2–50 L/min meters can't detect drip-scale faults; silent-failure detection was a core goal. G2S pair premium (~£110) accepted |
 
@@ -46,9 +46,8 @@ Photener 4-way brass manifold £33.95. Total £313.95.
 
 **Screwfix (basket/bought):** Flomasta 15mm DCV £4.89 + 15mm full-bore lever valve —
 **now surplus** unless the indoor supply branch is ever located (keep in parts drawer).
-**To buy only if the builder confirms there is no indoor DCV:** WRAS-approved ½" bib tap with
-integral double check valve, ¾" hose union outlet (~£15–25, "outside tap double check valve"
-at Screwfix).
+**Not needed (2026-09-14):** the integral-DCV bib tap — the extension invoice confirms a DCV on
+the indoor supply to the outside tap.
 
 **No longer needed:** per-zone backsiphonage device — the FC3 route (§5) removes it.
 **Possibly needed instead:** Zone 1 staked drippers, plain 16mm LDPE and stakes (~£25–45),
@@ -123,8 +122,13 @@ cantilevered off a ½" bib tap. Support manifold and/or each stack independently
   - Send the completed form with a sketch and description; they grant or withhold consent.
   - Attached: WaterRegsUK "Hose Union Taps" booklet (Jan 2024 v1.1) and the Thames Water
     Regulation 5 Notification of Works form. Kept in Downloads, not committed.
-- 2026-09-11: the builder who did the extension has been asked whether the outside-tap branch
-  already has a **servicing valve + DCV indoors**. Awaiting reply.
+- 2026-09-11: the builder who did the extension asked whether the outside-tap branch already
+  has a servicing valve + DCV indoors.
+- **2026-09-14: the extension invoice confirms a double check valve on the outside tap's supply**
+  (Scott's wording: "double stop valve on the outside tap root" — verify the invoice says
+  *check* valve; a stop valve alone is only the servicing valve). Backflow protection for FC3
+  is therefore already in place; the tap stays as it is. Whether a servicing valve is also
+  listed: check the same invoice.
 
 **Direction set 2026-09-11: reject the break tank; redesign both zones to fluid category 3.**
 A break tank + pump is disproportionate for a two-zone domestic drip system (tank, pump, power,
@@ -147,11 +151,9 @@ space, cost — and a pump over 12 L/min is itself notifiable under Table 5 item
 
 ### What the FC3 route requires (beyond the servicing valve + DCV)
 
-1. **Backflow protection at the tap supply.** Servicing valve + DCV, preferably indoors and
-   frost-protected. If the builder confirms they exist on the extension branch → nothing to
-   add; the Screwfix integral-DCV tap becomes unnecessary. If not → fit them on the branch if it
-   can be reached, otherwise fit the WRAS-approved integral-DCV bib tap outdoors and ask TW to
-   accept that explicitly (their guidance prefers indoors).
+1. **Backflow protection at the tap supply.** ✅ A DCV on the indoor supply is confirmed by the
+   extension invoice (2026-09-14). Quote the invoice line and date in the notification; attach
+   a copy if asked. Servicing valve: mention it if the invoice lists one.
 2. **Every emitter ≥150mm above the soil/mulch surface, permanently fixed on stakes**, and kept
    there as compost and mulch levels rise. Nothing on or in the ground; no ponding at emitters.
 3. **No chemical additives** — no fertigation or fertiliser injectors. State it in the form.
@@ -187,15 +189,14 @@ space, cost — and a pump over 12 L/min is itself notifiable under Table 5 item
 
 ### Next actions, in order
 
-1. Builder's answer on the servicing valve + DCV.
-2. Reply to the TW Water Regulations contact describing the FC3 redesign and asking three
-   things: (i) confirm DCV-only protection is acceptable with all emitters ≥150mm above soil and
-   no additives; (ii) if there is no indoor DCV, is a WRAS-approved integral-DCV outdoor tap
-   acceptable; (iii) does inline dripline suspended ≥150mm above soil count, or must it be
-   discrete drippers.
+1. ~~Builder's answer~~ — done via the invoice (2026-09-14).
+2. Reply to the TW Water Regulations contact describing the FC3 redesign and asking two things:
+   (i) confirm DCV-only protection is acceptable with all emitters ≥150mm above the finished
+   surface and no additives; (ii) does inline dripline suspended ≥150mm above the mulch count,
+   or must it be discrete drippers.
 3. Submit the notification form + sketch + description (draft below) at least 10 working days
    before hardware day.
-4. Buy Zone 1 parts for whichever option TW accepts.
+4. Buy Zone 1 parts for whichever emitter type TW accepts.
 
 ### Zone 1 layout decision (2026-09-11)
 
@@ -226,9 +227,10 @@ Design flows after conversion: Zone 2 ~0.33 L/min; Zone 1 ~0.5–0.7 L/min for 1
 > Alteration to an existing house: a small automatic garden watering system fed from the
 > existing outside hose union tap (Table 5 item 4(h)). Fluid category 3 design — every emitter
 > is held a minimum of 150mm above the soil/mulch surface on stakes; no emitters on or in the
-> ground; no chemical dosing. Backflow protection: [servicing valve and double check valve on
-> the supply to the outside tap, inside the building / WRAS-approved hose union bib tap with
-> integral double check valve]. Downstream of the tap: brass 4-way manifold with isolating ball
+> ground; no chemical dosing. Backflow protection: a double check valve on the supply to the
+> outside tap inside the building, fitted by our builder as part of the [year] extension
+> (invoice available on request) [plus a servicing valve on the same branch]. Downstream of
+> the tap: brass 4-way manifold with isolating ball
 > valves → two battery tap timers (LinkTap G2S with 0.2–5 L/min flow meters) → 120-mesh filter
 > and 1.4 bar pressure regulator per zone → plain unperforated 16mm LDPE laid on the surface
 > (under bark mulch in the border, no joints below ground), marked as irrigation/non-potable → Zone 1: [N] pressure-compensating drippers of ~2 L/h along
@@ -302,16 +304,15 @@ auto-open is a backstop, not the plan.
 
 ## 10. Open items
 
-- [ ] Builder: does the extension's outside-tap branch have a servicing valve + DCV indoors?
-      (asked 2026-09-11)
-- [ ] Reply to Thames Water with the FC3 redesign and the three questions in §5
+- [x] Builder / DCV: extension invoice confirms a double check valve on the outside tap's supply
+      (2026-09-14) — verify wording says "check", note whether a servicing valve is listed
+- [ ] Reply to Thames Water with the FC3 redesign and the two questions in §5
 - [ ] Submit the Regulation 5 notification form + sketch + description (§5 draft), at least
       10 working days before hardware day
 - [ ] Choose the Zone 1 implementation (staked drippers vs suspended dripline) once TW answer;
       buy parts
 - [ ] **Decide lawn germination watering timer** (§6)
-- [ ] Buy integral-DCV bib tap — only if the builder says there is no indoor DCV
-- [ ] Return/drawer the Flomasta DCV + lever valve (or use them if the branch is found)
+- [ ] Return/drawer the Flomasta DCV + lever valve (surplus)
 - [ ] BS 1710 non-potable marking tape for the LDPE
 - [ ] Bracket/stake solution for manifold + stacks
 - [ ] Gateway↔G2S signal test on arrival day (return window)
@@ -344,7 +345,7 @@ Full reasoning with verbatim quotes and URLs: `docs/irrigation/irrigation-kit-re
 | Hozelock Cloud Controller | Hozelock state it ceases to function end of April 2027; no HA integration |
 | DIY ESPHome + latching valves | Viable local-push route, but Rain Bird LFV075 bottoms out at 45 L/h, so Zone 2 is out of spec |
 | Gardena Twin-Tap splitter | Replaced by the Photener brass 4-way manifold (per-outlet ball valves, room for hose + spare) |
-| Indoor DCV + isolator (Flomasta) | Supply branch unfindable; parts kept in drawer |
+| Indoor DCV + isolator (Flomasta) | Not needed — the extension already has a DCV on the branch (confirmed from the invoice 2026-09-14); parts kept in drawer |
 | Rain Bird HT075BFFS hose-thread vacuum breaker | Functional twin of a Type DB but not WRAS-approved and GHT-threaded — fails paperwork and seal |
 | Break tank + pump with Type AA/AB air gap (Thames Water's suggested FC5 arrangement, 2026-09-11) | Correct for on-soil or buried dripline, but disproportionate for a two-zone domestic drip system: tank, pump, power, space, cost, and a pump over 12 L/min is itself notifiable. Rejected in favour of redesigning to FC3 |
 | On-soil / buried inline dripline (the original Zone 1 design) | FC4; the only approved device type is discontinued and TW will not consent to a direct connection without one |
