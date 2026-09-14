@@ -326,7 +326,10 @@ items); once it is, add "isolate at the servicing valve, open the tap to drain" 
       + 3-page attachment (schematic, compliance statements, schedule of fittings), FC3 design,
       DCV from the 2022 extension, 20–40 / 10–20 emitters, start date 28 Sept 2026. Silence for
       10 working days = deemed consent (~28 Sept); comply with any conditions they set
-- [ ] Await TW response / conditions (chase after 28 Sept if silent)
+- [ ] Await TW response / conditions. **Silence is consent — don't chase for a decision.** If
+      nothing at all has arrived by 28 Sept, send a one-line "please confirm receipt on 14 Sept"
+      purely for the paper trail: deemed consent runs from receipt, and a dated acknowledgement
+      is the evidence for any future house-sale or insurance question
 - [ ] Choose the Zone 1 implementation (staked drippers vs suspended dripline) once TW answer;
       buy parts
 - [ ] **Decide lawn germination watering timer** (§6)
