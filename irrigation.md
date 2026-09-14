@@ -126,7 +126,11 @@ cantilevered off a ½" bib tap. Support manifold and/or each stack independently
   has a servicing valve + DCV indoors.
 - **2026-09-14: the extension invoice confirms a "double check valve" on the outside tap's
   supply** (wording verified). Backflow protection for FC3 is therefore already in place; the
-  tap stays as it is. Whether a servicing valve is also listed: check the same invoice.
+  tap stays as it is. **No servicing valve on that branch** — not a backflow matter and not
+  mandated for an outside-tap branch (Schedule 2 para 10 covers cisterns, float valves and
+  appliances); TW's booklet shows one as good practice. Don't raise it as a question: describe
+  isolation at the main stopcock and the winter drain-down instead. If TW condition consent on
+  one, it's a small indoor plumbing job.
 
 **Direction set 2026-09-11: reject the break tank; redesign both zones to fluid category 3.**
 A break tank + pump is disproportionate for a two-zone domestic drip system (tank, pump, power,
@@ -151,7 +155,8 @@ space, cost — and a pump over 12 L/min is itself notifiable under Table 5 item
 
 1. **Backflow protection at the tap supply.** ✅ A DCV on the indoor supply is confirmed by the
    extension invoice (2026-09-14). Quote the invoice line and date in the notification; attach
-   a copy if asked. Servicing valve: mention it if the invoice lists one.
+   a copy if asked. No servicing valve on the branch; isolation is the main stopcock (§9) plus
+   the manifold ball valves downstream of the tap.
 2. **Every emitter ≥150mm above the soil/mulch surface, permanently fixed on stakes**, and kept
    there as compost and mulch levels rise. Nothing on or in the ground; no ponding at emitters.
 3. **No chemical additives** — no fertigation or fertiliser injectors. State it in the form.
@@ -227,15 +232,16 @@ Design flows after conversion: Zone 2 ~0.33 L/min; Zone 1 ~0.5–0.7 L/min for 1
 > is held a minimum of 150mm above the soil/mulch surface on stakes; no emitters on or in the
 > ground; no chemical dosing. Backflow protection: a double check valve on the supply to the
 > outside tap inside the building, fitted by our builder as part of the [year] extension
-> (invoice available on request) [plus a servicing valve on the same branch]. Downstream of
-> the tap: brass 4-way manifold with isolating ball
+> (invoice available on request). The existing tap is retained unchanged; the manifold's ball
+> valves isolate each new branch downstream of it. Downstream of the tap: brass 4-way manifold with isolating ball
 > valves → two battery tap timers (LinkTap G2S with 0.2–5 L/min flow meters) → 120-mesh filter
 > and 1.4 bar pressure regulator per zone → plain unperforated 16mm LDPE laid on the surface
 > (under bark mulch in the border, no joints below ground), marked as irrigation/non-potable → Zone 1: [N] pressure-compensating drippers of ~2 L/h along
 > the left border on stakes; Zone 2: 10 × 2 L/h drippers on stakes in a raised planter. Design
 > flow about [X] L/min total. Third manifold outlet: hand hose, plus a temporary lawn sprinkler
-> during grass establishment. The whole assembly is removed and drained each winter. Start
-> date: [ ].
+> during grass establishment. Each autumn the assembly is removed, drained and stored indoors;
+> the supply is isolated at the main stopcock and the outside tap opened to drain the exposed
+> pipe. Start date: [ ].
 
 **Everything else proceeds regardless:** pipe laying, compost, planting, test cycles, HA
 integration. Only unattended service waits on consent.
@@ -303,7 +309,8 @@ auto-open is a backstop, not the plan.
 ## 10. Open items
 
 - [x] Builder / DCV: extension invoice confirms a "double check valve" on the outside tap's
-      supply (2026-09-14, wording verified). Still to note: whether a servicing valve is listed
+      supply (2026-09-14, wording verified). No servicing valve on the branch — omit, not a
+      backflow matter
 - [ ] Reply to Thames Water with the FC3 redesign and the two questions in §5
 - [ ] Submit the Regulation 5 notification form + sketch + description (§5 draft), at least
       10 working days before hardware day
