@@ -132,6 +132,10 @@ cantilevered off a ½" bib tap. Support manifold and/or each stack independently
   isolation at the main stopcock and the winter drain-down instead. If TW condition consent on
   one, it's a small indoor plumbing job — and worth doing anyway for frost, see §9.
 
+- **2026-09-14: Regulation 5 notification submitted** (form + schematic/schedule attachment) with
+  the FC3 design below and a start date of 28 September 2026. Personal details live only in the
+  PDFs in Downloads, not in this repo.
+
 **Direction set 2026-09-11: reject the break tank; redesign both zones to fluid category 3.**
 A break tank + pump is disproportionate for a two-zone domestic drip system (tank, pump, power,
 space, cost — and a pump over 12 L/min is itself notifiable under Table 5 item 4(d)).
@@ -318,9 +322,11 @@ items); once it is, add "isolate at the servicing valve, open the tap to drain" 
 - [x] Builder / DCV: extension invoice confirms a "double check valve" on the outside tap's
       supply (2026-09-14, wording verified). No servicing valve on the branch — omit, not a
       backflow matter
-- [ ] Reply to Thames Water with the FC3 redesign and the two questions in §5
-- [ ] Submit the Regulation 5 notification form + sketch + description (§5 draft), at least
-      10 working days before hardware day
+- [x] **Notification submitted 2026-09-14** by email to TW Water Regulations: completed Reg 5 form
+      + 3-page attachment (schematic, compliance statements, schedule of fittings), FC3 design,
+      DCV from the 2022 extension, 20–40 / 10–20 emitters, start date 28 Sept 2026. Silence for
+      10 working days = deemed consent (~28 Sept); comply with any conditions they set
+- [ ] Await TW response / conditions (chase after 28 Sept if silent)
 - [ ] Choose the Zone 1 implementation (staked drippers vs suspended dripline) once TW answer;
       buy parts
 - [ ] **Decide lawn germination watering timer** (§6)
