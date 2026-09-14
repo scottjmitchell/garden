@@ -55,7 +55,7 @@ _Looking from house toward back of garden_
 - [ ] Shed size: 2×2m or 2×3m?
 - [ ] Curved path: through lawn or along right edge?
 - [ ] Left fence constraint: check post depth before determining max fill height on left lawn side
-- [ ] Irrigation backflow device (fluid category 4): Type DB pipe interrupter discontinued — awaiting Thames Water guidance, see `irrigation.md` §5
+- [ ] Irrigation compliance: redesigned to fluid category 3 (every emitter ≥150mm above the finished mulch). Double check valve on the outside tap's supply confirmed from the extension invoice (14 Sept). Remaining: Thames Water confirmation, notification form, Zone 1 emitter type — see `irrigation.md` §5
 - [ ] Lawn germination watering timer: current irrigation layout leaves the sprinkler hose port untimed — see `irrigation.md` §6
 
 ---
@@ -424,3 +424,11 @@ _Add dated notes here as work progresses._
 - Indoor DCV route abandoned (supply branch unfindable); integral-DCV bib tap to be bought from
   Screwfix instead. Flomasta DCV + lever valve now surplus
 - Soil moisture sensors (Ecowitt) deferred to spring 2027
+- **11 Sept — Thames Water Water Regulations team replied:** no consent for a direct mains
+  connection with on-soil dripline while no approved Type DB device exists; their alternative is a
+  break tank with a Type AA/AB air gap (rejected on cost). Decision direction: redesign both zones
+  to fluid category 3 with emitters staked ≥150mm above soil, protected by the tap's double check
+  valve. Builder asked whether the extension already has a servicing valve + DCV on the outside-tap
+  branch. Notification form received, to be submitted with a sketch — see `irrigation.md` §5
+- **14 Sept — extension invoice confirms a "double check valve" on the outside tap's supply.** No
+  tap swap needed; category 3 protection is already in place. Quote the invoice line to Thames Water
