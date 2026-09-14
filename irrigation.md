@@ -130,7 +130,7 @@ cantilevered off a ½" bib tap. Support manifold and/or each stack independently
   mandated for an outside-tap branch (Schedule 2 para 10 covers cisterns, float valves and
   appliances); TW's booklet shows one as good practice. Don't raise it as a question: describe
   isolation at the main stopcock and the winter drain-down instead. If TW condition consent on
-  one, it's a small indoor plumbing job.
+  one, it's a small indoor plumbing job — and worth doing anyway for frost, see §9.
 
 **Direction set 2026-09-11: reject the break tank; redesign both zones to fluid category 3.**
 A break tank + pump is disproportionate for a two-zone domestic drip system (tank, pump, power,
@@ -155,8 +155,7 @@ space, cost — and a pump over 12 L/min is itself notifiable under Table 5 item
 
 1. **Backflow protection at the tap supply.** ✅ A DCV on the indoor supply is confirmed by the
    extension invoice (2026-09-14). Quote the invoice line and date in the notification; attach
-   a copy if asked. No servicing valve on the branch; isolation is the main stopcock (§9) plus
-   the manifold ball valves downstream of the tap.
+   a copy if asked. No servicing valve on the branch — see §9 for what that means in winter.
 2. **Every emitter ≥150mm above the soil/mulch surface, permanently fixed on stakes**, and kept
    there as compost and mulch levels rise. Nothing on or in the ground; no ponding at emitters.
 3. **No chemical additives** — no fertigation or fertiliser injectors. State it in the form.
@@ -167,8 +166,8 @@ space, cost — and a pump over 12 L/min is itself notifiable under Table 5 item
    LDPE too, so item 4(i) (outdoor pipework less than 750mm deep) is covered in the same form.
 5. **Mark the irrigation pipework as non-potable** in line with BS 1710 (identification
    tape/labels on the 16mm LDPE) — the booklet asks for this to avoid cross-connection.
-6. **Frost and waste.** Insulate/duct any new through-wall pipe; drain and remove seasonally
-   (§9). Disconnect the hand hose from the manifold when not in use.
+6. **Frost and waste.** Remove and drain the assembly each autumn; insulate the tap and exposed
+   pipe (§9). Disconnect the hand hose from the manifold when not in use.
 7. **Include the lawn sprinkler.** A Verve oscillating sprinkler run from the manifold on a
    timer is also a watering system not operated by hand — above ground, FC3, covered by the same
    DCV — but list it so consent covers it.
@@ -239,9 +238,8 @@ Design flows after conversion: Zone 2 ~0.33 L/min; Zone 1 ~0.5–0.7 L/min for 1
 > (under bark mulch in the border, no joints below ground), marked as irrigation/non-potable → Zone 1: [N] pressure-compensating drippers of ~2 L/h along
 > the left border on stakes; Zone 2: 10 × 2 L/h drippers on stakes in a raised planter. Design
 > flow about [X] L/min total. Third manifold outlet: hand hose, plus a temporary lawn sprinkler
-> during grass establishment. Each autumn the assembly is removed, drained and stored indoors;
-> the supply is isolated at the main stopcock and the outside tap opened to drain the exposed
-> pipe. Start date: [ ].
+> during grass establishment. Each autumn the assembly is removed, drained and stored indoors,
+> and the outside tap is closed and insulated for winter as in previous years. Start date: [ ].
 
 **Everything else proceeds regardless:** pipe laying, compost, planting, test cycles, HA
 integration. Only unattended service waits on consent.
@@ -298,13 +296,20 @@ These live in the Home Assistant repo, not here.
   moisture % is a raw index needing per-soil calibration — template sensors in YAML;
   WH51L variant for spots that pond; WH40 rain gauge for observed-rain skip)
 
-## 9. Winterising (annual, ~2 min once tap swap done)
+## 9. Winterising (annual)
 
-Manual open cycle on each G2S → main stopcock off (or indoor isolator if branch ever
-found) → open bib tap to drain exposed outside pipe (photos show supply rises up the
-external wall — freeze risk independent of irrigation) → unscrew stacks, drain,
-indoors, batteries out → figure-8 ends loose per Rain Bird practice. G2S anti-freeze
-auto-open is a backstop, not the plan.
+Manual open cycle on each G2S → close the bib tap → unscrew manifold and both stacks, drain,
+store indoors, batteries out → figure-8 ends loose per Rain Bird practice → fit an insulated
+tap cover and check the lagging on the exposed outside pipe. G2S anti-freeze auto-open is a
+backstop, not the plan.
+
+**The outside pipe cannot currently be drained.** There is no servicing valve on the branch
+(confirmed 2026-09-14): the main stopcock shuts off the whole house, and the outside stub
+refills as soon as the house is turned back on, so "stopcock off, open tap to drain" does not
+work — the earlier version of this section was wrong. The photos show the supply rising up the
+external wall, so the stub sits full all winter as it has every year. Insulation is the
+mitigation until a servicing valve with drain-off is fitted on the indoor branch (§10 open
+items); once it is, add "isolate at the servicing valve, open the tap to drain" to the routine.
 
 ## 10. Open items
 
@@ -317,7 +322,11 @@ auto-open is a backstop, not the plan.
 - [ ] Choose the Zone 1 implementation (staked drippers vs suspended dripline) once TW answer;
       buy parts
 - [ ] **Decide lawn germination watering timer** (§6)
-- [ ] Return/drawer the Flomasta DCV + lever valve (surplus)
+- [ ] Ask the builder where the outside-tap branch runs (they fitted the DCV on it) and have a
+      servicing valve with drain-off fitted — the Flomasta lever valve in the drawer is the part.
+      Not needed for consent; needed to ever drain the outside pipe in winter (§9)
+- [ ] Insulated tap cover + lagging for the outside tap and exposed pipe before first frost
+- [ ] Drawer the Flomasta DCV (surplus)
 - [ ] BS 1710 non-potable marking tape for the LDPE
 - [ ] Bracket/stake solution for manifold + stacks
 - [ ] Gateway↔G2S signal test on arrival day (return window)
