@@ -27,7 +27,7 @@ irrigation session by reading this file; §10 lists the natural one-topic sessio
 | Zone 1 (border) | 25m PC inline dripline kit (irrigationonline KIT0104) — **to be revised for FC3**: emitters must sit ≥150mm above soil. Staked drippers vs suspended dripline: §5 |
 | Zone 2 (planter) | Patio kit (KIT0120): plain 16mm supply + 10 × 2 L/h Potpeckerlock drippers on 5mm tube, staked ≥150mm above the compost (FC3) |
 | Per-zone conditioning | Amiad ¾" 120 mesh filter + Netafim ¾" 1.4 bar preset regulator — **×2 of each** (one full stack per zone; the old handoff's option (a), duplicates ordered) |
-| Backflow | **FC3 route** — see §5. Protection = double check valve on the outside tap's indoor supply, **confirmed 2026-09-14 from the extension builder's invoice** (check the line says "check" not "stop"). Existing tap retained; integral-DCV tap not needed |
+| Backflow | **FC3 route** — see §5. Protection = double check valve on the outside tap's indoor supply, **confirmed 2026-09-14 from the extension builder's invoice** (wording verified: "double check valve"). Existing tap retained; integral-DCV tap not needed |
 | Soil sensors | **Deferred to spring 2027** (Ecowitt WH51 ×2 + GW1200 + optional WH40 rain gauge). Rationale: nothing needs laying now, G2S has weather-skip, first-season establishment watering wants fixed schedules anyway |
 | D1 downgrade | Considered and rejected *with eyes open*: D1's non-removable 2–50 L/min meters can't detect drip-scale faults; silent-failure detection was a core goal. G2S pair premium (~£110) accepted |
 
@@ -124,11 +124,9 @@ cantilevered off a ½" bib tap. Support manifold and/or each stack independently
     Regulation 5 Notification of Works form. Kept in Downloads, not committed.
 - 2026-09-11: the builder who did the extension asked whether the outside-tap branch already
   has a servicing valve + DCV indoors.
-- **2026-09-14: the extension invoice confirms a double check valve on the outside tap's supply**
-  (Scott's wording: "double stop valve on the outside tap root" — verify the invoice says
-  *check* valve; a stop valve alone is only the servicing valve). Backflow protection for FC3
-  is therefore already in place; the tap stays as it is. Whether a servicing valve is also
-  listed: check the same invoice.
+- **2026-09-14: the extension invoice confirms a "double check valve" on the outside tap's
+  supply** (wording verified). Backflow protection for FC3 is therefore already in place; the
+  tap stays as it is. Whether a servicing valve is also listed: check the same invoice.
 
 **Direction set 2026-09-11: reject the break tank; redesign both zones to fluid category 3.**
 A break tank + pump is disproportionate for a two-zone domestic drip system (tank, pump, power,
@@ -304,8 +302,8 @@ auto-open is a backstop, not the plan.
 
 ## 10. Open items
 
-- [x] Builder / DCV: extension invoice confirms a double check valve on the outside tap's supply
-      (2026-09-14) — verify wording says "check", note whether a servicing valve is listed
+- [x] Builder / DCV: extension invoice confirms a "double check valve" on the outside tap's
+      supply (2026-09-14, wording verified). Still to note: whether a servicing valve is listed
 - [ ] Reply to Thames Water with the FC3 redesign and the two questions in §5
 - [ ] Submit the Regulation 5 notification form + sketch + description (§5 draft), at least
       10 working days before hardware day

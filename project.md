@@ -430,6 +430,5 @@ _Add dated notes here as work progresses._
   to fluid category 3 with emitters staked ≥150mm above soil, protected by the tap's double check
   valve. Builder asked whether the extension already has a servicing valve + DCV on the outside-tap
   branch. Notification form received, to be submitted with a sketch — see `irrigation.md` §5
-- **14 Sept — extension invoice confirms a double check valve on the outside tap's supply.** No tap
-  swap needed; category 3 protection is already in place. Verify the invoice wording says "check"
-  valve rather than "stop" valve before quoting it to Thames Water
+- **14 Sept — extension invoice confirms a "double check valve" on the outside tap's supply.** No
+  tap swap needed; category 3 protection is already in place. Quote the invoice line to Thames Water
