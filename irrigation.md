@@ -178,7 +178,9 @@ space, cost — and a pump over 12 L/min is itself notifiable under Table 5 item
 
 - **Zone 2 (planter):** trivial. Stake the 10 drippers ≥150mm above the compost with the kit's
   clamp stakes. Zero new parts — check the stakes are tall enough.
-- **Zone 1 (border):** two options, decide once TW answers:
+- **Zone 1 (border):** notified as **20–40 emitters** (Zone 2 as 10–20) so the count can follow the
+  spring 2027 planting without re-notifying; buy 20 now, top up later. Two options, decide once TW
+  answers:
   - **(a) Per-plant staked drippers** off plain 16mm LDPE — unambiguous FC3. Needs ~15–25m plain
     16mm LDPE (the inline dripline cannot be reused as plain pipe), 12–20 pressure-compensating
     drippers (2–4 L/h), 5mm tube and stakes. Roughly £25–45. The dripline kit (£36 ex VAT)
@@ -235,9 +237,9 @@ Design flows after conversion: Zone 2 ~0.33 L/min; Zone 1 ~0.5–0.7 L/min for 1
 > valves isolate each new branch downstream of it. Downstream of the tap: brass 4-way manifold with isolating ball
 > valves → two battery tap timers (LinkTap G2S with 0.2–5 L/min flow meters) → 120-mesh filter
 > and 1.4 bar pressure regulator per zone → plain unperforated 16mm LDPE laid on the surface
-> (under bark mulch in the border, no joints below ground), marked as irrigation/non-potable → Zone 1: [N] pressure-compensating drippers of ~2 L/h along
-> the left border on stakes; Zone 2: 10 × 2 L/h drippers on stakes in a raised planter. Design
-> flow about [X] L/min total. Third manifold outlet: hand hose, plus a temporary lawn sprinkler
+> (under bark mulch in the border, no joints below ground), marked as irrigation/non-potable → Zone 1: 20–40 pressure-compensating drippers of 2 L/h along the left border on stakes,
+> final count set by planting in spring 2027; Zone 2: 10–20 × 2 L/h drippers on stakes in a
+> raised planter. Design flow no more than ~2 L/min total. Third manifold outlet: hand hose, plus a temporary lawn sprinkler
 > during grass establishment. Each autumn the assembly is removed, drained and stored indoors,
 > and the outside tap is closed and insulated for winter as in previous years. Start date: [ ].
 
